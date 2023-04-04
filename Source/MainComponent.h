@@ -58,6 +58,14 @@ private:
     //==============================================================================
     std::unique_ptr<juce::ToggleButton> juce__toggleButton;
     std::unique_ptr<juce::TextButton> juce__textButton;
+    std::unique_ptr<juce::TextEditor> juce__textEditor;
+    std::unique_ptr<juce::Label> juce__label;
+    std::unique_ptr<juce::Label> juce__label2;
+    std::unique_ptr<juce::TextEditor> juce__textEditor2;
+    std::unique_ptr<juce::Label> juce__label3;
+    std::unique_ptr<juce::TextEditor> juce__textEditor3;
+    std::unique_ptr<juce::ToggleButton> juce__toggleButton2;
+    std::unique_ptr<juce::Label> juce__label4;
 
 
     //==============================================================================

@@ -4,7 +4,8 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               companyName="BACKSPACE Productions Inc" companyWebsite="backspace.tokyo"
               pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginWantsMidiIn"
-              pluginVST3Category="Instrument,Network" includeBinaryInJuceHeader="0">
+              pluginVST3Category="Instrument,Network" includeBinaryInJuceHeader="0"
+              cppLanguageStandard="17">
   <MAINGROUP id="H9kj1m" name="scsynth-client">
     <GROUP id="{95611450-B53D-2629-5DA4-663A6AC4DAE6}" name="Source">
       <GROUP id="{E8128ECD-2864-0152-22BC-71E5B3FDB842}" name="Component">
@@ -41,6 +42,7 @@
         <MODULEPATH id="juce_audio_devices" path="C:/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="C:/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="C:/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="C:/SDK/JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
@@ -58,5 +60,6 @@
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
 </JUCERPROJECT>
