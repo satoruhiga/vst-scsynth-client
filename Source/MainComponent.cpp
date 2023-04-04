@@ -32,31 +32,31 @@ MainComponent::MainComponent ()
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    juce__toggleButton.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (juce__toggleButton.get());
-    juce__toggleButton->setButtonText (TRANS("Autorelease"));
-    juce__toggleButton->addListener (this);
+    btn_autorelease.reset (new juce::ToggleButton ("btn_autorelease"));
+    addAndMakeVisible (btn_autorelease.get());
+    btn_autorelease->setButtonText (TRANS("Autorelease"));
+    btn_autorelease->addListener (this);
 
-    juce__toggleButton->setBounds (128, 48, 112, 24);
+    btn_autorelease->setBounds (120, 40, 112, 24);
 
-    juce__textButton.reset (new juce::TextButton ("new button"));
-    addAndMakeVisible (juce__textButton.get());
-    juce__textButton->setButtonText (TRANS("Test Tone"));
-    juce__textButton->addListener (this);
+    btn_testtone.reset (new juce::TextButton ("btn_testtone"));
+    addAndMakeVisible (btn_testtone.get());
+    btn_testtone->setButtonText (TRANS("Test Tone"));
+    btn_testtone->addListener (this);
 
-    juce__textButton->setBounds (16, 48, 96, 24);
+    btn_testtone->setBounds (8, 40, 96, 24);
 
-    juce__textEditor.reset (new juce::TextEditor ("new text editor"));
-    addAndMakeVisible (juce__textEditor.get());
-    juce__textEditor->setMultiLine (false);
-    juce__textEditor->setReturnKeyStartsNewLine (false);
-    juce__textEditor->setReadOnly (false);
-    juce__textEditor->setScrollbarsShown (true);
-    juce__textEditor->setCaretVisible (true);
-    juce__textEditor->setPopupMenuEnabled (true);
-    juce__textEditor->setText (TRANS("Synth1"));
+    text_synth_name.reset (new juce::TextEditor ("text_synth_name"));
+    addAndMakeVisible (text_synth_name.get());
+    text_synth_name->setMultiLine (false);
+    text_synth_name->setReturnKeyStartsNewLine (false);
+    text_synth_name->setReadOnly (false);
+    text_synth_name->setScrollbarsShown (true);
+    text_synth_name->setCaretVisible (true);
+    text_synth_name->setPopupMenuEnabled (true);
+    text_synth_name->setText (TRANS("Synth1"));
 
-    juce__textEditor->setBounds (80, 8, 120, 24);
+    text_synth_name->setBounds (80, 8, 120, 24);
 
     juce__label.reset (new juce::Label ("new label",
                                         TRANS("SynthDef:")));
@@ -80,17 +80,17 @@ MainComponent::MainComponent ()
 
     juce__label2->setBounds (208, 8, 63, 24);
 
-    juce__textEditor2.reset (new juce::TextEditor ("new text editor"));
-    addAndMakeVisible (juce__textEditor2.get());
-    juce__textEditor2->setMultiLine (false);
-    juce__textEditor2->setReturnKeyStartsNewLine (false);
-    juce__textEditor2->setReadOnly (false);
-    juce__textEditor2->setScrollbarsShown (false);
-    juce__textEditor2->setCaretVisible (true);
-    juce__textEditor2->setPopupMenuEnabled (true);
-    juce__textEditor2->setText (TRANS("57110"));
+    text_scsynth_port.reset (new juce::TextEditor ("text_scsynth_port"));
+    addAndMakeVisible (text_scsynth_port.get());
+    text_scsynth_port->setMultiLine (false);
+    text_scsynth_port->setReturnKeyStartsNewLine (false);
+    text_scsynth_port->setReadOnly (false);
+    text_scsynth_port->setScrollbarsShown (false);
+    text_scsynth_port->setCaretVisible (true);
+    text_scsynth_port->setPopupMenuEnabled (true);
+    text_scsynth_port->setText (TRANS("57110"));
 
-    juce__textEditor2->setBounds (272, 8, 48, 24);
+    text_scsynth_port->setBounds (272, 8, 48, 24);
 
     juce__label3.reset (new juce::Label ("new label",
                                          TRANS("sclang:")));
@@ -103,41 +103,137 @@ MainComponent::MainComponent ()
 
     juce__label3->setBounds (328, 8, 56, 24);
 
-    juce__textEditor3.reset (new juce::TextEditor ("new text editor"));
-    addAndMakeVisible (juce__textEditor3.get());
-    juce__textEditor3->setMultiLine (false);
-    juce__textEditor3->setReturnKeyStartsNewLine (false);
-    juce__textEditor3->setReadOnly (false);
-    juce__textEditor3->setScrollbarsShown (false);
-    juce__textEditor3->setCaretVisible (true);
-    juce__textEditor3->setPopupMenuEnabled (true);
-    juce__textEditor3->setText (TRANS("57120"));
+    text_sclang_port.reset (new juce::TextEditor ("text_sclang_port"));
+    addAndMakeVisible (text_sclang_port.get());
+    text_sclang_port->setMultiLine (false);
+    text_sclang_port->setReturnKeyStartsNewLine (false);
+    text_sclang_port->setReadOnly (false);
+    text_sclang_port->setScrollbarsShown (false);
+    text_sclang_port->setCaretVisible (true);
+    text_sclang_port->setPopupMenuEnabled (true);
+    text_sclang_port->setText (TRANS("57120"));
 
-    juce__textEditor3->setBounds (384, 8, 48, 24);
+    text_sclang_port->setBounds (384, 8, 48, 24);
 
-    juce__toggleButton2.reset (new juce::ToggleButton ("new toggle button"));
-    addAndMakeVisible (juce__toggleButton2.get());
-    juce__toggleButton2->setButtonText (TRANS("Live Args"));
-    juce__toggleButton2->addListener (this);
+    btn_liveargs.reset (new juce::ToggleButton ("btn_liveargs"));
+    addAndMakeVisible (btn_liveargs.get());
+    btn_liveargs->setButtonText (TRANS("Live Args"));
+    btn_liveargs->addListener (this);
 
-    juce__toggleButton2->setBounds (240, 48, 88, 24);
+    btn_liveargs->setBounds (232, 40, 88, 24);
 
-    juce__label4.reset (new juce::Label ("new label",
-                                         TRANS("ClientID: -1")));
-    addAndMakeVisible (juce__label4.get());
-    juce__label4->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label4->setJustificationType (juce::Justification::centredLeft);
-    juce__label4->setEditable (false, false, false);
-    juce__label4->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label4->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    label_client_id.reset (new juce::Label ("label_client_id",
+                                            TRANS("ClientID: -1")));
+    addAndMakeVisible (label_client_id.get());
+    label_client_id->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    label_client_id->setJustificationType (juce::Justification::centredLeft);
+    label_client_id->setEditable (false, false, false);
+    label_client_id->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_client_id->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label4->setBounds (440, 8, 88, 24);
+    label_client_id->setBounds (440, 8, 88, 24);
+
+    arg0.reset (new ParameterComponent());
+    addAndMakeVisible (arg0.get());
+    arg0->setName ("arg0");
+
+    arg0->setBounds (8, 96, 584, 24);
+
+    arg1.reset (new ParameterComponent());
+    addAndMakeVisible (arg1.get());
+    arg1->setName ("arg1");
+
+    arg1->setBounds (8, 128, 584, 24);
+
+    juce__label5.reset (new juce::Label ("new label",
+                                         TRANS("# Arguments")));
+    addAndMakeVisible (juce__label5.get());
+    juce__label5->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    juce__label5->setJustificationType (juce::Justification::centredLeft);
+    juce__label5->setEditable (false, false, false);
+    juce__label5->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label5->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    juce__label5->setBounds (8, 72, 150, 24);
+
+    arg2.reset (new ParameterComponent());
+    addAndMakeVisible (arg2.get());
+    arg2->setName ("arg2");
+
+    arg2->setBounds (8, 160, 584, 24);
+
+    arg3.reset (new ParameterComponent());
+    addAndMakeVisible (arg3.get());
+    arg3->setName ("arg3");
+
+    arg3->setBounds (8, 192, 584, 24);
+
+    arg4.reset (new ParameterComponent());
+    addAndMakeVisible (arg4.get());
+    arg4->setName ("arg4");
+
+    arg4->setBounds (8, 224, 584, 24);
+
+    arg5.reset (new ParameterComponent());
+    addAndMakeVisible (arg5.get());
+    arg5->setName ("arg5");
+
+    arg5->setBounds (8, 256, 584, 24);
+
+    arg6.reset (new ParameterComponent());
+    addAndMakeVisible (arg6.get());
+    arg6->setName ("arg6");
+
+    arg6->setBounds (8, 288, 584, 24);
+
+    arg7.reset (new ParameterComponent());
+    addAndMakeVisible (arg7.get());
+    arg7->setName ("arg7");
+
+    arg7->setBounds (8, 320, 584, 24);
+
+    juce__label6.reset (new juce::Label ("new label",
+                                         TRANS("# Code")));
+    addAndMakeVisible (juce__label6.get());
+    juce__label6->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    juce__label6->setJustificationType (juce::Justification::centredLeft);
+    juce__label6->setEditable (false, false, false);
+    juce__label6->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label6->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    juce__label6->setBounds (8, 352, 150, 24);
+
+    text_code.reset (new juce::TextEditor ("text_code"));
+    addAndMakeVisible (text_code.get());
+    text_code->setMultiLine (true);
+    text_code->setReturnKeyStartsNewLine (true);
+    text_code->setReadOnly (false);
+    text_code->setScrollbarsShown (true);
+    text_code->setCaretVisible (true);
+    text_code->setPopupMenuEnabled (true);
+    text_code->setText (juce::String());
+
+    text_code->setBounds (8, 376, 584, 200);
+
+    btn_send_on_load.reset (new juce::ToggleButton ("btn_send_on_load"));
+    addAndMakeVisible (btn_send_on_load.get());
+    btn_send_on_load->setButtonText (TRANS("Send on Load"));
+    btn_send_on_load->addListener (this);
+
+    btn_send_on_load->setBounds (8, 584, 112, 24);
+
+    btn_send.reset (new juce::TextButton ("btn_send"));
+    addAndMakeVisible (btn_send.get());
+    btn_send->setButtonText (TRANS("Send"));
+    btn_send->addListener (this);
+
+    btn_send->setBounds (136, 584, 456, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize (600, 616);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -149,16 +245,29 @@ MainComponent::~MainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    juce__toggleButton = nullptr;
-    juce__textButton = nullptr;
-    juce__textEditor = nullptr;
+    btn_autorelease = nullptr;
+    btn_testtone = nullptr;
+    text_synth_name = nullptr;
     juce__label = nullptr;
     juce__label2 = nullptr;
-    juce__textEditor2 = nullptr;
+    text_scsynth_port = nullptr;
     juce__label3 = nullptr;
-    juce__textEditor3 = nullptr;
-    juce__toggleButton2 = nullptr;
-    juce__label4 = nullptr;
+    text_sclang_port = nullptr;
+    btn_liveargs = nullptr;
+    label_client_id = nullptr;
+    arg0 = nullptr;
+    arg1 = nullptr;
+    juce__label5 = nullptr;
+    arg2 = nullptr;
+    arg3 = nullptr;
+    arg4 = nullptr;
+    arg5 = nullptr;
+    arg6 = nullptr;
+    arg7 = nullptr;
+    juce__label6 = nullptr;
+    text_code = nullptr;
+    btn_send_on_load = nullptr;
+    btn_send = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -172,16 +281,6 @@ void MainComponent::paint (juce::Graphics& g)
     //[/UserPrePaint]
 
     g.fillAll (juce::Colour (0xff323e44));
-
-    {
-        int x = 0, y = 0, width = 600, height = 400;
-        juce::Colour strokeColour = juce::Colours::grey;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (strokeColour);
-        g.drawRect (x, y, width, height, 1);
-
-    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -201,20 +300,30 @@ void MainComponent::buttonClicked (juce::Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == juce__toggleButton.get())
+    if (buttonThatWasClicked == btn_autorelease.get())
     {
-        //[UserButtonCode_juce__toggleButton] -- add your button handler code here..
-        //[/UserButtonCode_juce__toggleButton]
+        //[UserButtonCode_btn_autorelease] -- add your button handler code here..
+        //[/UserButtonCode_btn_autorelease]
     }
-    else if (buttonThatWasClicked == juce__textButton.get())
+    else if (buttonThatWasClicked == btn_testtone.get())
     {
-        //[UserButtonCode_juce__textButton] -- add your button handler code here..
-        //[/UserButtonCode_juce__textButton]
+        //[UserButtonCode_btn_testtone] -- add your button handler code here..
+        //[/UserButtonCode_btn_testtone]
     }
-    else if (buttonThatWasClicked == juce__toggleButton2.get())
+    else if (buttonThatWasClicked == btn_liveargs.get())
     {
-        //[UserButtonCode_juce__toggleButton2] -- add your button handler code here..
-        //[/UserButtonCode_juce__toggleButton2]
+        //[UserButtonCode_btn_liveargs] -- add your button handler code here..
+        //[/UserButtonCode_btn_liveargs]
+    }
+    else if (buttonThatWasClicked == btn_send_on_load.get())
+    {
+        //[UserButtonCode_btn_send_on_load] -- add your button handler code here..
+        //[/UserButtonCode_btn_send_on_load]
+    }
+    else if (buttonThatWasClicked == btn_send.get())
+    {
+        //[UserButtonCode_btn_send] -- add your button handler code here..
+        //[/UserButtonCode_btn_send]
     }
 
     //[UserbuttonClicked_Post]
@@ -239,18 +348,17 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
                  parentClasses="public juce::Component" constructorParams="" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
+                 fixedSize="0" initialWidth="600" initialHeight="616">
   <BACKGROUND backgroundColour="ff323e44">
-    <RECT pos="0 0 600 400" fill="solid: 808080" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: ff808080"/>
+    <RECT pos="0 0 600 616" fill="solid: 808080" hasStroke="0"/>
   </BACKGROUND>
-  <TOGGLEBUTTON name="new toggle button" id="b8558110aca6148e" memberName="juce__toggleButton"
-                virtualName="" explicitFocusOrder="0" pos="128 48 112 24" buttonText="Autorelease"
+  <TOGGLEBUTTON name="btn_autorelease" id="b8558110aca6148e" memberName="btn_autorelease"
+                virtualName="" explicitFocusOrder="0" pos="120 40 112 24" buttonText="Autorelease"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <TEXTBUTTON name="new button" id="985d3b3152aa2800" memberName="juce__textButton"
-              virtualName="" explicitFocusOrder="0" pos="16 48 96 24" buttonText="Test Tone"
+  <TEXTBUTTON name="btn_testtone" id="985d3b3152aa2800" memberName="btn_testtone"
+              virtualName="" explicitFocusOrder="0" pos="8 40 96 24" buttonText="Test Tone"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTEDITOR name="new text editor" id="4f37a4b3cc260d15" memberName="juce__textEditor"
+  <TEXTEDITOR name="text_synth_name" id="4f37a4b3cc260d15" memberName="text_synth_name"
               virtualName="" explicitFocusOrder="0" pos="80 8 120 24" initialText="Synth1"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
@@ -264,7 +372,7 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="scsynth:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
-  <TEXTEDITOR name="new text editor" id="c39ef4a68bff3ab1" memberName="juce__textEditor2"
+  <TEXTEDITOR name="text_scsynth_port" id="c39ef4a68bff3ab1" memberName="text_scsynth_port"
               virtualName="" explicitFocusOrder="0" pos="272 8 48 24" initialText="57110"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
               caret="1" popupmenu="1"/>
@@ -273,18 +381,62 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="sclang:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
-  <TEXTEDITOR name="new text editor" id="4644a9ac46618f5e" memberName="juce__textEditor3"
+  <TEXTEDITOR name="text_sclang_port" id="4644a9ac46618f5e" memberName="text_sclang_port"
               virtualName="" explicitFocusOrder="0" pos="384 8 48 24" initialText="57120"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
               caret="1" popupmenu="1"/>
-  <TOGGLEBUTTON name="new toggle button" id="cac3c8de46c4287c" memberName="juce__toggleButton2"
-                virtualName="" explicitFocusOrder="0" pos="240 48 88 24" buttonText="Live Args"
+  <TOGGLEBUTTON name="btn_liveargs" id="cac3c8de46c4287c" memberName="btn_liveargs"
+                virtualName="" explicitFocusOrder="0" pos="232 40 88 24" buttonText="Live Args"
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
-  <LABEL name="new label" id="e228f0569f8dd0b3" memberName="juce__label4"
+  <LABEL name="label_client_id" id="e228f0569f8dd0b3" memberName="label_client_id"
          virtualName="" explicitFocusOrder="0" pos="440 8 88 24" edTextCol="ff000000"
          edBkgCol="0" labelText="ClientID: -1" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <GENERICCOMPONENT name="arg0" id="59f2633427c1cc23" memberName="arg0" virtualName=""
+                    explicitFocusOrder="0" pos="8 96 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg1" id="469df798ec63f356" memberName="arg1" virtualName=""
+                    explicitFocusOrder="0" pos="8 128 584 24" class="ParameterComponent"
+                    params=""/>
+  <LABEL name="new label" id="70d631c03ece97bf" memberName="juce__label5"
+         virtualName="" explicitFocusOrder="0" pos="8 72 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="# Arguments" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <GENERICCOMPONENT name="arg2" id="c9562bcceb5da19f" memberName="arg2" virtualName=""
+                    explicitFocusOrder="0" pos="8 160 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg3" id="93f1a7fb66c16fe8" memberName="arg3" virtualName=""
+                    explicitFocusOrder="0" pos="8 192 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg4" id="59433b16b0769023" memberName="arg4" virtualName=""
+                    explicitFocusOrder="0" pos="8 224 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg5" id="64933755da142ae4" memberName="arg5" virtualName=""
+                    explicitFocusOrder="0" pos="8 256 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg6" id="4ada125e95dc25e5" memberName="arg6" virtualName=""
+                    explicitFocusOrder="0" pos="8 288 584 24" class="ParameterComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="arg7" id="d64d023030bec916" memberName="arg7" virtualName=""
+                    explicitFocusOrder="0" pos="8 320 584 24" class="ParameterComponent"
+                    params=""/>
+  <LABEL name="new label" id="cc1d0442324b20f8" memberName="juce__label6"
+         virtualName="" explicitFocusOrder="0" pos="8 352 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="# Code" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
+  <TEXTEDITOR name="text_code" id="6278dc77606b7098" memberName="text_code"
+              virtualName="" explicitFocusOrder="0" pos="8 376 584 200" initialText=""
+              multiline="1" retKeyStartsLine="1" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <TOGGLEBUTTON name="btn_send_on_load" id="63638d04d75c5245" memberName="btn_send_on_load"
+                virtualName="" explicitFocusOrder="0" pos="8 584 112 24" buttonText="Send on Load"
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+  <TEXTBUTTON name="btn_send" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
+              explicitFocusOrder="0" pos="136 584 456 24" buttonText="Send"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -21,6 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
+#include "ParameterComponent.h"
 //[/Headers]
 
 
@@ -56,16 +57,29 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::ToggleButton> juce__toggleButton;
-    std::unique_ptr<juce::TextButton> juce__textButton;
-    std::unique_ptr<juce::TextEditor> juce__textEditor;
+    std::unique_ptr<juce::ToggleButton> btn_autorelease;
+    std::unique_ptr<juce::TextButton> btn_testtone;
+    std::unique_ptr<juce::TextEditor> text_synth_name;
     std::unique_ptr<juce::Label> juce__label;
     std::unique_ptr<juce::Label> juce__label2;
-    std::unique_ptr<juce::TextEditor> juce__textEditor2;
+    std::unique_ptr<juce::TextEditor> text_scsynth_port;
     std::unique_ptr<juce::Label> juce__label3;
-    std::unique_ptr<juce::TextEditor> juce__textEditor3;
-    std::unique_ptr<juce::ToggleButton> juce__toggleButton2;
-    std::unique_ptr<juce::Label> juce__label4;
+    std::unique_ptr<juce::TextEditor> text_sclang_port;
+    std::unique_ptr<juce::ToggleButton> btn_liveargs;
+    std::unique_ptr<juce::Label> label_client_id;
+    std::unique_ptr<ParameterComponent> arg0;
+    std::unique_ptr<ParameterComponent> arg1;
+    std::unique_ptr<juce::Label> juce__label5;
+    std::unique_ptr<ParameterComponent> arg2;
+    std::unique_ptr<ParameterComponent> arg3;
+    std::unique_ptr<ParameterComponent> arg4;
+    std::unique_ptr<ParameterComponent> arg5;
+    std::unique_ptr<ParameterComponent> arg6;
+    std::unique_ptr<ParameterComponent> arg7;
+    std::unique_ptr<juce::Label> juce__label6;
+    std::unique_ptr<juce::TextEditor> text_code;
+    std::unique_ptr<juce::ToggleButton> btn_send_on_load;
+    std::unique_ptr<juce::TextButton> btn_send;
 
 
     //==============================================================================
