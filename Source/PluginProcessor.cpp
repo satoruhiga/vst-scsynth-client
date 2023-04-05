@@ -20,6 +20,25 @@ ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        )
+    , valueTreeState(*this, nullptr, juce::Identifier("scsynth-client"),
+                     {
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg1", "Arg1", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg2", "Arg2", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg3", "Arg3", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg4", "Arg4", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg5", "Arg5", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg6", "Arg6", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg7", "Arg7", 0.0f, 1.0f, 0.0f),
+                       std::make_unique<juce::AudioParameterFloat>(
+                         "arg8", "Arg8", 0.0f, 1.0f, 0.0f),
+                     })
 #endif
 {
 }
@@ -170,17 +189,28 @@ juce::AudioProcessorEditor* ScsynthclientAudioProcessor::createEditor()
 }
 
 //==============================================================================
-void ScsynthclientAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void ScsynthclientAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = valueTreeState.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+
+    ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)getActiveEditor();
+    editor->mainComponent.getStateInformation(xml);
+
+    copyXmlToBinary(*xml, destData);
 }
 
-void ScsynthclientAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void ScsynthclientAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
+    if (!xml) return;
+
+    if (xml->hasTagName(valueTreeState.state.getType()))
+        valueTreeState.replaceState(juce::ValueTree::fromXml(*xml));
+
+    ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
+    if (editor)
+        editor->mainComponent.setStateInformation(xml);
 }
 
 //==============================================================================

@@ -33,8 +33,7 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class ParameterComponent  : public juce::Component,
-                            public juce::Slider::Listener
+class ParameterComponent  : public juce::Component
 {
 public:
     //==============================================================================
@@ -43,11 +42,12 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
+    void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void sliderValueChanged (juce::Slider* sliderThatWasMoved) override;
 
 
 

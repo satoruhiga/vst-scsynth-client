@@ -35,14 +35,12 @@ MainComponent::MainComponent ()
     btn_autorelease.reset (new juce::ToggleButton ("btn_autorelease"));
     addAndMakeVisible (btn_autorelease.get());
     btn_autorelease->setButtonText (TRANS("Autorelease"));
-    btn_autorelease->addListener (this);
 
     btn_autorelease->setBounds (120, 40, 112, 24);
 
     btn_testtone.reset (new juce::TextButton ("btn_testtone"));
     addAndMakeVisible (btn_testtone.get());
     btn_testtone->setButtonText (TRANS("Test Tone"));
-    btn_testtone->addListener (this);
 
     btn_testtone->setBounds (8, 40, 96, 24);
 
@@ -118,7 +116,6 @@ MainComponent::MainComponent ()
     btn_liveargs.reset (new juce::ToggleButton ("btn_liveargs"));
     addAndMakeVisible (btn_liveargs.get());
     btn_liveargs->setButtonText (TRANS("Live Args"));
-    btn_liveargs->addListener (this);
 
     btn_liveargs->setBounds (232, 40, 88, 24);
 
@@ -144,53 +141,53 @@ MainComponent::MainComponent ()
 
     juce__label5->setBounds (8, 72, 150, 24);
 
-    arg0.reset (new ParameterComponent());
-    addAndMakeVisible (arg0.get());
-    arg0->setName ("arg0");
-
-    arg0->setBounds (8, 96, 584, 24);
-
     arg1.reset (new ParameterComponent());
     addAndMakeVisible (arg1.get());
     arg1->setName ("arg1");
 
-    arg1->setBounds (8, 128, 584, 24);
+    arg1->setBounds (8, 96, 584, 24);
 
     arg2.reset (new ParameterComponent());
     addAndMakeVisible (arg2.get());
     arg2->setName ("arg2");
 
-    arg2->setBounds (8, 160, 584, 24);
+    arg2->setBounds (8, 128, 584, 24);
 
     arg3.reset (new ParameterComponent());
     addAndMakeVisible (arg3.get());
     arg3->setName ("arg3");
 
-    arg3->setBounds (8, 192, 584, 24);
+    arg3->setBounds (8, 160, 584, 24);
 
     arg4.reset (new ParameterComponent());
     addAndMakeVisible (arg4.get());
     arg4->setName ("arg4");
 
-    arg4->setBounds (8, 224, 584, 24);
+    arg4->setBounds (8, 192, 584, 24);
 
     arg5.reset (new ParameterComponent());
     addAndMakeVisible (arg5.get());
     arg5->setName ("arg5");
 
-    arg5->setBounds (8, 256, 584, 24);
+    arg5->setBounds (8, 224, 584, 24);
 
     arg6.reset (new ParameterComponent());
     addAndMakeVisible (arg6.get());
     arg6->setName ("arg6");
 
-    arg6->setBounds (8, 288, 584, 24);
+    arg6->setBounds (8, 256, 584, 24);
 
     arg7.reset (new ParameterComponent());
     addAndMakeVisible (arg7.get());
     arg7->setName ("arg7");
 
-    arg7->setBounds (8, 320, 584, 24);
+    arg7->setBounds (8, 288, 584, 24);
+
+    arg8.reset (new ParameterComponent());
+    addAndMakeVisible (arg8.get());
+    arg8->setName ("arg8");
+
+    arg8->setBounds (8, 320, 584, 24);
 
     juce__label6.reset (new juce::Label ("new label",
                                          TRANS("# Code")));
@@ -218,14 +215,12 @@ MainComponent::MainComponent ()
     btn_send_on_load.reset (new juce::ToggleButton ("btn_send_on_load"));
     addAndMakeVisible (btn_send_on_load.get());
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
-    btn_send_on_load->addListener (this);
 
     btn_send_on_load->setBounds (8, 584, 112, 24);
 
     btn_send.reset (new juce::TextButton ("btn_send"));
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
-    btn_send->addListener (this);
 
     btn_send->setBounds (136, 584, 456, 24);
 
@@ -237,6 +232,7 @@ MainComponent::MainComponent ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
     text_synthdef_name->onTextChange = [this] {
         synthdef_name = text_synthdef_name->getText().toStdString();
     };
@@ -291,7 +287,6 @@ MainComponent::~MainComponent()
     btn_liveargs = nullptr;
     label_client_id = nullptr;
     juce__label5 = nullptr;
-    arg0 = nullptr;
     arg1 = nullptr;
     arg2 = nullptr;
     arg3 = nullptr;
@@ -299,6 +294,7 @@ MainComponent::~MainComponent()
     arg5 = nullptr;
     arg6 = nullptr;
     arg7 = nullptr;
+    arg8 = nullptr;
     juce__label6 = nullptr;
     text_code = nullptr;
     btn_send_on_load = nullptr;
@@ -330,41 +326,6 @@ void MainComponent::resized()
     //[/UserResized]
 }
 
-void MainComponent::buttonClicked (juce::Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == btn_autorelease.get())
-    {
-        //[UserButtonCode_btn_autorelease] -- add your button handler code here..
-        //[/UserButtonCode_btn_autorelease]
-    }
-    else if (buttonThatWasClicked == btn_testtone.get())
-    {
-        //[UserButtonCode_btn_testtone] -- add your button handler code here..
-        //[/UserButtonCode_btn_testtone]
-    }
-    else if (buttonThatWasClicked == btn_liveargs.get())
-    {
-        //[UserButtonCode_btn_liveargs] -- add your button handler code here..
-        //[/UserButtonCode_btn_liveargs]
-    }
-    else if (buttonThatWasClicked == btn_send_on_load.get())
-    {
-        //[UserButtonCode_btn_send_on_load] -- add your button handler code here..
-        //[/UserButtonCode_btn_send_on_load]
-    }
-    else if (buttonThatWasClicked == btn_send.get())
-    {
-        //[UserButtonCode_btn_send] -- add your button handler code here..
-        //[/UserButtonCode_btn_send]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -373,6 +334,55 @@ void MainComponent::updateClientID(int newid)
     client_id = newid;
     label_client_id->setText("Client ID: " + juce::String(client_id), juce::dontSendNotification);
 }
+
+void MainComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+{
+    xml->setAttribute("synthdef_name", synthdef_name);
+    xml->setAttribute("scsynth_port", scsynth_port);
+    xml->setAttribute("sclang_port", sclang_port);
+    xml->setAttribute("autorelease", autorelease);
+    xml->setAttribute("liveargs", liveargs);
+    xml->setAttribute("send_on_load", send_on_load);
+    xml->setAttribute("code", code);
+
+    arg1->getStateInformation(xml);
+    arg2->getStateInformation(xml);
+    arg3->getStateInformation(xml);
+    arg4->getStateInformation(xml);
+    arg5->getStateInformation(xml);
+    arg6->getStateInformation(xml);
+    arg7->getStateInformation(xml);
+    arg8->getStateInformation(xml);
+}
+
+void MainComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+{
+    synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
+    scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
+    sclang_port = xml->getIntAttribute("sclang_port", 57120);
+    autorelease = xml->getBoolAttribute("autorelease", true);
+    liveargs = xml->getBoolAttribute("liveargs", true);
+    send_on_load = xml->getBoolAttribute("send_on_load", true);
+    code = xml->getStringAttribute("code", "").toStdString();
+
+    text_synthdef_name->setText(synthdef_name);
+    text_scsynth_port->setText(juce::String(scsynth_port));
+    text_sclang_port->setText(juce::String(sclang_port));
+    btn_autorelease->setToggleState(autorelease, juce::sendNotification);
+    btn_liveargs->setToggleState(liveargs, juce::sendNotification);
+    btn_send_on_load->setToggleState(send_on_load, juce::sendNotification);
+    text_code->setText(code);
+
+    arg1->setStateInformation(xml);
+    arg2->setStateInformation(xml);
+    arg3->setStateInformation(xml);
+    arg4->setStateInformation(xml);
+    arg5->setStateInformation(xml);
+    arg6->setStateInformation(xml);
+    arg7->setStateInformation(xml);
+    arg8->setStateInformation(xml);
+}
+
 //[/MiscUserCode]
 
 
@@ -394,10 +404,10 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <TOGGLEBUTTON name="btn_autorelease" id="b8558110aca6148e" memberName="btn_autorelease"
                 virtualName="" explicitFocusOrder="0" pos="120 40 112 24" buttonText="Autorelease"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+                connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
   <TEXTBUTTON name="btn_testtone" id="985d3b3152aa2800" memberName="btn_testtone"
               virtualName="" explicitFocusOrder="0" pos="8 40 96 24" buttonText="Test Tone"
-              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <TEXTEDITOR name="text_synthdef_name" id="4f37a4b3cc260d15" memberName="text_synthdef_name"
               virtualName="" explicitFocusOrder="0" pos="80 8 120 24" initialText="Synth1"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
@@ -427,7 +437,7 @@ BEGIN_JUCER_METADATA
               caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="btn_liveargs" id="cac3c8de46c4287c" memberName="btn_liveargs"
                 virtualName="" explicitFocusOrder="0" pos="232 40 88 24" buttonText="Live Args"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+                connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
   <LABEL name="label_client_id" id="e228f0569f8dd0b3" memberName="label_client_id"
          virtualName="" explicitFocusOrder="0" pos="440 8 88 24" edTextCol="ff000000"
          edBkgCol="0" labelText="ClientID: -1" editableSingleClick="0"
@@ -438,28 +448,28 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="# Arguments" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="arg0" id="59f2633427c1cc23" memberName="arg0" virtualName=""
+  <GENERICCOMPONENT name="arg1" id="59f2633427c1cc23" memberName="arg1" virtualName=""
                     explicitFocusOrder="0" pos="8 96 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg1" id="469df798ec63f356" memberName="arg1" virtualName=""
+  <GENERICCOMPONENT name="arg2" id="469df798ec63f356" memberName="arg2" virtualName=""
                     explicitFocusOrder="0" pos="8 128 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg2" id="c9562bcceb5da19f" memberName="arg2" virtualName=""
+  <GENERICCOMPONENT name="arg3" id="c9562bcceb5da19f" memberName="arg3" virtualName=""
                     explicitFocusOrder="0" pos="8 160 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg3" id="93f1a7fb66c16fe8" memberName="arg3" virtualName=""
+  <GENERICCOMPONENT name="arg4" id="93f1a7fb66c16fe8" memberName="arg4" virtualName=""
                     explicitFocusOrder="0" pos="8 192 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg4" id="59433b16b0769023" memberName="arg4" virtualName=""
+  <GENERICCOMPONENT name="arg5" id="59433b16b0769023" memberName="arg5" virtualName=""
                     explicitFocusOrder="0" pos="8 224 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg5" id="64933755da142ae4" memberName="arg5" virtualName=""
+  <GENERICCOMPONENT name="arg6" id="64933755da142ae4" memberName="arg6" virtualName=""
                     explicitFocusOrder="0" pos="8 256 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg6" id="4ada125e95dc25e5" memberName="arg6" virtualName=""
+  <GENERICCOMPONENT name="arg7" id="4ada125e95dc25e5" memberName="arg7" virtualName=""
                     explicitFocusOrder="0" pos="8 288 584 24" class="ParameterComponent"
                     params=""/>
-  <GENERICCOMPONENT name="arg7" id="d64d023030bec916" memberName="arg7" virtualName=""
+  <GENERICCOMPONENT name="arg8" id="d64d023030bec916" memberName="arg8" virtualName=""
                     explicitFocusOrder="0" pos="8 320 584 24" class="ParameterComponent"
                     params=""/>
   <LABEL name="new label" id="cc1d0442324b20f8" memberName="juce__label6"
@@ -473,10 +483,10 @@ BEGIN_JUCER_METADATA
               caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="btn_send_on_load" id="63638d04d75c5245" memberName="btn_send_on_load"
                 virtualName="" explicitFocusOrder="0" pos="8 584 112 24" buttonText="Send on Load"
-                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
+                connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
   <TEXTBUTTON name="btn_send" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
               explicitFocusOrder="0" pos="136 584 456 24" buttonText="Send"
-              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+              connectedEdges="0" needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

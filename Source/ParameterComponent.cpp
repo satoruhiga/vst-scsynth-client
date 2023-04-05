@@ -73,7 +73,6 @@ ParameterComponent::ParameterComponent ()
     slider_param_value->setRange (0, 10, 0);
     slider_param_value->setSliderStyle (juce::Slider::LinearHorizontal);
     slider_param_value->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    slider_param_value->addListener (this);
 
     slider_param_value->setBounds (304, 0, 280, 24);
 
@@ -105,7 +104,7 @@ ParameterComponent::ParameterComponent ()
 
     slider_param_value->onValueChange = [this]()
     {
-        value = (value_max - value_min) * slider_param_value->getValue() + value_min;
+        this->value = slider_param_value->getValue();
     };
     //[/Constructor]
 }
@@ -146,24 +145,32 @@ void ParameterComponent::resized()
     //[/UserResized]
 }
 
-void ParameterComponent::sliderValueChanged (juce::Slider* sliderThatWasMoved)
-{
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
-    if (sliderThatWasMoved == slider_param_value.get())
-    {
-        //[UserSliderCode_slider_param_value] -- add your slider handling code here..
-        //[/UserSliderCode_slider_param_value]
-    }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
-}
-
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void ParameterComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+{
+    const auto n = getName();
+    xml->setAttribute(n + "_name", name);
+    xml->setAttribute(n + "_value_min", value_min);
+    xml->setAttribute(n + "_value_max", value_max);
+    xml->setAttribute(n + "_value", value);
+}
+
+void ParameterComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+{
+    const auto n = getName();
+    name = xml->getStringAttribute(n + "_name", "").toStdString();
+    value_min = xml->getDoubleAttribute(n + "_value_min", 0);
+    value_max = xml->getDoubleAttribute(n + "_value_max", 1);
+    value = xml->getDoubleAttribute(n + "_value", 0);
+
+    text_param_name->setText(name, juce::sendNotification);
+    text_param_min->setText(juce::String(value_min), juce::sendNotification);
+    text_param_max->setText(juce::String(value_max), juce::sendNotification);
+    slider_param_value->setValue(value, juce::sendNotification);
+}
+
 //[/MiscUserCode]
 
 
@@ -199,7 +206,7 @@ BEGIN_JUCER_METADATA
           virtualName="" explicitFocusOrder="0" pos="304 0 280 24" min="0.0"
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"
-          needsCallback="1"/>
+          needsCallback="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

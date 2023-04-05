@@ -34,8 +34,7 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class MainComponent  : public juce::Component,
-                       public juce::Button::Listener
+class MainComponent  : public juce::Component
 {
 public:
     //==============================================================================
@@ -45,17 +44,18 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void updateClientID(int newid);
+    void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
+    void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
     void resized() override;
-    void buttonClicked (juce::Button* buttonThatWasClicked) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    std::string synthdef_name;
+    std::string synthdef_name = "Synth1";
     int scsynth_port = 57110;
     int sclang_port = 57120;
     int client_id = -1;
@@ -64,7 +64,7 @@ private:
     bool liveargs;
     bool send_on_load;
 
-    std::string code; 
+    std::string code;
     //[/UserVariables]
 
     //==============================================================================
@@ -79,7 +79,6 @@ private:
     std::unique_ptr<juce::ToggleButton> btn_liveargs;
     std::unique_ptr<juce::Label> label_client_id;
     std::unique_ptr<juce::Label> juce__label5;
-    std::unique_ptr<ParameterComponent> arg0;
     std::unique_ptr<ParameterComponent> arg1;
     std::unique_ptr<ParameterComponent> arg2;
     std::unique_ptr<ParameterComponent> arg3;
@@ -87,6 +86,7 @@ private:
     std::unique_ptr<ParameterComponent> arg5;
     std::unique_ptr<ParameterComponent> arg6;
     std::unique_ptr<ParameterComponent> arg7;
+    std::unique_ptr<ParameterComponent> arg8;
     std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::TextEditor> text_code;
     std::unique_ptr<juce::ToggleButton> btn_send_on_load;

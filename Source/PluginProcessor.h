@@ -19,6 +19,8 @@ class ScsynthclientAudioProcessor  : public juce::AudioProcessor
                             #endif
 {
 public:
+    juce::AudioProcessorValueTreeState valueTreeState;
+    
     //==============================================================================
     ScsynthclientAudioProcessor();
     ~ScsynthclientAudioProcessor() override;
@@ -53,8 +55,8 @@ public:
     void changeProgramName (int index, const juce::String& newName) override;
 
     //==============================================================================
-    void getStateInformation (juce::MemoryBlock& destData) override;
-    void setStateInformation (const void* data, int sizeInBytes) override;
+    void getStateInformation(juce::MemoryBlock& destData) override;
+    void setStateInformation(const void* data, int sizeInBytes) override;
 
 private:
     //==============================================================================
