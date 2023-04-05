@@ -53,13 +53,16 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    std::string name;
+    float value_min, value_max;
+    float value;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::TextEditor> param_name;
-    std::unique_ptr<juce::TextEditor> param_min;
-    std::unique_ptr<juce::TextEditor> param_max;
-    std::unique_ptr<juce::Slider> param_slider;
+    std::unique_ptr<juce::TextEditor> text_param_name;
+    std::unique_ptr<juce::TextEditor> text_param_min;
+    std::unique_ptr<juce::TextEditor> text_param_max;
+    std::unique_ptr<juce::Slider> slider_param_value;
 
 
     //==============================================================================

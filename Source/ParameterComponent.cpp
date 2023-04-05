@@ -32,50 +32,50 @@ ParameterComponent::ParameterComponent ()
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    param_name.reset (new juce::TextEditor ("Name"));
-    addAndMakeVisible (param_name.get());
-    param_name->setMultiLine (false);
-    param_name->setReturnKeyStartsNewLine (false);
-    param_name->setReadOnly (false);
-    param_name->setScrollbarsShown (true);
-    param_name->setCaretVisible (true);
-    param_name->setPopupMenuEnabled (true);
-    param_name->setText (juce::String());
+    text_param_name.reset (new juce::TextEditor ("text_param_name"));
+    addAndMakeVisible (text_param_name.get());
+    text_param_name->setMultiLine (false);
+    text_param_name->setReturnKeyStartsNewLine (false);
+    text_param_name->setReadOnly (false);
+    text_param_name->setScrollbarsShown (true);
+    text_param_name->setCaretVisible (true);
+    text_param_name->setPopupMenuEnabled (true);
+    text_param_name->setText (juce::String());
 
-    param_name->setBounds (0, 0, 128, 24);
+    text_param_name->setBounds (0, 0, 128, 24);
 
-    param_min.reset (new juce::TextEditor ("Min"));
-    addAndMakeVisible (param_min.get());
-    param_min->setMultiLine (false);
-    param_min->setReturnKeyStartsNewLine (false);
-    param_min->setReadOnly (false);
-    param_min->setScrollbarsShown (true);
-    param_min->setCaretVisible (true);
-    param_min->setPopupMenuEnabled (true);
-    param_min->setText (TRANS("0.0"));
+    text_param_min.reset (new juce::TextEditor ("text_param_min"));
+    addAndMakeVisible (text_param_min.get());
+    text_param_min->setMultiLine (false);
+    text_param_min->setReturnKeyStartsNewLine (false);
+    text_param_min->setReadOnly (false);
+    text_param_min->setScrollbarsShown (true);
+    text_param_min->setCaretVisible (true);
+    text_param_min->setPopupMenuEnabled (true);
+    text_param_min->setText (TRANS("0.0"));
 
-    param_min->setBounds (136, 0, 80, 24);
+    text_param_min->setBounds (136, 0, 80, 24);
 
-    param_max.reset (new juce::TextEditor ("Max"));
-    addAndMakeVisible (param_max.get());
-    param_max->setMultiLine (false);
-    param_max->setReturnKeyStartsNewLine (false);
-    param_max->setReadOnly (false);
-    param_max->setScrollbarsShown (true);
-    param_max->setCaretVisible (true);
-    param_max->setPopupMenuEnabled (true);
-    param_max->setText (TRANS("1.0"));
+    text_param_max.reset (new juce::TextEditor ("text_param_max"));
+    addAndMakeVisible (text_param_max.get());
+    text_param_max->setMultiLine (false);
+    text_param_max->setReturnKeyStartsNewLine (false);
+    text_param_max->setReadOnly (false);
+    text_param_max->setScrollbarsShown (true);
+    text_param_max->setCaretVisible (true);
+    text_param_max->setPopupMenuEnabled (true);
+    text_param_max->setText (TRANS("1.0"));
 
-    param_max->setBounds (224, 0, 80, 24);
+    text_param_max->setBounds (224, 0, 80, 24);
 
-    param_slider.reset (new juce::Slider ("Slider"));
-    addAndMakeVisible (param_slider.get());
-    param_slider->setRange (0, 10, 0);
-    param_slider->setSliderStyle (juce::Slider::LinearHorizontal);
-    param_slider->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
-    param_slider->addListener (this);
+    slider_param_value.reset (new juce::Slider ("Slider"));
+    addAndMakeVisible (slider_param_value.get());
+    slider_param_value->setRange (0, 10, 0);
+    slider_param_value->setSliderStyle (juce::Slider::LinearHorizontal);
+    slider_param_value->setTextBoxStyle (juce::Slider::NoTextBox, false, 80, 20);
+    slider_param_value->addListener (this);
 
-    param_slider->setBounds (304, 0, 280, 24);
+    slider_param_value->setBounds (304, 0, 280, 24);
 
 
     //[UserPreSize]
@@ -85,6 +85,28 @@ ParameterComponent::ParameterComponent ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    text_param_name->setInputRestrictions(32, "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    text_param_name->onTextChange = [this]()
+    {
+        this->name = text_param_name->getText().toStdString();
+    };
+
+    text_param_min->setInputRestrictions(10, "01234567890.-");
+    text_param_min->onTextChange = [this]()
+    {
+        this->value_min = text_param_min->getText().getFloatValue();
+    };
+
+    text_param_max->setInputRestrictions(10, "01234567890.-");
+    text_param_max->onTextChange = [this]()
+    {
+        this->value_max = text_param_max->getText().getFloatValue();
+    };
+
+    slider_param_value->onValueChange = [this]()
+    {
+        value = (value_max - value_min) * slider_param_value->getValue() + value_min;
+    };
     //[/Constructor]
 }
 
@@ -93,10 +115,10 @@ ParameterComponent::~ParameterComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     //[/Destructor_pre]
 
-    param_name = nullptr;
-    param_min = nullptr;
-    param_max = nullptr;
-    param_slider = nullptr;
+    text_param_name = nullptr;
+    text_param_min = nullptr;
+    text_param_max = nullptr;
+    slider_param_value = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -129,10 +151,10 @@ void ParameterComponent::sliderValueChanged (juce::Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == param_slider.get())
+    if (sliderThatWasMoved == slider_param_value.get())
     {
-        //[UserSliderCode_param_slider] -- add your slider handling code here..
-        //[/UserSliderCode_param_slider]
+        //[UserSliderCode_slider_param_value] -- add your slider handling code here..
+        //[/UserSliderCode_slider_param_value]
     }
 
     //[UsersliderValueChanged_Post]
@@ -161,16 +183,19 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="0 0 584 24" fill="solid: 8b2aa5" hasStroke="0"/>
   </BACKGROUND>
-  <TEXTEDITOR name="Name" id="20aaa871892307fd" memberName="param_name" virtualName=""
-              explicitFocusOrder="0" pos="0 0 128 24" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
-  <TEXTEDITOR name="Min" id="126fa62bc3ff7f3a" memberName="param_min" virtualName=""
-              explicitFocusOrder="0" pos="136 0 80 24" initialText="0.0" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
-  <TEXTEDITOR name="Max" id="2e6b0906ac09253b" memberName="param_max" virtualName=""
-              explicitFocusOrder="0" pos="224 0 80 24" initialText="1.0" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
-  <SLIDER name="Slider" id="b4aeb0742a045c75" memberName="param_slider"
+  <TEXTEDITOR name="text_param_name" id="20aaa871892307fd" memberName="text_param_name"
+              virtualName="" explicitFocusOrder="0" pos="0 0 128 24" initialText=""
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="text_param_min" id="126fa62bc3ff7f3a" memberName="text_param_min"
+              virtualName="" explicitFocusOrder="0" pos="136 0 80 24" initialText="0.0"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="text_param_max" id="2e6b0906ac09253b" memberName="text_param_max"
+              virtualName="" explicitFocusOrder="0" pos="224 0 80 24" initialText="1.0"
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
+  <SLIDER name="Slider" id="b4aeb0742a045c75" memberName="slider_param_value"
           virtualName="" explicitFocusOrder="0" pos="304 0 280 24" min="0.0"
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"

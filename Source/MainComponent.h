@@ -44,6 +44,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void updateClientID(int newid);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -54,12 +55,22 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    std::string synthdef_name;
+    int scsynth_port = 57110;
+    int sclang_port = 57120;
+    int client_id = -1;
+
+    bool autorelease;
+    bool liveargs;
+    bool send_on_load;
+
+    std::string code; 
     //[/UserVariables]
 
     //==============================================================================
     std::unique_ptr<juce::ToggleButton> btn_autorelease;
     std::unique_ptr<juce::TextButton> btn_testtone;
-    std::unique_ptr<juce::TextEditor> text_synth_name;
+    std::unique_ptr<juce::TextEditor> text_synthdef_name;
     std::unique_ptr<juce::Label> juce__label;
     std::unique_ptr<juce::Label> juce__label2;
     std::unique_ptr<juce::TextEditor> text_scsynth_port;
@@ -67,9 +78,9 @@ private:
     std::unique_ptr<juce::TextEditor> text_sclang_port;
     std::unique_ptr<juce::ToggleButton> btn_liveargs;
     std::unique_ptr<juce::Label> label_client_id;
+    std::unique_ptr<juce::Label> juce__label5;
     std::unique_ptr<ParameterComponent> arg0;
     std::unique_ptr<ParameterComponent> arg1;
-    std::unique_ptr<juce::Label> juce__label5;
     std::unique_ptr<ParameterComponent> arg2;
     std::unique_ptr<ParameterComponent> arg3;
     std::unique_ptr<ParameterComponent> arg4;

@@ -46,17 +46,17 @@ MainComponent::MainComponent ()
 
     btn_testtone->setBounds (8, 40, 96, 24);
 
-    text_synth_name.reset (new juce::TextEditor ("text_synth_name"));
-    addAndMakeVisible (text_synth_name.get());
-    text_synth_name->setMultiLine (false);
-    text_synth_name->setReturnKeyStartsNewLine (false);
-    text_synth_name->setReadOnly (false);
-    text_synth_name->setScrollbarsShown (true);
-    text_synth_name->setCaretVisible (true);
-    text_synth_name->setPopupMenuEnabled (true);
-    text_synth_name->setText (TRANS("Synth1"));
+    text_synthdef_name.reset (new juce::TextEditor ("text_synthdef_name"));
+    addAndMakeVisible (text_synthdef_name.get());
+    text_synthdef_name->setMultiLine (false);
+    text_synthdef_name->setReturnKeyStartsNewLine (false);
+    text_synthdef_name->setReadOnly (false);
+    text_synthdef_name->setScrollbarsShown (true);
+    text_synthdef_name->setCaretVisible (true);
+    text_synthdef_name->setPopupMenuEnabled (true);
+    text_synthdef_name->setText (TRANS("Synth1"));
 
-    text_synth_name->setBounds (80, 8, 120, 24);
+    text_synthdef_name->setBounds (80, 8, 120, 24);
 
     juce__label.reset (new juce::Label ("new label",
                                         TRANS("SynthDef:")));
@@ -133,6 +133,17 @@ MainComponent::MainComponent ()
 
     label_client_id->setBounds (440, 8, 88, 24);
 
+    juce__label5.reset (new juce::Label ("new label",
+                                         TRANS("# Arguments")));
+    addAndMakeVisible (juce__label5.get());
+    juce__label5->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    juce__label5->setJustificationType (juce::Justification::centredLeft);
+    juce__label5->setEditable (false, false, false);
+    juce__label5->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label5->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    juce__label5->setBounds (8, 72, 150, 24);
+
     arg0.reset (new ParameterComponent());
     addAndMakeVisible (arg0.get());
     arg0->setName ("arg0");
@@ -144,17 +155,6 @@ MainComponent::MainComponent ()
     arg1->setName ("arg1");
 
     arg1->setBounds (8, 128, 584, 24);
-
-    juce__label5.reset (new juce::Label ("new label",
-                                         TRANS("# Arguments")));
-    addAndMakeVisible (juce__label5.get());
-    juce__label5->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label5->setJustificationType (juce::Justification::centredLeft);
-    juce__label5->setEditable (false, false, false);
-    juce__label5->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label5->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
-
-    juce__label5->setBounds (8, 72, 150, 24);
 
     arg2.reset (new ParameterComponent());
     addAndMakeVisible (arg2.get());
@@ -237,6 +237,41 @@ MainComponent::MainComponent ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    text_synthdef_name->onTextChange = [this] {
+        synthdef_name = text_synthdef_name->getText().toStdString();
+    };
+
+    text_scsynth_port->setInputRestrictions(5, "01234567890");
+    text_scsynth_port->onTextChange = [this] {
+        int port = text_scsynth_port->getText().getIntValue();
+        if (port > 0 && port < 65536) {
+            scsynth_port = port;
+        }
+    };
+
+    text_sclang_port->setInputRestrictions(5, "01234567890");
+    text_sclang_port->onTextChange = [this] {
+        int port = text_sclang_port->getText().getIntValue();
+        if (port > 0 && port < 65536) {
+            sclang_port = port;
+        }
+    };
+
+    btn_autorelease->onClick = [this] {
+        autorelease = btn_autorelease->getToggleState();
+    };
+
+    btn_liveargs->onClick = [this] {
+        liveargs = btn_liveargs->getToggleState();
+    };
+
+    btn_send_on_load->onClick = [this] {
+        send_on_load = btn_send_on_load->getToggleState();
+    };
+
+    text_code->onTextChange = [this] {
+        code = text_code->getText().toStdString();
+    };
     //[/Constructor]
 }
 
@@ -247,7 +282,7 @@ MainComponent::~MainComponent()
 
     btn_autorelease = nullptr;
     btn_testtone = nullptr;
-    text_synth_name = nullptr;
+    text_synthdef_name = nullptr;
     juce__label = nullptr;
     juce__label2 = nullptr;
     text_scsynth_port = nullptr;
@@ -255,9 +290,9 @@ MainComponent::~MainComponent()
     text_sclang_port = nullptr;
     btn_liveargs = nullptr;
     label_client_id = nullptr;
+    juce__label5 = nullptr;
     arg0 = nullptr;
     arg1 = nullptr;
-    juce__label5 = nullptr;
     arg2 = nullptr;
     arg3 = nullptr;
     arg4 = nullptr;
@@ -333,6 +368,11 @@ void MainComponent::buttonClicked (juce::Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void MainComponent::updateClientID(int newid)
+{
+    client_id = newid;
+    label_client_id->setText("Client ID: " + juce::String(client_id), juce::dontSendNotification);
+}
 //[/MiscUserCode]
 
 
@@ -358,7 +398,7 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="btn_testtone" id="985d3b3152aa2800" memberName="btn_testtone"
               virtualName="" explicitFocusOrder="0" pos="8 40 96 24" buttonText="Test Tone"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
-  <TEXTEDITOR name="text_synth_name" id="4f37a4b3cc260d15" memberName="text_synth_name"
+  <TEXTEDITOR name="text_synthdef_name" id="4f37a4b3cc260d15" memberName="text_synthdef_name"
               virtualName="" explicitFocusOrder="0" pos="80 8 120 24" initialText="Synth1"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
@@ -393,17 +433,17 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="ClientID: -1" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="70d631c03ece97bf" memberName="juce__label5"
+         virtualName="" explicitFocusOrder="0" pos="8 72 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="# Arguments" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="arg0" id="59f2633427c1cc23" memberName="arg0" virtualName=""
                     explicitFocusOrder="0" pos="8 96 584 24" class="ParameterComponent"
                     params=""/>
   <GENERICCOMPONENT name="arg1" id="469df798ec63f356" memberName="arg1" virtualName=""
                     explicitFocusOrder="0" pos="8 128 584 24" class="ParameterComponent"
                     params=""/>
-  <LABEL name="new label" id="70d631c03ece97bf" memberName="juce__label5"
-         virtualName="" explicitFocusOrder="0" pos="8 72 150 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="# Arguments" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="arg2" id="c9562bcceb5da19f" memberName="arg2" virtualName=""
                     explicitFocusOrder="0" pos="8 160 584 24" class="ParameterComponent"
                     params=""/>
