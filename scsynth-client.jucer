@@ -8,6 +8,10 @@
               cppLanguageStandard="17">
   <MAINGROUP id="H9kj1m" name="scsynth-client">
     <GROUP id="{95611450-B53D-2629-5DA4-663A6AC4DAE6}" name="Source">
+      <FILE id="F7nT5d" name="SynthClient.cpp" compile="1" resource="0" file="Source/SynthClient.cpp"/>
+      <FILE id="vNEh06" name="SynthClient.h" compile="0" resource="0" file="Source/SynthClient.h"/>
+      <FILE id="nF0uk4" name="OSCClient.cpp" compile="1" resource="0" file="Source/OSCClient.cpp"/>
+      <FILE id="taXi1O" name="OSCClient.h" compile="0" resource="0" file="Source/OSCClient.h"/>
       <GROUP id="{E8128ECD-2864-0152-22BC-71E5B3FDB842}" name="Component">
         <FILE id="VcQNTW" name="ParameterComponent.cpp" compile="1" resource="0"
               file="Source/ParameterComponent.cpp"/>
