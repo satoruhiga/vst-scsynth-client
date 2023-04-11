@@ -32,4 +32,10 @@ public:
 
         return NODE_START_INDEX + nid + oscClient->getClientID() * NODES_PAR_CLIENT;
     }
+
+    int sendSynthNew(int note, uint8_t velocity)
+    {}
+
+    int sendSynthFree(int note)
+    {}
 };
