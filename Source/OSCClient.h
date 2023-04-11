@@ -32,7 +32,7 @@ public:
         {
             juce::OSCMessage message(juce::String("/notify"), 0);
             scsynthSender.send(message);
-            scsynthSocket.waitUntilReady(true, 3000);
+//            scsynthSocket.waitUntilReady(true, 100);
         }
 
         sclangSender.disconnect();

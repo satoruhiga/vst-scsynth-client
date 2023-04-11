@@ -230,26 +230,31 @@ MainComponent::MainComponent ()
 
     setSize (600, 616);
 
-
     //[Constructor] You can add your own custom stuff here..
     text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
-    text_synthdef_name->onTextChange = [this] {
+    text_synthdef_name->onReturnKey = [this] {
         synthdef_name = text_synthdef_name->getText().toStdString();
     };
 
     text_scsynth_port->setInputRestrictions(5, "01234567890");
-    text_scsynth_port->onTextChange = [this] {
+    text_scsynth_port->onReturnKey = [this] {
         int port = text_scsynth_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
             scsynth_port = port;
+            
+            if (onClientUpdated)
+                onClientUpdated(scsynth_port, sclang_port);
         }
     };
 
     text_sclang_port->setInputRestrictions(5, "01234567890");
-    text_sclang_port->onTextChange = [this] {
+    text_sclang_port->onReturnKey = [this] {
         int port = text_sclang_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
             sclang_port = port;
+            
+            if (onClientUpdated)
+                onClientUpdated(scsynth_port, sclang_port);
         }
     };
 
@@ -337,6 +342,9 @@ void MainComponent::updateClientID(int newid)
 
 void MainComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
+    if (!xml)
+        return;
+    
     xml->setAttribute("synthdef_name", synthdef_name);
     xml->setAttribute("scsynth_port", scsynth_port);
     xml->setAttribute("sclang_port", sclang_port);
@@ -357,6 +365,9 @@ void MainComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 void MainComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
+    if (!xml)
+        return;
+    
     synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
     scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
     sclang_port = xml->getIntAttribute("sclang_port", 57120);
@@ -381,6 +392,9 @@ void MainComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     arg6->setStateInformation(xml);
     arg7->setStateInformation(xml);
     arg8->setStateInformation(xml);
+    
+    if (onClientUpdated)
+        onClientUpdated(scsynth_port, sclang_port);
 }
 
 //[/MiscUserCode]

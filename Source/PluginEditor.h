@@ -19,6 +19,7 @@
 class ScsynthclientAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
+    
     MainComponent mainComponent;
     
     ScsynthclientAudioProcessorEditor (ScsynthclientAudioProcessor&);
@@ -29,8 +30,6 @@ public:
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     ScsynthclientAudioProcessor& audioProcessor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScsynthclientAudioProcessorEditor)

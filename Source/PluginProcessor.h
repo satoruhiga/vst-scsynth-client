@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 
+#include "SynthClient.h"
+
 //==============================================================================
 /**
 */
@@ -46,6 +48,7 @@ public:
     bool producesMidi() const override;
     bool isMidiEffect() const override;
     double getTailLengthSeconds() const override;
+    bool supportsMPE() const override { return true; }
 
     //==============================================================================
     int getNumPrograms() override;
@@ -57,8 +60,13 @@ public:
     //==============================================================================
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
-
+    
+    void onClientUpdated(int scsynth_port, int sclang_port);
+    
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScsynthclientAudioProcessor)
+    
+    juce::MPEInstrument instrument;
+    std::shared_ptr<SynthClient> synthClient;
 };

@@ -46,6 +46,10 @@ public:
     void updateClientID(int newid);
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
+    
+    void setOnClientUpdated(std::function<void(int, int)> onClientUpdated) {
+        this->onClientUpdated = onClientUpdated;
+    }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -65,6 +69,8 @@ private:
     bool send_on_load;
 
     std::string code;
+    
+    std::function<void(int, int)> onClientUpdated;
     //[/UserVariables]
 
     //==============================================================================
