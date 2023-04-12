@@ -60,7 +60,7 @@ void SynthClient::sendSynthNew(SynthNote& note)
 
 void SynthClient::sendSynthFree(SynthNote& note)
 {
-    if (!oscClient) return;;
+    if (!oscClient) return;
     if (!appData.autorelease) return;
 
     float gate = -1 - note.release_time;

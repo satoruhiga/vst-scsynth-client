@@ -81,9 +81,9 @@ private:
     std::unique_ptr<ParameterComponent> arg7;
     std::unique_ptr<ParameterComponent> arg8;
     std::unique_ptr<juce::Label> juce__label6;
-    std::unique_ptr<juce::TextEditor> text_code;
     std::unique_ptr<juce::ToggleButton> btn_send_on_load;
     std::unique_ptr<juce::TextButton> btn_send;
+    std::unique_ptr<juce::TextEditor> text_code;
 
 
     //==============================================================================

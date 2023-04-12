@@ -194,22 +194,6 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     juce__label6->setBounds (8, 352, 150, 24);
 
-    text_code.reset (new juce::TextEditor ("text_code"));
-    addAndMakeVisible (text_code.get());
-    text_code->setMultiLine (true);
-    text_code->setReturnKeyStartsNewLine (true);
-    text_code->setReadOnly (false);
-    text_code->setScrollbarsShown (true);
-    text_code->setCaretVisible (true);
-    text_code->setPopupMenuEnabled (true);
-    text_code->setText (TRANS("SynthDef(\\Synth1, { | freq=440, amp=1, gate=1, pan=0 |\n"
-    "\tvar sig = SinOsc.ar(freq);\n"
-    "\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
-    "\tOut.ar(0, Pan2.ar(sig * env, pan, amp));\n"
-    "}).add;\n"));
-
-    text_code->setBounds (8, 376, 584, 200);
-
     btn_send_on_load.reset (new juce::ToggleButton ("btn_send_on_load"));
     addAndMakeVisible (btn_send_on_load.get());
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
@@ -221,6 +205,18 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     btn_send->setButtonText (TRANS("Send"));
 
     btn_send->setBounds (136, 584, 456, 24);
+
+    text_code.reset (new juce::TextEditor (juce::String()));
+    addAndMakeVisible (text_code.get());
+    text_code->setMultiLine (false);
+    text_code->setReturnKeyStartsNewLine (false);
+    text_code->setReadOnly (false);
+    text_code->setScrollbarsShown (true);
+    text_code->setCaretVisible (true);
+    text_code->setPopupMenuEnabled (true);
+    text_code->setText (juce::String());
+
+    text_code->setBounds (0, 376, 584, 200);
 
 
     //[UserPreSize]
@@ -275,16 +271,17 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     };
     btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
 
-    text_code->onTextChange = [this] {
-        appData.code = text_code->getText().toStdString();
-    };
-    text_code->setText(appData.code);
-    
     text_code->setFont(juce::Font(
         juce::Font::getDefaultMonospacedFontName(),
         16,
         juce::Font::plain));
-    
+
+    text_code->onTextChange = [this] {
+        appData.code = text_code->getText().toStdString();
+    };
+    text_code->setText(appData.code);
+    text_code->setTabKeyUsedAsCharacter(true);
+
     btn_send->onClick = [this] {
         if (appData.onSendCode)
             appData.onSendCode();
@@ -356,9 +353,9 @@ MainComponent::~MainComponent()
     arg7 = nullptr;
     arg8 = nullptr;
     juce__label6 = nullptr;
-    text_code = nullptr;
     btn_send_on_load = nullptr;
     btn_send = nullptr;
+    text_code = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -489,16 +486,15 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="# Code" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
-  <TEXTEDITOR name="text_code" id="6278dc77606b7098" memberName="text_code"
-              virtualName="" explicitFocusOrder="0" pos="8 376 584 200" initialText="SynthDef(\Synth1, { | freq=440, amp=1, gate=1, pan=0 |&#10;&#9;var sig = SinOsc.ar(freq);&#10;&#9;var env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);&#10;&#9;Out.ar(0, Pan2.ar(sig * env, pan, amp));&#10;}).add;&#10;"
-              multiline="1" retKeyStartsLine="1" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="btn_send_on_load" id="63638d04d75c5245" memberName="btn_send_on_load"
                 virtualName="" explicitFocusOrder="0" pos="8 584 112 24" buttonText="Send on Load"
                 connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
   <TEXTBUTTON name="btn_send" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
               explicitFocusOrder="0" pos="136 584 456 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
+  <TEXTEDITOR name="" id="29c2a1030b1c7831" memberName="text_code" virtualName=""
+              explicitFocusOrder="0" pos="0 376 584 200" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
