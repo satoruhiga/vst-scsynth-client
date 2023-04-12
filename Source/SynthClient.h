@@ -4,6 +4,7 @@
 #include "OSCClient.h"
 
 class SynthClient
+    : public juce::MPEInstrument::Listener
 {
     const int NODES_PAR_CLIENT = 1000;
     const int NODE_START_INDEX = 10000;

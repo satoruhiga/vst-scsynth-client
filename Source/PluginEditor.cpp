@@ -15,6 +15,8 @@ ScsynthclientAudioProcessorEditor::ScsynthclientAudioProcessorEditor (Scsynthcli
 {
     setSize (mainComponent.getWidth(), mainComponent.getHeight());
     addAndMakeVisible(mainComponent);
+    
+    mainComponent.setOnClientUpdated(std::bind(&ScsynthclientAudioProcessor::onClientUpdated, &p, std::placeholders::_1, std::placeholders::_2));
 }
 
 ScsynthclientAudioProcessorEditor::~ScsynthclientAudioProcessorEditor()
