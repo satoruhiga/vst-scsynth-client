@@ -218,7 +218,6 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     btn_send->setBounds (136, 584, 456, 24);
 
-
     //[UserPreSize]
     //[/UserPreSize]
 
@@ -237,6 +236,9 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         int port = text_scsynth_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
             appData.scsynth_port = port;
+            
+            if (appData.onPortChanged)
+                appData.onPortChanged();
         }
     };
     text_scsynth_port->setText(juce::String(appData.scsynth_port));
@@ -246,6 +248,9 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         int port = text_sclang_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
             appData.sclang_port = port;
+
+            if (appData.onPortChanged)
+                appData.onPortChanged();
         }
     };
     text_sclang_port->setText(juce::String(appData.sclang_port));
@@ -269,6 +274,39 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         appData.code = text_code->getText().toStdString();
     };
     text_code->setText(appData.code);
+
+    btn_send->onClick = [this] {
+        if (appData.onSendCode)
+            appData.onSendCode();
+    };
+
+    btn_testtone->onStateChange = [this] {
+        bool s = btn_testtone->getState() == 2;
+        static bool ss = s;
+
+        if (ss != s)
+        {
+            ss = s;
+
+            if (appData.onTestTone)
+            {
+                if (ss)
+                {
+                    appData.onTestTone(true);
+                }
+                else
+                {
+                    appData.onTestTone(false);
+                }
+            }
+        }
+    };
+
+    if (appData.send_on_load)
+    {
+        if (appData.onSendCode)
+            appData.onSendCode();
+    }
     //[/Constructor]
 }
 

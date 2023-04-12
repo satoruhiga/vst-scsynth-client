@@ -109,9 +109,12 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     };
     text_param_max->setText(juce::String(param.value_max));
 
-    slider_param_value->onValueChange = [this, &param]()
+    slider_param_value->onValueChange = [this, &param, index]()
     {
         param.value = slider_param_value->getValue();
+
+        if (appData.onArgumentChanged)
+            appData.onArgumentChanged(index);
     };
     slider_param_value->setValue(param.value);
 

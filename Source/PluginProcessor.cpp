@@ -11,7 +11,6 @@
 
 //==============================================================================
 ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
-#ifndef JucePlugin_PreferredChannelConfigurations
     : AudioProcessor(BusesProperties())
       , valueTreeState(*this, nullptr, juce::Identifier("scsynth-client"),
                        {
@@ -32,7 +31,6 @@ ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
                            std::make_unique<juce::AudioParameterFloat>(
                                "arg8", "Arg8", 0.0f, 1.0f, 0.0f),
                        })
-#endif
 {
 }
 
@@ -124,7 +122,8 @@ bool ScsynthclientAudioProcessor::isBusesLayoutSupported(const BusesLayout& layo
 
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    synthClient.processMidiBuffer(midiMessages);
+    if (synthClient)
+        synthClient->processMidiBuffer(midiMessages);
 }
 
 //==============================================================================
@@ -158,6 +157,9 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
         valueTreeState.replaceState(juce::ValueTree::fromXml(*xml));
 
     appData.setStateInformation(xml);
+
+    if (!synthClient)
+        synthClient = std::make_unique<SynthClient>(appData);
 }
 
 //==============================================================================

@@ -23,8 +23,9 @@ class ScsynthclientAudioProcessor
 #endif
 {
 public:
-    AppData appData;
     juce::AudioProcessorValueTreeState valueTreeState;
+    AppData appData;
+    std::unique_ptr<SynthClient> synthClient;
     
     //==============================================================================
     ScsynthclientAudioProcessor();
@@ -67,8 +68,4 @@ public:
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScsynthclientAudioProcessor)
-    
-    SynthClient synthClient;
-
-    
 };

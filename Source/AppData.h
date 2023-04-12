@@ -24,10 +24,17 @@ struct AppData
     bool liveargs;
     bool send_on_load;
 
+    int pitchbend_range = 48;
+
     std::string code;
 
     std::array<Parameter, 8> params;
 
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
+
+    std::function<void()> onPortChanged;
+    std::function<void()> onSendCode;
+    std::function<void(bool)> onTestTone;
+    std::function<void(int)> onArgumentChanged;
 };

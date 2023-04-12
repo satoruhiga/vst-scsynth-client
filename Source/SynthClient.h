@@ -1,6 +1,8 @@
 #pragma once
 
 #include <JuceHeader.h>
+
+#include "AppData.h"
 #include "OSCClient.h"
 
 class SynthClient
@@ -9,40 +11,48 @@ class SynthClient
     const int NODES_PAR_CLIENT = 1000;
     const int NODE_START_INDEX = 10000;
 
-    int note_id = 0;
+    int currentNoteID = 0;
 
     std::shared_ptr<OSCClient> oscClient;
     juce::MPEInstrument instrument;
+    AppData& appData;
 
+    juce::OSCBundle bundle;
+    
 public:
 
-    SynthClient(int pitchbendRange = 48);
+    SynthClient(AppData& appData);
     ~SynthClient() override;
-
-    void connect(int scsynth_port, int sclang_port)
-    {
-        oscClient = std::make_shared<OSCClient>(scsynth_port, sclang_port);
-    }
 
     int getNextNodeID()
     {
-        int nid = note_id;
-        note_id += 1;
-        note_id %= NODES_PAR_CLIENT;
+        int nid = currentNoteID;
+        currentNoteID += 1;
+        currentNoteID %= NODES_PAR_CLIENT;
 
         return NODE_START_INDEX + nid + oscClient->getClientID() * NODES_PAR_CLIENT;
     }
 
-    int sendSynthNew(int note, uint8_t velocity)
-    {
-        return -1;
-    }
+    /////////////////////////////////////////////////
 
-    int sendSynthFree(int note)
+    struct SynthNote
     {
-        return -1;
-    }
+        int note_id = -1;
+        float freq = 440;
+        float release_time = 0;
+    };
+    void sendSynthNew(SynthNote& note);
+    void sendSynthFree(SynthNote& note);
 
+    /////////////////////////////////////////////////
+
+    void sendCode();
+    void sendTestTone(bool state);
+    void portChanged();
+    void argumentChanged(int index);
+    
+    /////////////////////////////////////////////////
+    
     void processMidiBuffer(const juce::MidiBuffer& midiMessages);
 
     void noteAdded(juce::MPENote newNote) override;
