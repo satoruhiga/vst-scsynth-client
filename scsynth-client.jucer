@@ -3,7 +3,7 @@
 <JUCERPROJECT id="vGFW61" name="scsynth-client" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               companyName="BACKSPACE Productions Inc" companyWebsite="backspace.tokyo"
-              pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginIsMidiEffectPlugin,pluginWantsMidiIn"
+              pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Network" includeBinaryInJuceHeader="0"
               cppLanguageStandard="17">
   <MAINGROUP id="H9kj1m" name="scsynth-client">

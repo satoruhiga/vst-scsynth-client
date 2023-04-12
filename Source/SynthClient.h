@@ -10,19 +10,18 @@ class SynthClient
     const int NODE_START_INDEX = 10000;
 
     int note_id = 0;
-    
+
     std::shared_ptr<OSCClient> oscClient;
-    
+    juce::MPEInstrument instrument;
+
 public:
 
-    SynthClient(int scsynth_port, int sclang_port)
+    SynthClient(int pitchbendRange = 48);
+    ~SynthClient() override;
+
+    void connect(int scsynth_port, int sclang_port)
     {
         oscClient = std::make_shared<OSCClient>(scsynth_port, sclang_port);
-    }
-    
-    virtual ~SynthClient()
-    {
-        oscClient.reset();
     }
 
     int getNextNodeID()
@@ -43,4 +42,14 @@ public:
     {
         return -1;
     }
+
+    void processMidiBuffer(const juce::MidiBuffer& midiMessages);
+
+    void noteAdded(juce::MPENote newNote) override;
+    void notePressureChanged(juce::MPENote changedNote) override;
+    void notePitchbendChanged(juce::MPENote changedNote) override;
+    void noteTimbreChanged(juce::MPENote changedNote) override;
+    void noteKeyStateChanged(juce::MPENote changedNote) override;
+    void noteReleased(juce::MPENote finishedNote) override;
+    void zoneLayoutChanged() override;
 };

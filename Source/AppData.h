@@ -11,8 +11,8 @@ struct AppData
     struct Parameter
     {
         std::string name;
-        float value_min, value_max;
-        float value;
+        float value_min = 0, value_max = 1;
+        float value = 0;
     };
     
     std::string synthdef_name = "Synth1";
