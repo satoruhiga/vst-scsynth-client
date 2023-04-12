@@ -30,7 +30,6 @@ public:
     void resized() override;
 
 private:
-    ScsynthclientAudioProcessor& audioProcessor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScsynthclientAudioProcessorEditor)
 };

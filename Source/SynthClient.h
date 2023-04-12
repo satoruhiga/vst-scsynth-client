@@ -35,8 +35,12 @@ public:
     }
 
     int sendSynthNew(int note, uint8_t velocity)
-    {}
+    {
+        return -1;
+    }
 
     int sendSynthFree(int note)
-    {}
+    {
+        return -1;
+    }
 };

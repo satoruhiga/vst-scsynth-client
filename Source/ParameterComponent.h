@@ -21,6 +21,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
+#include "PluginProcessor.h"
 //[/Headers]
 
 
@@ -37,13 +38,11 @@ class ParameterComponent  : public juce::Component
 {
 public:
     //==============================================================================
-    ParameterComponent ();
+    ParameterComponent (ScsynthclientAudioProcessor& processor, int index);
     ~ParameterComponent() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
-    void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -53,9 +52,9 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    std::string name;
-    float value_min, value_max;
-    float value;
+    ScsynthclientAudioProcessor& processor;
+    AppData& appData;
+    std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
     //[/UserVariables]
 
     //==============================================================================

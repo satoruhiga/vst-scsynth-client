@@ -11,16 +11,19 @@
 #include <JuceHeader.h>
 
 #include "SynthClient.h"
+#include "AppData.h"
 
 //==============================================================================
 /**
 */
-class ScsynthclientAudioProcessor  : public juce::AudioProcessor
-                            #if JucePlugin_Enable_ARA
-                             , public juce::AudioProcessorARAExtension
-                            #endif
+class ScsynthclientAudioProcessor
+    : public juce::AudioProcessor
+#if JucePlugin_Enable_ARA
+    , public juce::AudioProcessorARAExtension
+#endif
 {
 public:
+    AppData appData;
     juce::AudioProcessorValueTreeState valueTreeState;
     
     //==============================================================================

@@ -175,8 +175,10 @@ void ScsynthclientAudioProcessor::getStateInformation(juce::MemoryBlock& destDat
     auto state = valueTreeState.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
 
-    ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)getActiveEditor();
-    editor->mainComponent.getStateInformation(xml);
+    appData.getStateInformation(xml);
+
+    // ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
+    // editor->mainComponent.getStateInformation(xml);
 
     copyXmlToBinary(*xml, destData);
 }
@@ -189,9 +191,11 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
     if (xml->hasTagName(valueTreeState.state.getType()))
         valueTreeState.replaceState(juce::ValueTree::fromXml(*xml));
 
-    ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
-    if (editor)
-        editor->mainComponent.setStateInformation(xml);
+    appData.setStateInformation(xml);
+
+    // ScsynthclientAudioProcessorEditor* editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
+    // if (editor)
+    //     editor->mainComponent.setStateInformation(xml);
 }
 
 //==============================================================================
@@ -205,5 +209,4 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 void ScsynthclientAudioProcessor::onClientUpdated(int scsynth_port, int sclang_port)
 {
     synthClient = std::make_shared<SynthClient>(scsynth_port, sclang_port);
-    std::cout << scsynth_port << " " << sclang_port << std::endl;
 }

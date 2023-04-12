@@ -27,7 +27,9 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-MainComponent::MainComponent ()
+MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
+    : processor(processor),
+      appData(processor.appData)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -141,51 +143,43 @@ MainComponent::MainComponent ()
 
     juce__label5->setBounds (8, 72, 150, 24);
 
-    arg1.reset (new ParameterComponent());
+    arg1.reset (new ParameterComponent (processor, 0));
     addAndMakeVisible (arg1.get());
-    arg1->setName ("arg1");
 
     arg1->setBounds (8, 96, 584, 24);
 
-    arg2.reset (new ParameterComponent());
+    arg2.reset (new ParameterComponent (processor, 1));
     addAndMakeVisible (arg2.get());
-    arg2->setName ("arg2");
 
     arg2->setBounds (8, 128, 584, 24);
 
-    arg3.reset (new ParameterComponent());
+    arg3.reset (new ParameterComponent (processor, 2));
     addAndMakeVisible (arg3.get());
-    arg3->setName ("arg3");
 
     arg3->setBounds (8, 160, 584, 24);
 
-    arg4.reset (new ParameterComponent());
+    arg4.reset (new ParameterComponent (processor, 3));
     addAndMakeVisible (arg4.get());
-    arg4->setName ("arg4");
 
     arg4->setBounds (8, 192, 584, 24);
 
-    arg5.reset (new ParameterComponent());
+    arg5.reset (new ParameterComponent (processor, 4));
     addAndMakeVisible (arg5.get());
-    arg5->setName ("arg5");
 
     arg5->setBounds (8, 224, 584, 24);
 
-    arg6.reset (new ParameterComponent());
+    arg6.reset (new ParameterComponent (processor, 5));
     addAndMakeVisible (arg6.get());
-    arg6->setName ("arg6");
 
     arg6->setBounds (8, 256, 584, 24);
 
-    arg7.reset (new ParameterComponent());
+    arg7.reset (new ParameterComponent (processor, 6));
     addAndMakeVisible (arg7.get());
-    arg7->setName ("arg7");
 
     arg7->setBounds (8, 288, 584, 24);
 
-    arg8.reset (new ParameterComponent());
+    arg8.reset (new ParameterComponent (processor, 7));
     addAndMakeVisible (arg8.get());
-    arg8->setName ("arg8");
 
     arg8->setBounds (8, 320, 584, 24);
 
@@ -230,49 +224,51 @@ MainComponent::MainComponent ()
 
     setSize (600, 616);
 
+
     //[Constructor] You can add your own custom stuff here..
     text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
     text_synthdef_name->onReturnKey = [this] {
-        synthdef_name = text_synthdef_name->getText().toStdString();
+        appData.synthdef_name = text_synthdef_name->getText().toStdString();
     };
+    text_synthdef_name->setText(appData.synthdef_name);
 
     text_scsynth_port->setInputRestrictions(5, "01234567890");
     text_scsynth_port->onReturnKey = [this] {
         int port = text_scsynth_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
-            scsynth_port = port;
-            
-            if (onClientUpdated)
-                onClientUpdated(scsynth_port, sclang_port);
+            appData.scsynth_port = port;
         }
     };
+    text_scsynth_port->setText(juce::String(appData.scsynth_port));
 
     text_sclang_port->setInputRestrictions(5, "01234567890");
     text_sclang_port->onReturnKey = [this] {
         int port = text_sclang_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
-            sclang_port = port;
-            
-            if (onClientUpdated)
-                onClientUpdated(scsynth_port, sclang_port);
+            appData.sclang_port = port;
         }
     };
+    text_sclang_port->setText(juce::String(appData.sclang_port));
 
     btn_autorelease->onClick = [this] {
-        autorelease = btn_autorelease->getToggleState();
+        appData.autorelease = btn_autorelease->getToggleState();
     };
+    btn_autorelease->setToggleState(appData.autorelease, juce::dontSendNotification);
 
     btn_liveargs->onClick = [this] {
-        liveargs = btn_liveargs->getToggleState();
+        appData.liveargs = btn_liveargs->getToggleState();
     };
+    btn_liveargs->setToggleState(appData.liveargs, juce::dontSendNotification);
 
     btn_send_on_load->onClick = [this] {
-        send_on_load = btn_send_on_load->getToggleState();
+        appData.send_on_load = btn_send_on_load->getToggleState();
     };
+    btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
 
     text_code->onTextChange = [this] {
-        code = text_code->getText().toStdString();
+        appData.code = text_code->getText().toStdString();
     };
+    text_code->setText(appData.code);
     //[/Constructor]
 }
 
@@ -336,67 +332,9 @@ void MainComponent::resized()
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void MainComponent::updateClientID(int newid)
 {
-    client_id = newid;
-    label_client_id->setText("Client ID: " + juce::String(client_id), juce::dontSendNotification);
+    // appData.client_id = newid;
+    // label_client_id->setText("Client ID: " + juce::String(appData.client_id), juce::dontSendNotification);
 }
-
-void MainComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
-{
-    if (!xml)
-        return;
-    
-    xml->setAttribute("synthdef_name", synthdef_name);
-    xml->setAttribute("scsynth_port", scsynth_port);
-    xml->setAttribute("sclang_port", sclang_port);
-    xml->setAttribute("autorelease", autorelease);
-    xml->setAttribute("liveargs", liveargs);
-    xml->setAttribute("send_on_load", send_on_load);
-    xml->setAttribute("code", code);
-
-    arg1->getStateInformation(xml);
-    arg2->getStateInformation(xml);
-    arg3->getStateInformation(xml);
-    arg4->getStateInformation(xml);
-    arg5->getStateInformation(xml);
-    arg6->getStateInformation(xml);
-    arg7->getStateInformation(xml);
-    arg8->getStateInformation(xml);
-}
-
-void MainComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
-{
-    if (!xml)
-        return;
-    
-    synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
-    scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
-    sclang_port = xml->getIntAttribute("sclang_port", 57120);
-    autorelease = xml->getBoolAttribute("autorelease", true);
-    liveargs = xml->getBoolAttribute("liveargs", true);
-    send_on_load = xml->getBoolAttribute("send_on_load", true);
-    code = xml->getStringAttribute("code", "").toStdString();
-
-    text_synthdef_name->setText(synthdef_name);
-    text_scsynth_port->setText(juce::String(scsynth_port));
-    text_sclang_port->setText(juce::String(sclang_port));
-    btn_autorelease->setToggleState(autorelease, juce::sendNotification);
-    btn_liveargs->setToggleState(liveargs, juce::sendNotification);
-    btn_send_on_load->setToggleState(send_on_load, juce::sendNotification);
-    text_code->setText(code);
-
-    arg1->setStateInformation(xml);
-    arg2->setStateInformation(xml);
-    arg3->setStateInformation(xml);
-    arg4->setStateInformation(xml);
-    arg5->setStateInformation(xml);
-    arg6->setStateInformation(xml);
-    arg7->setStateInformation(xml);
-    arg8->setStateInformation(xml);
-    
-    if (onClientUpdated)
-        onClientUpdated(scsynth_port, sclang_port);
-}
-
 //[/MiscUserCode]
 
 
@@ -410,7 +348,8 @@ void MainComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
-                 parentClasses="public juce::Component" constructorParams="" variableInitialisers=""
+                 parentClasses="public juce::Component" constructorParams="ScsynthclientAudioProcessor&amp; processor"
+                 variableInitialisers="processor(processor)&#10;appData(processor.appData)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="616">
   <BACKGROUND backgroundColour="ff323e44">
@@ -462,30 +401,30 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="# Arguments" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="arg1" id="59f2633427c1cc23" memberName="arg1" virtualName=""
+  <GENERICCOMPONENT name="" id="59f2633427c1cc23" memberName="arg1" virtualName=""
                     explicitFocusOrder="0" pos="8 96 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg2" id="469df798ec63f356" memberName="arg2" virtualName=""
+                    params="processor, 0"/>
+  <GENERICCOMPONENT name="" id="469df798ec63f356" memberName="arg2" virtualName=""
                     explicitFocusOrder="0" pos="8 128 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg3" id="c9562bcceb5da19f" memberName="arg3" virtualName=""
+                    params="processor, 1"/>
+  <GENERICCOMPONENT name="" id="c9562bcceb5da19f" memberName="arg3" virtualName=""
                     explicitFocusOrder="0" pos="8 160 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg4" id="93f1a7fb66c16fe8" memberName="arg4" virtualName=""
+                    params="processor, 2"/>
+  <GENERICCOMPONENT name="" id="93f1a7fb66c16fe8" memberName="arg4" virtualName=""
                     explicitFocusOrder="0" pos="8 192 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg5" id="59433b16b0769023" memberName="arg5" virtualName=""
+                    params="processor, 3"/>
+  <GENERICCOMPONENT name="" id="59433b16b0769023" memberName="arg5" virtualName=""
                     explicitFocusOrder="0" pos="8 224 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg6" id="64933755da142ae4" memberName="arg6" virtualName=""
+                    params="processor, 4"/>
+  <GENERICCOMPONENT name="" id="64933755da142ae4" memberName="arg6" virtualName=""
                     explicitFocusOrder="0" pos="8 256 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg7" id="4ada125e95dc25e5" memberName="arg7" virtualName=""
+                    params="processor, 5"/>
+  <GENERICCOMPONENT name="" id="4ada125e95dc25e5" memberName="arg7" virtualName=""
                     explicitFocusOrder="0" pos="8 288 584 24" class="ParameterComponent"
-                    params=""/>
-  <GENERICCOMPONENT name="arg8" id="d64d023030bec916" memberName="arg8" virtualName=""
+                    params="processor, 6"/>
+  <GENERICCOMPONENT name="" id="d64d023030bec916" memberName="arg8" virtualName=""
                     explicitFocusOrder="0" pos="8 320 584 24" class="ParameterComponent"
-                    params=""/>
+                    params="processor, 7"/>
   <LABEL name="new label" id="cc1d0442324b20f8" memberName="juce__label6"
          virtualName="" explicitFocusOrder="0" pos="8 352 150 24" edTextCol="ff000000"
          edBkgCol="0" labelText="# Code" editableSingleClick="0" editableDoubleClick="0"

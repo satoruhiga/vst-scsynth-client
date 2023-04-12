@@ -11,12 +11,11 @@
 
 //==============================================================================
 ScsynthclientAudioProcessorEditor::ScsynthclientAudioProcessorEditor (ScsynthclientAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (p)
+    , mainComponent(p)
 {
     setSize (mainComponent.getWidth(), mainComponent.getHeight());
     addAndMakeVisible(mainComponent);
-    
-    mainComponent.setOnClientUpdated(std::bind(&ScsynthclientAudioProcessor::onClientUpdated, &p, std::placeholders::_1, std::placeholders::_2));
 }
 
 ScsynthclientAudioProcessorEditor::~ScsynthclientAudioProcessorEditor()

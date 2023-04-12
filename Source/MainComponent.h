@@ -21,7 +21,10 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
+
+#include "AppData.h"
 #include "ParameterComponent.h"
+#include "PluginProcessor.h"
 //[/Headers]
 
 
@@ -38,18 +41,12 @@ class MainComponent  : public juce::Component
 {
 public:
     //==============================================================================
-    MainComponent ();
+    MainComponent (ScsynthclientAudioProcessor& processor);
     ~MainComponent() override;
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void updateClientID(int newid);
-    void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
-    void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
-    
-    void setOnClientUpdated(std::function<void(int, int)> onClientUpdated) {
-        this->onClientUpdated = onClientUpdated;
-    }
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -59,18 +56,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    std::string synthdef_name = "Synth1";
-    int scsynth_port = 57110;
-    int sclang_port = 57120;
-    int client_id = -1;
-
-    bool autorelease;
-    bool liveargs;
-    bool send_on_load;
-
-    std::string code;
-    
-    std::function<void(int, int)> onClientUpdated;
+    ScsynthclientAudioProcessor& processor;
+    AppData& appData;
     //[/UserVariables]
 
     //==============================================================================

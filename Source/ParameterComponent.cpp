@@ -27,7 +27,9 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ParameterComponent::ParameterComponent ()
+ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, int index)
+    : processor(processor),
+      appData(processor.appData)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -84,41 +86,50 @@ ParameterComponent::ParameterComponent ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    auto& param = appData.params[index];
+    
     text_param_name->setInputRestrictions(32, "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    text_param_name->onTextChange = [this]()
+    text_param_name->onTextChange = [this, &param]()
     {
-        this->name = text_param_name->getText().toStdString();
+        param.name = text_param_name->getText().toStdString();
     };
+    text_param_name->setText(param.name);
 
     text_param_min->setInputRestrictions(10, "01234567890.-");
-    text_param_min->onTextChange = [this]()
+    text_param_min->onTextChange = [this, &param]()
     {
-        this->value_min = text_param_min->getText().getFloatValue();
+        param.value_min = text_param_min->getText().getFloatValue();
     };
+    text_param_min->setText(juce::String(param.value_min));
 
     text_param_max->setInputRestrictions(10, "01234567890.-");
-    text_param_max->onTextChange = [this]()
+    text_param_max->onTextChange = [this, &param]()
     {
-        this->value_max = text_param_max->getText().getFloatValue();
+        param.value_max = text_param_max->getText().getFloatValue();
     };
+    text_param_max->setText(juce::String(param.value_max));
 
-    slider_param_value->onValueChange = [this]()
+    slider_param_value->onValueChange = [this, &param]()
     {
-        this->value = slider_param_value->getValue();
+        param.value = slider_param_value->getValue();
     };
+    slider_param_value->setValue(param.value);
+
+    auto par_name = "arg" + juce::String(index + 1);
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.valueTreeState, par_name, *slider_param_value);
     //[/Constructor]
 }
 
 ParameterComponent::~ParameterComponent()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
+    attachment = nullptr;
     //[/Destructor_pre]
 
     text_param_name = nullptr;
     text_param_min = nullptr;
     text_param_max = nullptr;
     slider_param_value = nullptr;
-
 
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
@@ -148,29 +159,6 @@ void ParameterComponent::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-void ParameterComponent::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
-{
-    const auto n = getName();
-    xml->setAttribute(n + "_name", name);
-    xml->setAttribute(n + "_value_min", value_min);
-    xml->setAttribute(n + "_value_max", value_max);
-    xml->setAttribute(n + "_value", value);
-}
-
-void ParameterComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
-{
-    const auto n = getName();
-    name = xml->getStringAttribute(n + "_name", "").toStdString();
-    value_min = xml->getDoubleAttribute(n + "_value_min", 0);
-    value_max = xml->getDoubleAttribute(n + "_value_max", 1);
-    value = xml->getDoubleAttribute(n + "_value", 0);
-
-    text_param_name->setText(name, juce::sendNotification);
-    text_param_min->setText(juce::String(value_min), juce::sendNotification);
-    text_param_max->setText(juce::String(value_max), juce::sendNotification);
-    slider_param_value->setValue(value, juce::sendNotification);
-}
-
 //[/MiscUserCode]
 
 
@@ -184,7 +172,8 @@ void ParameterComponent::setStateInformation(std::unique_ptr<juce::XmlElement>& 
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ParameterComponent" componentName=""
-                 parentClasses="public juce::Component" constructorParams="" variableInitialisers=""
+                 parentClasses="public juce::Component" constructorParams="ScsynthclientAudioProcessor&amp; processor, int index"
+                 variableInitialisers="processor(processor)&#10;appData(processor.appData)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ff323e44">
