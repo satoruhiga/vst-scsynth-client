@@ -202,7 +202,11 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     text_code->setScrollbarsShown (true);
     text_code->setCaretVisible (true);
     text_code->setPopupMenuEnabled (true);
-    text_code->setText (juce::String());
+    text_code->setText (TRANS("SynthDef(\\Synth1, { | freq=440, amp=1, gate=1, pan=0 |\n"
+    "\tvar sig = SinOsc.ar(freq);\n"
+    "\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
+    "\tOut.ar(0, Pan2.ar(sig * env, pan, amp));\n"
+    "}).add;\n"));
 
     text_code->setBounds (8, 376, 584, 200);
 
@@ -217,6 +221,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     btn_send->setButtonText (TRANS("Send"));
 
     btn_send->setBounds (136, 584, 456, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -236,7 +241,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         int port = text_scsynth_port->getText().getIntValue();
         if (port > 0 && port < 65536) {
             appData.scsynth_port = port;
-            
+
             if (appData.onPortChanged)
                 appData.onPortChanged();
         }
@@ -274,7 +279,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         appData.code = text_code->getText().toStdString();
     };
     text_code->setText(appData.code);
-
+    
+    text_code->setFont(juce::Font(
+        juce::Font::getDefaultMonospacedFontName(),
+        16,
+        juce::Font::plain));
+    
     btn_send->onClick = [this] {
         if (appData.onSendCode)
             appData.onSendCode();
@@ -307,6 +317,17 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         if (appData.onSendCode)
             appData.onSendCode();
     }
+
+    appData.onClientIDUpdated = [this]()
+    {
+        label_client_id->setText(
+            "ClientID: " + juce::String(appData.client_id),
+            juce::dontSendNotification);
+    };
+
+    label_client_id->setText(
+        "ClientID: " + juce::String(appData.client_id),
+        juce::dontSendNotification);
     //[/Constructor]
 }
 
@@ -469,7 +490,7 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <TEXTEDITOR name="text_code" id="6278dc77606b7098" memberName="text_code"
-              virtualName="" explicitFocusOrder="0" pos="8 376 584 200" initialText=""
+              virtualName="" explicitFocusOrder="0" pos="8 376 584 200" initialText="SynthDef(\Synth1, { | freq=440, amp=1, gate=1, pan=0 |&#10;&#9;var sig = SinOsc.ar(freq);&#10;&#9;var env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);&#10;&#9;Out.ar(0, Pan2.ar(sig * env, pan, amp));&#10;}).add;&#10;"
               multiline="1" retKeyStartsLine="1" readonly="0" scrollbars="1"
               caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="btn_send_on_load" id="63638d04d75c5245" memberName="btn_send_on_load"

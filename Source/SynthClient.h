@@ -16,8 +16,6 @@ class SynthClient
     std::shared_ptr<OSCClient> oscClient;
     juce::MPEInstrument instrument;
     AppData& appData;
-
-    juce::OSCBundle bundle;
     
 public:
 
@@ -39,6 +37,7 @@ public:
     {
         int note_id = -1;
         float freq = 440;
+        float amp = 1;
         float release_time = 0;
     };
     void sendSynthNew(SynthNote& note);

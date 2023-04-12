@@ -33,6 +33,7 @@ struct AppData
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
 
+    std::function<void()> onClientIDUpdated;
     std::function<void()> onPortChanged;
     std::function<void()> onSendCode;
     std::function<void(bool)> onTestTone;

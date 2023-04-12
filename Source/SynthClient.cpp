@@ -7,6 +7,12 @@ SynthClient::SynthClient(AppData& appData)
     instrument.enableLegacyMode(appData.pitchbend_range);
 
     oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
+    if (oscClient->getClientID() != -1)
+    {
+        appData.client_id = oscClient->getClientID();
+        if (appData.onClientIDUpdated)
+            appData.onClientIDUpdated();
+    }
 
     appData.onSendCode = std::bind(&SynthClient::sendCode, this);
     appData.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
@@ -24,10 +30,46 @@ SynthClient::~SynthClient()
 
 void SynthClient::sendSynthNew(SynthNote& note)
 {
+    if (!oscClient) return;
+
+    note.note_id = getNextNodeID();
+
+    int add_action = 0;
+    int target_node_id = 1;
+
+    juce::OSCMessage message(
+        "/s_new",
+        juce::OSCArgument(appData.synthdef_name),
+        note.note_id, add_action, target_node_id,
+        juce::OSCArgument("freq"), juce::OSCArgument(note.freq),
+        juce::OSCArgument("amp"), juce::OSCArgument(note.amp)
+    );
+
+    for (auto& p : appData.params)
+    {
+        if (p.name.empty())
+            continue;
+
+        float v = p.value * (p.value_max - p.value_min) + p.value_min;
+        message.addArgument(juce::OSCArgument(p.name.c_str()));
+        message.addArgument(juce::OSCArgument(v));
+    }
+
+    oscClient->sendToSCSynth(message);
 }
 
 void SynthClient::sendSynthFree(SynthNote& note)
 {
+    if (!oscClient) return;;
+    if (!appData.autorelease) return;
+
+    float gate = -1 - note.release_time;
+    juce::OSCMessage message(
+        "/n_set", note.note_id,
+        juce::String("gate"), gate
+    );
+
+    oscClient->sendToSCSynth(message);
 }
 
 /////////////////////////////////////////////////
@@ -35,6 +77,8 @@ void SynthClient::sendSynthFree(SynthNote& note)
 void SynthClient::portChanged()
 {
     oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
+    if (appData.onClientIDUpdated)
+        appData.onClientIDUpdated();
 }
 
 void SynthClient::sendCode()
@@ -48,7 +92,12 @@ void SynthClient::sendCode()
 void SynthClient::sendTestTone(bool state)
 {
     if (!oscClient) return;
-    DBG("sendTestTone " << (int)state);
+
+    static SynthNote note;
+    if (state)
+        sendSynthNew(note);
+    else
+        sendSynthFree(note);
 }
 
 void SynthClient::argumentChanged(int index)
@@ -60,16 +109,9 @@ void SynthClient::argumentChanged(int index)
 
 void SynthClient::processMidiBuffer(const juce::MidiBuffer& midiMessages)
 {
-    bundle = juce::OSCBundle();
-    
     for (const auto& m : midiMessages)
     {
         instrument.processNextMidiEvent(m.getMessage());
-    }
-
-    if (!bundle.isEmpty() && oscClient)
-    {
-        oscClient->sendToSCSynth(bundle);
     }
 }
 
@@ -112,4 +154,3 @@ void SynthClient::noteReleased(juce::MPENote note)
 void SynthClient::zoneLayoutChanged()
 {
 }
- 

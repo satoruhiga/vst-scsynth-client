@@ -6,10 +6,10 @@ int OSCClient::requestClientID()
 {
     juce::OSCMessage message(juce::String("/notify"), 1);
     scsynthSender.send(message);
-
+    
     int cid = -1;
-
-    if (scsynthSocket.waitUntilReady(true, 3000))
+    
+    if (scsynthSocket.waitUntilReady(true, 1000))
     {
         static uint8_t data[4096];
         while (int num_read = scsynthSocket.read(data, 4096, false))
