@@ -34,7 +34,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    text_param_name.reset (new juce::TextEditor ("text_param_name"));
+    text_param_name.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_name.get());
     text_param_name->setMultiLine (false);
     text_param_name->setReturnKeyStartsNewLine (false);
@@ -46,7 +46,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_name->setBounds (0, 0, 128, 24);
 
-    text_param_min.reset (new juce::TextEditor ("text_param_min"));
+    text_param_min.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_min.get());
     text_param_min->setMultiLine (false);
     text_param_min->setReturnKeyStartsNewLine (false);
@@ -58,7 +58,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_min->setBounds (136, 0, 80, 24);
 
-    text_param_max.reset (new juce::TextEditor ("text_param_max"));
+    text_param_max.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_max.get());
     text_param_max->setMultiLine (false);
     text_param_max->setReturnKeyStartsNewLine (false);
@@ -70,7 +70,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_max->setBounds (224, 0, 80, 24);
 
-    slider_param_value.reset (new juce::Slider ("Slider"));
+    slider_param_value.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (slider_param_value.get());
     slider_param_value->setRange (0, 10, 0);
     slider_param_value->setSliderStyle (juce::Slider::LinearHorizontal);
@@ -87,7 +87,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     //[Constructor] You can add your own custom stuff here..
     auto& param = appData.params[index];
-    
+
     text_param_name->setInputRestrictions(32, "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
     text_param_name->onTextChange = [this, &param]()
     {
@@ -133,6 +133,7 @@ ParameterComponent::~ParameterComponent()
     text_param_min = nullptr;
     text_param_max = nullptr;
     slider_param_value = nullptr;
+
 
     //[Destructor]. You can add your own custom destruction code here..
     //[/Destructor]
@@ -182,19 +183,16 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="0 0 584 24" fill="solid: 8b2aa5" hasStroke="0"/>
   </BACKGROUND>
-  <TEXTEDITOR name="text_param_name" id="20aaa871892307fd" memberName="text_param_name"
-              virtualName="" explicitFocusOrder="0" pos="0 0 128 24" initialText=""
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
-  <TEXTEDITOR name="text_param_min" id="126fa62bc3ff7f3a" memberName="text_param_min"
-              virtualName="" explicitFocusOrder="0" pos="136 0 80 24" initialText="0.0"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
-  <TEXTEDITOR name="text_param_max" id="2e6b0906ac09253b" memberName="text_param_max"
-              virtualName="" explicitFocusOrder="0" pos="224 0 80 24" initialText="1.0"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
-  <SLIDER name="Slider" id="b4aeb0742a045c75" memberName="slider_param_value"
+  <TEXTEDITOR name="" id="20aaa871892307fd" memberName="text_param_name" virtualName=""
+              explicitFocusOrder="0" pos="0 0 128 24" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="" id="126fa62bc3ff7f3a" memberName="text_param_min" virtualName=""
+              explicitFocusOrder="0" pos="136 0 80 24" initialText="0.0" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <TEXTEDITOR name="" id="2e6b0906ac09253b" memberName="text_param_max" virtualName=""
+              explicitFocusOrder="0" pos="224 0 80 24" initialText="1.0" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+  <SLIDER name="" id="b4aeb0742a045c75" memberName="slider_param_value"
           virtualName="" explicitFocusOrder="0" pos="304 0 280 24" min="0.0"
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1.0"

@@ -38,4 +38,5 @@ struct AppData
     std::function<void()> onSendCode;
     std::function<void(bool)> onTestTone;
     std::function<void(int)> onArgumentChanged;
+    std::function<void(int)> onPitchbendRangeChanged;
 };

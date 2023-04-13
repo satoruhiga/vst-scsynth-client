@@ -19,6 +19,17 @@ class SynthClient
     
 public:
 
+    struct SynthNote
+    {
+        int note_id = -1;
+        float freq = 440;
+        float velocity = 1;
+        float pressure = 0.5;
+        float timbre = 0.5;
+        float note_off_velocity = 0;
+        float release_time = 0;
+    };
+
     SynthClient(AppData& appData);
     ~SynthClient() override;
 
@@ -33,14 +44,7 @@ public:
 
     /////////////////////////////////////////////////
 
-    struct SynthNote
-    {
-        int note_id = -1;
-        float freq = 440;
-        float amp = 1;
-        float release_time = 0;
-    };
-    void sendSynthNew(SynthNote& note);
+    int sendSynthNew(SynthNote& note);
     void sendSynthFree(SynthNote& note);
 
     /////////////////////////////////////////////////
@@ -61,4 +65,8 @@ public:
     void noteKeyStateChanged(juce::MPENote changedNote) override;
     void noteReleased(juce::MPENote finishedNote) override;
     void zoneLayoutChanged() override;
+    
+private:
+    
+    std::map<int, SynthNote> synthNotes;
 };

@@ -9,6 +9,7 @@ void AppData::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     xml->setAttribute("liveargs", liveargs);
     xml->setAttribute("send_on_load", send_on_load);
     xml->setAttribute("code", code);
+    xml->setAttribute("pitchbend_range", pitchbend_range);
     
     for (int i = 0; i < 8; i++)
     {
@@ -31,6 +32,7 @@ void AppData::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     liveargs = xml->getBoolAttribute("liveargs", true);
     send_on_load = xml->getBoolAttribute("send_on_load", true);
     code = xml->getStringAttribute("code", "").toStdString();
+    pitchbend_range = xml->getIntAttribute("pitchbend_range", 48);
 
     for (int i = 0; i < 8; i++)
     {

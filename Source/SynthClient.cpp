@@ -18,6 +18,9 @@ SynthClient::SynthClient(AppData& appData)
     appData.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
     appData.onPortChanged = std::bind(&SynthClient::portChanged, this);
     appData.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
+    appData.onPitchbendRangeChanged = [this](int v){
+        instrument.enableLegacyMode(v);
+    };
 }
 
 SynthClient::~SynthClient()
@@ -28,9 +31,9 @@ SynthClient::~SynthClient()
 
 /////////////////////////////////////////////////
 
-void SynthClient::sendSynthNew(SynthNote& note)
+int SynthClient::sendSynthNew(SynthNote& note)
 {
-    if (!oscClient) return;
+    if (!oscClient) return -1;
 
     note.note_id = getNextNodeID();
 
@@ -41,8 +44,10 @@ void SynthClient::sendSynthNew(SynthNote& note)
         "/s_new",
         juce::OSCArgument(appData.synthdef_name),
         note.note_id, add_action, target_node_id,
-        juce::OSCArgument("freq"), juce::OSCArgument(note.freq),
-        juce::OSCArgument("amp"), juce::OSCArgument(note.amp)
+        juce::String("freq"), note.freq,
+        juce::String("amp"), note.velocity,
+        juce::String("pressure"), note.pressure,
+        juce::String("timbre"), note.timbre
     );
 
     for (auto& p : appData.params)
@@ -56,6 +61,8 @@ void SynthClient::sendSynthNew(SynthNote& note)
     }
 
     oscClient->sendToSCSynth(message);
+    
+    return note.note_id;
 }
 
 void SynthClient::sendSynthFree(SynthNote& note)
@@ -66,7 +73,8 @@ void SynthClient::sendSynthFree(SynthNote& note)
     float gate = -1 - note.release_time;
     juce::OSCMessage message(
         "/n_set", note.note_id,
-        juce::String("gate"), gate
+        juce::String("gate"), gate,
+        juce::String("release_vel"), note.note_off_velocity
     );
 
     oscClient->sendToSCSynth(message);
@@ -119,25 +127,71 @@ void SynthClient::processMidiBuffer(const juce::MidiBuffer& midiMessages)
 
 void SynthClient::noteAdded(juce::MPENote note)
 {
-    // sendSynthNew(newNote.getNoteNumber(), newNote.getVelocity());
-    // DBG("noteAdded " << (int)note.noteID);
-
-    note.getFrequencyInHertz();
-}
-
-void SynthClient::notePressureChanged(juce::MPENote note)
-{
-    DBG("notePressureChanged " << (int)note.noteID);
+    SynthNote s;
+    s.freq = note.getFrequencyInHertz();
+    s.velocity = note.noteOnVelocity.asUnsignedFloat();
+    s.pressure = note.pressure.asUnsignedFloat();
+    s.timbre = note.timbre.asUnsignedFloat();
+    
+    int synth_id = sendSynthNew(s);
+    if (synth_id)
+    {
+        synthNotes[note.noteID] = s;
+    }
 }
 
 void SynthClient::notePitchbendChanged(juce::MPENote note)
 {
-    DBG("notePitchbendChanged " << (int)note.noteID);
+    auto it = synthNotes.find(note.noteID);
+    if (it == synthNotes.end())
+        return;
+    
+    SynthNote& s = it->second;
+    s.freq = note.getFrequencyInHertz();
+    
+    juce::OSCMessage message
+    (
+     "/n_set", s.note_id,
+     juce::String("freq"), s.freq
+    );
+    
+    oscClient->sendToSCSynth(message);
+}
+
+void SynthClient::notePressureChanged(juce::MPENote note)
+{
+    auto it = synthNotes.find(note.noteID);
+    if (it == synthNotes.end())
+        return;
+    
+    SynthNote& s = it->second;
+    s.pressure = note.pressure.asUnsignedFloat();
+    
+    juce::OSCMessage message
+    (
+     "/n_set", s.note_id,
+     juce::String("pressure"), s.pressure
+    );
+    
+    oscClient->sendToSCSynth(message);
 }
 
 void SynthClient::noteTimbreChanged(juce::MPENote note)
 {
-    DBG("noteTimbreChanged " << (int)note.noteID);
+    auto it = synthNotes.find(note.noteID);
+    if (it == synthNotes.end())
+        return;
+    
+    SynthNote& s = it->second;
+    s.timbre = note.timbre.asUnsignedFloat();
+    
+    juce::OSCMessage message
+    (
+     "/n_set", s.note_id,
+     juce::String("timbre"), s.timbre
+    );
+    
+    oscClient->sendToSCSynth(message);
 }
 
 void SynthClient::noteKeyStateChanged(juce::MPENote note)
@@ -147,8 +201,14 @@ void SynthClient::noteKeyStateChanged(juce::MPENote note)
 
 void SynthClient::noteReleased(juce::MPENote note)
 {
-    // sendSynthFree(finishedNote.getNoteNumber());
-    DBG("noteReleased " << (int)note.noteID);
+    auto it = synthNotes.find(note.noteID);
+    if (it == synthNotes.end())
+        return;
+    
+    SynthNote& s = it->second;
+    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat();
+    
+    sendSynthFree(s);
 }
 
 void SynthClient::zoneLayoutChanged()
