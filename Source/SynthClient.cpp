@@ -18,7 +18,8 @@ SynthClient::SynthClient(AppData& appData)
     appData.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
     appData.onPortChanged = std::bind(&SynthClient::portChanged, this);
     appData.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
-    appData.onPitchbendRangeChanged = [this](int v){
+    appData.onPitchbendRangeChanged = [this](int v)
+    {
         instrument.enableLegacyMode(v);
     };
 }
@@ -61,7 +62,7 @@ int SynthClient::sendSynthNew(SynthNote& note)
     }
 
     oscClient->sendToSCSynth(message);
-    
+
     return note.note_id;
 }
 
@@ -132,7 +133,7 @@ void SynthClient::noteAdded(juce::MPENote note)
     s.velocity = note.noteOnVelocity.asUnsignedFloat();
     s.pressure = note.pressure.asUnsignedFloat();
     s.timbre = note.timbre.asUnsignedFloat();
-    
+
     int synth_id = sendSynthNew(s);
     if (synth_id)
     {
@@ -145,16 +146,15 @@ void SynthClient::notePitchbendChanged(juce::MPENote note)
     auto it = synthNotes.find(note.noteID);
     if (it == synthNotes.end())
         return;
-    
+
     SynthNote& s = it->second;
     s.freq = note.getFrequencyInHertz();
-    
-    juce::OSCMessage message
-    (
-     "/n_set", s.note_id,
-     juce::String("freq"), s.freq
+
+    juce::OSCMessage message(
+        "/n_set", s.note_id,
+        juce::String("freq"), s.freq
     );
-    
+
     oscClient->sendToSCSynth(message);
 }
 
@@ -163,16 +163,15 @@ void SynthClient::notePressureChanged(juce::MPENote note)
     auto it = synthNotes.find(note.noteID);
     if (it == synthNotes.end())
         return;
-    
+
     SynthNote& s = it->second;
     s.pressure = note.pressure.asUnsignedFloat();
-    
-    juce::OSCMessage message
-    (
-     "/n_set", s.note_id,
-     juce::String("pressure"), s.pressure
+
+    juce::OSCMessage message(
+        "/n_set", s.note_id,
+        juce::String("pressure"), s.pressure
     );
-    
+
     oscClient->sendToSCSynth(message);
 }
 
@@ -181,16 +180,15 @@ void SynthClient::noteTimbreChanged(juce::MPENote note)
     auto it = synthNotes.find(note.noteID);
     if (it == synthNotes.end())
         return;
-    
+
     SynthNote& s = it->second;
     s.timbre = note.timbre.asUnsignedFloat();
-    
-    juce::OSCMessage message
-    (
-     "/n_set", s.note_id,
-     juce::String("timbre"), s.timbre
+
+    juce::OSCMessage message(
+        "/n_set", s.note_id,
+        juce::String("timbre"), s.timbre
     );
-    
+
     oscClient->sendToSCSynth(message);
 }
 
@@ -204,10 +202,10 @@ void SynthClient::noteReleased(juce::MPENote note)
     auto it = synthNotes.find(note.noteID);
     if (it == synthNotes.end())
         return;
-    
+
     SynthNote& s = it->second;
     s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat();
-    
+
     sendSynthFree(s);
 }
 

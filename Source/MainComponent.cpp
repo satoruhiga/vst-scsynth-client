@@ -206,22 +206,6 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     btn_send->setBounds (136, 584, 456, 24);
 
-    text_code.reset (new juce::TextEditor (juce::String()));
-    addAndMakeVisible (text_code.get());
-    text_code->setMultiLine (true);
-    text_code->setReturnKeyStartsNewLine (true);
-    text_code->setReadOnly (false);
-    text_code->setScrollbarsShown (true);
-    text_code->setCaretVisible (true);
-    text_code->setPopupMenuEnabled (true);
-    text_code->setText (TRANS("SynthDef(\\Synth1, { | freq=440, amp=1, gate=1, pressure=0.5, timbre=0.5, release_vel=0 |\n"
-    "\tvar sig = SinOsc.ar(freq);\n"
-    "\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
-    "\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
-    "}).add;\n"));
-
-    text_code->setBounds (0, 376, 584, 200);
-
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("Pitchbend Range:")));
     addAndMakeVisible (juce__label4.get());
@@ -244,6 +228,11 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     text_pitchbend_range->setText (TRANS("48"));
 
     text_pitchbend_range->setBounds (560, 40, 32, 24);
+
+    text_code.reset (new CodeEditor());
+    addAndMakeVisible (text_code.get());
+
+    text_code->setBounds (8, 376, 584, 200);
 
 
     //[UserPreSize]
@@ -310,21 +299,25 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         appData.send_on_load = btn_send_on_load->getToggleState();
     };
     btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
-
-    text_code->setFont(juce::Font(
-        juce::Font::getDefaultMonospacedFontName(),
-        16,
-        juce::Font::plain));
-
-    text_code->onTextChange = [this] {
-        appData.code = text_code->getText().toStdString();
+    
+    text_code->onDocumentChanged = [this] {
+        appData.code = text_code->getText();
     };
+    
     text_code->setText(appData.code);
-    text_code->setTabKeyUsedAsCharacter(true);
+    text_code->onCtrlEnter = [this]
+    {
+        if (appData.onSendCode)
+            appData.onSendCode();
+        
+        // appData.code = text_code->getText();
+    };
 
     btn_send->onClick = [this] {
         if (appData.onSendCode)
             appData.onSendCode();
+
+        // appData.code = text_code->getText();
     };
 
     btn_testtone->onStateChange = [this] {
@@ -395,9 +388,9 @@ MainComponent::~MainComponent()
     juce__label6 = nullptr;
     btn_send_on_load = nullptr;
     btn_send = nullptr;
-    text_code = nullptr;
     juce__label4 = nullptr;
     text_pitchbend_range = nullptr;
+    text_code = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -534,10 +527,6 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
               explicitFocusOrder="0" pos="136 584 456 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
-  <TEXTEDITOR name="" id="29c2a1030b1c7831" memberName="text_code" virtualName=""
-              explicitFocusOrder="0" pos="0 376 584 200" initialText="SynthDef(\Synth1, { | freq=440, amp=1, gate=1, pressure=0.5, timbre=0.5, release_vel=0 |&#10;&#9;var sig = SinOsc.ar(freq);&#10;&#9;var env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);&#10;&#9;Out.ar(0, Pan2.ar(sig * env, 0.5, amp));&#10;}).add;&#10;"
-              multiline="1" retKeyStartsLine="1" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
          explicitFocusOrder="0" pos="440 40 120 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Pitchbend Range:" editableSingleClick="0"
@@ -547,6 +536,9 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="560 40 32 24" initialText="48"
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
               caret="1" popupmenu="1"/>
+  <GENERICCOMPONENT name="" id="78d3c9f532f57857" memberName="text_code" virtualName=""
+                    explicitFocusOrder="0" pos="8 376 584 200" class="CodeEditor"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

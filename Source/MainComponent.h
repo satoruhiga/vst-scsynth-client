@@ -25,6 +25,7 @@
 #include "AppData.h"
 #include "ParameterComponent.h"
 #include "PluginProcessor.h"
+#include "CodeEditor.h"
 //[/Headers]
 
 
@@ -83,9 +84,9 @@ private:
     std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::ToggleButton> btn_send_on_load;
     std::unique_ptr<juce::TextButton> btn_send;
-    std::unique_ptr<juce::TextEditor> text_code;
     std::unique_ptr<juce::Label> juce__label4;
     std::unique_ptr<juce::TextEditor> text_pitchbend_range;
+    std::unique_ptr<CodeEditor> text_code;
 
 
     //==============================================================================

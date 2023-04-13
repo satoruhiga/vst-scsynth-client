@@ -10,7 +10,7 @@ class OSCClient
     juce::OSCSender scsynthSender;
     juce::OSCSender sclangSender;
 
-    int client_id = -1;
+    int clientID = -1;
 
     int requestClientID();
     
@@ -24,7 +24,7 @@ public:
         scsynthSender.connectToSocket(scsynthSocket, targetHost, scsynth_port);
         sclangSender.connect(targetHost, sclang_port);
 
-        client_id = requestClientID();
+        clientID = requestClientID();
     }
     
     virtual ~OSCClient()
@@ -32,7 +32,6 @@ public:
         {
             juce::OSCMessage message(juce::String("/notify"), 0);
             scsynthSender.send(message);
-//            scsynthSocket.waitUntilReady(true, 100);
         }
 
         sclangSender.disconnect();
@@ -40,7 +39,7 @@ public:
         scsynthSocket.shutdown();
     }
 
-    int getClientID() const { return client_id; }
+    int getClientID() const { return clientID; }
     
     void sendToSCSynth(juce::OSCMessage& message)
     {
