@@ -88,6 +88,7 @@ private:
     std::unique_ptr<juce::Label> juce__label4;
     std::unique_ptr<juce::TextEditor> text_pitchbend_range;
     std::unique_ptr<CodeEditor> text_code;
+    std::unique_ptr<juce::ComboBox> combo_presets;
 
 
     //==============================================================================

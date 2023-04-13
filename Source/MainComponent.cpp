@@ -198,13 +198,13 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     addAndMakeVisible (btn_send_on_load.get());
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
 
-    btn_send_on_load->setBounds (8, 584, 112, 24);
+    btn_send_on_load->setBounds (312, 584, 112, 24);
 
     btn_send.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
 
-    btn_send->setBounds (136, 584, 456, 24);
+    btn_send->setBounds (440, 584, 152, 24);
 
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("Pitchbend Range:")));
@@ -234,6 +234,11 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     text_code->setBounds (8, 376, 584, 200);
 
+    combo_presets.reset (new juce::ComboBox());
+    addAndMakeVisible (combo_presets.get());
+
+    combo_presets->setBounds (8, 584, 150, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -242,12 +247,15 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
 
     //[Constructor] You can add your own custom stuff here..
+
+    // Synthdef name
     text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
-    text_synthdef_name->onReturnKey = [this] {
+    text_synthdef_name->onTextChange = [this] {
         appData.synthdef_name = text_synthdef_name->getText().toStdString();
     };
     text_synthdef_name->setText(appData.synthdef_name);
 
+    // Ports
     text_scsynth_port->setInputRestrictions(5, "01234567890");
     text_scsynth_port->onReturnKey = [this] {
         int port = text_scsynth_port->getText().getIntValue();
@@ -258,6 +266,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
                 appData.onPortChanged();
         }
     };
+    text_scsynth_port->onFocusLost = text_scsynth_port->onReturnKey;
     text_scsynth_port->setText(juce::String(appData.scsynth_port));
 
     text_sclang_port->setInputRestrictions(5, "01234567890");
@@ -270,8 +279,10 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
                 appData.onPortChanged();
         }
     };
+    text_sclang_port->onFocusLost = text_sclang_port->onReturnKey;
     text_sclang_port->setText(juce::String(appData.sclang_port));
 
+    // Pitchbend range
     text_pitchbend_range->setInputRestrictions(2, "01234567890");
     text_pitchbend_range->onReturnKey = [this] {
         int v = text_pitchbend_range->getText().getIntValue();
@@ -285,25 +296,23 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     };
     text_pitchbend_range->setText(juce::String(appData.pitchbend_range));
 
+    // Autorelease
     btn_autorelease->onClick = [this] {
         appData.autorelease = btn_autorelease->getToggleState();
     };
     btn_autorelease->setToggleState(appData.autorelease, juce::dontSendNotification);
 
+    // Live args
     btn_liveargs->onClick = [this] {
         appData.liveargs = btn_liveargs->getToggleState();
     };
     btn_liveargs->setToggleState(appData.liveargs, juce::dontSendNotification);
 
-    btn_send_on_load->onClick = [this] {
-        appData.send_on_load = btn_send_on_load->getToggleState();
-    };
-    btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
-    
+    // Code editor
     text_code->onDocumentChanged = [this] {
         appData.code = text_code->getText();
     };
-    
+
     text_code->setText(appData.code);
     text_code->onCtrlEnter = [this]
     {
@@ -311,11 +320,25 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             appData.onSendCode();
     };
 
+    // Send button
     btn_send->onClick = [this] {
         if (appData.onSendCode)
             appData.onSendCode();
     };
+    
+    // Send on load
+    btn_send_on_load->onClick = [this] {
+        appData.send_on_load = btn_send_on_load->getToggleState();
+    };
+    btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
 
+    if (appData.send_on_load)
+    {
+        if (appData.onSendCode)
+            appData.onSendCode();
+    }
+    
+    // Test tone
     btn_testtone->onStateChange = [this] {
         bool s = btn_testtone->getState() == 2;
         static bool ss = s;
@@ -338,12 +361,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         }
     };
 
-    if (appData.send_on_load)
-    {
-        if (appData.onSendCode)
-            appData.onSendCode();
-    }
-
+    // Client ID
     appData.onClientIDUpdated = [this]()
     {
         label_client_id->setText(
@@ -354,6 +372,45 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     label_client_id->setText(
         "ClientID: " + juce::String(appData.client_id),
         juce::dontSendNotification);
+
+    // Preset Combo box
+    combo_presets->addItem("Empty", 1);
+    combo_presets->addItem("Simple", 2);
+    combo_presets->addItem("MPE", 3);
+
+    combo_presets->onChange = [this]
+    {
+        auto index = combo_presets->getSelectedItemIndex();
+        juce::String code;
+        
+        if (index == 0)
+        {
+            code = "";
+        }
+        else if (index == 1)
+        {
+            code = "SynthDef(\\{SYNTHNAME}, {| freq=440, amp=1, gate=1 |\n"
+"\tvar sig = SinOsc.ar(freq);\n"
+"\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
+"\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
+"}).add;\n";
+            
+        }
+        else if (index == 2)
+        {
+            code = "SynthDef(\\{SYNTHNAME}, {| freq=440, amp=1, gate=1, pressure=0.5, timbre=0.5, release_vel=0 |\n"
+"\tvar sig = SinOsc.ar(freq);\n"
+"\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
+"\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
+"}).add;\n";
+        }
+
+        code = code.replace("{SYNTHNAME}", appData.synthdef_name);
+        
+        appData.code = code.toStdString();
+        text_code->setText(code.toStdString());
+    };
+    
     //[/Constructor]
 }
 
@@ -387,6 +444,7 @@ MainComponent::~MainComponent()
     juce__label4 = nullptr;
     text_pitchbend_range = nullptr;
     text_code = nullptr;
+    combo_presets = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -540,10 +598,10 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="" id="63638d04d75c5245" memberName="btn_send_on_load" virtualName=""
-                explicitFocusOrder="0" pos="8 584 112 24" buttonText="Send on Load"
+                explicitFocusOrder="0" pos="312 584 112 24" buttonText="Send on Load"
                 connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
-              explicitFocusOrder="0" pos="136 584 456 24" buttonText="Send"
+              explicitFocusOrder="0" pos="440 584 152 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
          explicitFocusOrder="0" pos="440 40 120 24" edTextCol="ff000000"
@@ -556,6 +614,9 @@ BEGIN_JUCER_METADATA
               caret="1" popupmenu="1"/>
   <GENERICCOMPONENT name="" id="78d3c9f532f57857" memberName="text_code" virtualName=""
                     explicitFocusOrder="0" pos="8 376 584 200" class="CodeEditor"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="661e682533365b59" memberName="combo_presets" virtualName=""
+                    explicitFocusOrder="0" pos="8 584 150 24" class="juce::ComboBox"
                     params=""/>
 </JUCER_COMPONENT>
 
