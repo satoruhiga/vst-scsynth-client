@@ -80,6 +80,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
 
     //[UserPreSize]
+    this->index = index;
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -163,6 +164,14 @@ void ParameterComponent::resized()
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void ParameterComponent::loadFromAppData()
+{
+    auto& param = appData.params[index];
+    text_param_name->setText(param.name);
+    text_param_min->setText(juce::String(param.value_min));
+    text_param_max->setText(juce::String(param.value_max));
+    slider_param_value->setValue(param.value);
+}
 //[/MiscUserCode]
 
 

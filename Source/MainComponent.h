@@ -48,6 +48,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void updateClientID(int newid);
+    void loadFromAppData();
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;

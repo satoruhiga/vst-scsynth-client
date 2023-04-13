@@ -112,6 +112,24 @@ void SynthClient::sendTestTone(bool state)
 void SynthClient::argumentChanged(int index)
 {
     if (!oscClient) return;
+    if (!appData.liveargs) return;
+
+    for (auto n : synthNotes)
+    {
+        SynthNote& note = n.second;
+        if (note.note_id == -1)
+            continue;
+
+        auto& p = appData.params[index];
+        float v = p.value * (p.value_max - p.value_min) + p.value_min;
+
+        juce::OSCMessage message(
+            "/n_set", note.note_id,
+            juce::String(p.name.c_str()), v
+        );
+
+        oscClient->sendToSCSynth(message);
+    }
 }
 
 /////////////////////////////////////////////////
@@ -207,6 +225,8 @@ void SynthClient::noteReleased(juce::MPENote note)
     s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat();
 
     sendSynthFree(s);
+
+    synthNotes.erase(it);
 }
 
 void SynthClient::zoneLayoutChanged()

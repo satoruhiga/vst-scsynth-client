@@ -21,6 +21,11 @@ class ScsynthclientAudioProcessorEditor  : public juce::AudioProcessorEditor
 public:
     
     MainComponent mainComponent;
+
+    void loadFromAppData()
+    {
+        mainComponent.loadFromAppData();
+    }
     
     ScsynthclientAudioProcessorEditor (ScsynthclientAudioProcessor&);
     ~ScsynthclientAudioProcessorEditor() override;

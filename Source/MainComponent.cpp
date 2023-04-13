@@ -309,15 +309,11 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     {
         if (appData.onSendCode)
             appData.onSendCode();
-        
-        // appData.code = text_code->getText();
     };
 
     btn_send->onClick = [this] {
         if (appData.onSendCode)
             appData.onSendCode();
-
-        // appData.code = text_code->getText();
     };
 
     btn_testtone->onStateChange = [this] {
@@ -426,6 +422,28 @@ void MainComponent::updateClientID(int newid)
     // appData.client_id = newid;
     // label_client_id->setText("Client ID: " + juce::String(appData.client_id), juce::dontSendNotification);
 }
+
+void MainComponent::loadFromAppData()
+{
+    text_synthdef_name->setText(appData.synthdef_name);
+    text_scsynth_port->setText(juce::String(appData.scsynth_port));
+    text_sclang_port->setText(juce::String(appData.sclang_port));
+    text_pitchbend_range->setText(juce::String(appData.pitchbend_range));
+    btn_autorelease->setToggleState(appData.autorelease, juce::dontSendNotification);
+    btn_liveargs->setToggleState(appData.liveargs, juce::dontSendNotification);
+    btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
+    text_code->setText(appData.code);
+
+    arg1->loadFromAppData();
+    arg2->loadFromAppData();
+    arg3->loadFromAppData();
+    arg4->loadFromAppData();
+    arg5->loadFromAppData();
+    arg6->loadFromAppData();
+    arg7->loadFromAppData();
+    arg8->loadFromAppData();
+}
+
 //[/MiscUserCode]
 
 

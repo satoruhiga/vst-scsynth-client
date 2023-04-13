@@ -43,6 +43,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void loadFromAppData();
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -55,6 +56,7 @@ private:
     ScsynthclientAudioProcessor& processor;
     AppData& appData;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
+    int index;
     //[/UserVariables]
 
     //==============================================================================
