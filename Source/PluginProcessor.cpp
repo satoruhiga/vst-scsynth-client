@@ -103,14 +103,13 @@ void ScsynthclientAudioProcessor::changeProgramName(int index, const juce::Strin
 //==============================================================================
 void ScsynthclientAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
+    editor->loadFromAppData();
+
 }
 
 void ScsynthclientAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -160,10 +159,6 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
 
     if (!synthClient)
         synthClient = std::make_unique<SynthClient>(appData);
-
-//    auto editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
-//    if (editor)
-//        editor->loadFromAppData();
 }
 
 //==============================================================================

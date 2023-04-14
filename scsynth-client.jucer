@@ -33,6 +33,10 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="NX5PWQ" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <GROUP id="{B0561B4D-D6C7-3848-BCCB-1788909AB787}" name="Presets">
+      <FILE id="MuWP11" name="_Simple.scd" compile="0" resource="1" file="Presets/_Simple.scd"/>
+      <FILE id="EzQBsx" name="_MPE.scd" compile="0" resource="1" file="Presets/_MPE.scd"/>
+    </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

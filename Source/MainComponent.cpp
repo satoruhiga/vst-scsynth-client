@@ -22,394 +22,422 @@
 
 #include "MainComponent.h"
 
+#include "BinaryData.h"
+
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
 //==============================================================================
-MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
+MainComponent::MainComponent(ScsynthclientAudioProcessor& processor)
     : processor(processor),
       appData(processor.appData)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    btn_autorelease.reset (new juce::ToggleButton (juce::String()));
-    addAndMakeVisible (btn_autorelease.get());
-    btn_autorelease->setButtonText (TRANS("Autorelease"));
+    btn_autorelease.reset(new juce::ToggleButton(juce::String()));
+    addAndMakeVisible(btn_autorelease.get());
+    btn_autorelease->setButtonText(TRANS("Autorelease"));
 
-    btn_autorelease->setBounds (120, 40, 112, 24);
+    btn_autorelease->setBounds(120, 40, 112, 24);
 
-    btn_testtone.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (btn_testtone.get());
-    btn_testtone->setButtonText (TRANS("Test Tone"));
+    btn_testtone.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(btn_testtone.get());
+    btn_testtone->setButtonText(TRANS("Test Tone"));
 
-    btn_testtone->setBounds (8, 40, 96, 24);
+    btn_testtone->setBounds(8, 40, 96, 24);
 
-    text_synthdef_name.reset (new juce::TextEditor (juce::String()));
-    addAndMakeVisible (text_synthdef_name.get());
-    text_synthdef_name->setMultiLine (false);
-    text_synthdef_name->setReturnKeyStartsNewLine (false);
-    text_synthdef_name->setReadOnly (false);
-    text_synthdef_name->setScrollbarsShown (true);
-    text_synthdef_name->setCaretVisible (true);
-    text_synthdef_name->setPopupMenuEnabled (true);
-    text_synthdef_name->setText (TRANS("Synth1"));
+    text_synthdef_name.reset(new juce::TextEditor(juce::String()));
+    addAndMakeVisible(text_synthdef_name.get());
+    text_synthdef_name->setMultiLine(false);
+    text_synthdef_name->setReturnKeyStartsNewLine(false);
+    text_synthdef_name->setReadOnly(false);
+    text_synthdef_name->setScrollbarsShown(true);
+    text_synthdef_name->setCaretVisible(true);
+    text_synthdef_name->setPopupMenuEnabled(true);
+    text_synthdef_name->setText(TRANS("Synth1"));
 
-    text_synthdef_name->setBounds (80, 8, 120, 24);
+    text_synthdef_name->setBounds(80, 8, 120, 24);
 
-    juce__label.reset (new juce::Label (juce::String(),
-                                        TRANS("SynthDef:")));
-    addAndMakeVisible (juce__label.get());
-    juce__label->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label->setJustificationType (juce::Justification::centredLeft);
-    juce__label->setEditable (false, false, false);
-    juce__label->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label.reset(new juce::Label(juce::String(),
+                                      TRANS("SynthDef:")));
+    addAndMakeVisible(juce__label.get());
+    juce__label->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label->setJustificationType(juce::Justification::centredLeft);
+    juce__label->setEditable(false, false, false);
+    juce__label->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label->setBounds (8, 8, 72, 24);
+    juce__label->setBounds(8, 8, 72, 24);
 
-    juce__label2.reset (new juce::Label (juce::String(),
-                                         TRANS("scsynth:")));
-    addAndMakeVisible (juce__label2.get());
-    juce__label2->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label2->setJustificationType (juce::Justification::centredLeft);
-    juce__label2->setEditable (false, false, false);
-    juce__label2->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label2->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label2.reset(new juce::Label(juce::String(),
+                                       TRANS("scsynth:")));
+    addAndMakeVisible(juce__label2.get());
+    juce__label2->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label2->setJustificationType(juce::Justification::centredLeft);
+    juce__label2->setEditable(false, false, false);
+    juce__label2->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label2->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label2->setBounds (208, 8, 63, 24);
+    juce__label2->setBounds(208, 8, 63, 24);
 
-    text_scsynth_port.reset (new juce::TextEditor (juce::String()));
-    addAndMakeVisible (text_scsynth_port.get());
-    text_scsynth_port->setMultiLine (false);
-    text_scsynth_port->setReturnKeyStartsNewLine (false);
-    text_scsynth_port->setReadOnly (false);
-    text_scsynth_port->setScrollbarsShown (false);
-    text_scsynth_port->setCaretVisible (true);
-    text_scsynth_port->setPopupMenuEnabled (true);
-    text_scsynth_port->setText (TRANS("57110"));
+    text_scsynth_port.reset(new juce::TextEditor(juce::String()));
+    addAndMakeVisible(text_scsynth_port.get());
+    text_scsynth_port->setMultiLine(false);
+    text_scsynth_port->setReturnKeyStartsNewLine(false);
+    text_scsynth_port->setReadOnly(false);
+    text_scsynth_port->setScrollbarsShown(false);
+    text_scsynth_port->setCaretVisible(true);
+    text_scsynth_port->setPopupMenuEnabled(true);
+    text_scsynth_port->setText(TRANS("57110"));
 
-    text_scsynth_port->setBounds (272, 8, 48, 24);
+    text_scsynth_port->setBounds(272, 8, 48, 24);
 
-    juce__label3.reset (new juce::Label (juce::String(),
-                                         TRANS("sclang:")));
-    addAndMakeVisible (juce__label3.get());
-    juce__label3->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label3->setJustificationType (juce::Justification::centredLeft);
-    juce__label3->setEditable (false, false, false);
-    juce__label3->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label3->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label3.reset(new juce::Label(juce::String(),
+                                       TRANS("sclang:")));
+    addAndMakeVisible(juce__label3.get());
+    juce__label3->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label3->setJustificationType(juce::Justification::centredLeft);
+    juce__label3->setEditable(false, false, false);
+    juce__label3->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label3->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label3->setBounds (328, 8, 56, 24);
+    juce__label3->setBounds(328, 8, 56, 24);
 
-    text_sclang_port.reset (new juce::TextEditor (juce::String()));
-    addAndMakeVisible (text_sclang_port.get());
-    text_sclang_port->setMultiLine (false);
-    text_sclang_port->setReturnKeyStartsNewLine (false);
-    text_sclang_port->setReadOnly (false);
-    text_sclang_port->setScrollbarsShown (false);
-    text_sclang_port->setCaretVisible (true);
-    text_sclang_port->setPopupMenuEnabled (true);
-    text_sclang_port->setText (TRANS("57120"));
+    text_sclang_port.reset(new juce::TextEditor(juce::String()));
+    addAndMakeVisible(text_sclang_port.get());
+    text_sclang_port->setMultiLine(false);
+    text_sclang_port->setReturnKeyStartsNewLine(false);
+    text_sclang_port->setReadOnly(false);
+    text_sclang_port->setScrollbarsShown(false);
+    text_sclang_port->setCaretVisible(true);
+    text_sclang_port->setPopupMenuEnabled(true);
+    text_sclang_port->setText(TRANS("57120"));
 
-    text_sclang_port->setBounds (384, 8, 48, 24);
+    text_sclang_port->setBounds(384, 8, 48, 24);
 
-    btn_liveargs.reset (new juce::ToggleButton ("btn_liveargs"));
-    addAndMakeVisible (btn_liveargs.get());
-    btn_liveargs->setButtonText (TRANS("Live Args"));
+    btn_liveargs.reset(new juce::ToggleButton("btn_liveargs"));
+    addAndMakeVisible(btn_liveargs.get());
+    btn_liveargs->setButtonText(TRANS("Live Args"));
 
-    btn_liveargs->setBounds (232, 40, 88, 24);
+    btn_liveargs->setBounds(232, 40, 88, 24);
 
-    label_client_id.reset (new juce::Label (juce::String(),
-                                            TRANS("ClientID: -1")));
-    addAndMakeVisible (label_client_id.get());
-    label_client_id->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    label_client_id->setJustificationType (juce::Justification::centredLeft);
-    label_client_id->setEditable (false, false, false);
-    label_client_id->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_client_id->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    label_client_id.reset(new juce::Label(juce::String(),
+                                          TRANS("ClientID: -1")));
+    addAndMakeVisible(label_client_id.get());
+    label_client_id->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    label_client_id->setJustificationType(juce::Justification::centredLeft);
+    label_client_id->setEditable(false, false, false);
+    label_client_id->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    label_client_id->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    label_client_id->setBounds (504, 8, 88, 24);
+    label_client_id->setBounds(504, 8, 88, 24);
 
-    juce__label5.reset (new juce::Label ("new label",
-                                         TRANS("# Arguments")));
-    addAndMakeVisible (juce__label5.get());
-    juce__label5->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label5->setJustificationType (juce::Justification::centredLeft);
-    juce__label5->setEditable (false, false, false);
-    juce__label5->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label5->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label5.reset(new juce::Label("new label",
+                                       TRANS("# Arguments")));
+    addAndMakeVisible(juce__label5.get());
+    juce__label5->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label5->setJustificationType(juce::Justification::centredLeft);
+    juce__label5->setEditable(false, false, false);
+    juce__label5->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label5->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label5->setBounds (8, 72, 150, 24);
+    juce__label5->setBounds(8, 72, 150, 24);
 
-    arg1.reset (new ParameterComponent (processor, 0));
-    addAndMakeVisible (arg1.get());
+    arg1.reset(new ParameterComponent(processor, 0));
+    addAndMakeVisible(arg1.get());
 
-    arg1->setBounds (8, 96, 584, 24);
+    arg1->setBounds(8, 96, 584, 24);
 
-    arg2.reset (new ParameterComponent (processor, 1));
-    addAndMakeVisible (arg2.get());
+    arg2.reset(new ParameterComponent(processor, 1));
+    addAndMakeVisible(arg2.get());
 
-    arg2->setBounds (8, 128, 584, 24);
+    arg2->setBounds(8, 128, 584, 24);
 
-    arg3.reset (new ParameterComponent (processor, 2));
-    addAndMakeVisible (arg3.get());
+    arg3.reset(new ParameterComponent(processor, 2));
+    addAndMakeVisible(arg3.get());
 
-    arg3->setBounds (8, 160, 584, 24);
+    arg3->setBounds(8, 160, 584, 24);
 
-    arg4.reset (new ParameterComponent (processor, 3));
-    addAndMakeVisible (arg4.get());
+    arg4.reset(new ParameterComponent(processor, 3));
+    addAndMakeVisible(arg4.get());
 
-    arg4->setBounds (8, 192, 584, 24);
+    arg4->setBounds(8, 192, 584, 24);
 
-    arg5.reset (new ParameterComponent (processor, 4));
-    addAndMakeVisible (arg5.get());
+    arg5.reset(new ParameterComponent(processor, 4));
+    addAndMakeVisible(arg5.get());
 
-    arg5->setBounds (8, 224, 584, 24);
+    arg5->setBounds(8, 224, 584, 24);
 
-    arg6.reset (new ParameterComponent (processor, 5));
-    addAndMakeVisible (arg6.get());
+    arg6.reset(new ParameterComponent(processor, 5));
+    addAndMakeVisible(arg6.get());
 
-    arg6->setBounds (8, 256, 584, 24);
+    arg6->setBounds(8, 256, 584, 24);
 
-    arg7.reset (new ParameterComponent (processor, 6));
-    addAndMakeVisible (arg7.get());
+    arg7.reset(new ParameterComponent(processor, 6));
+    addAndMakeVisible(arg7.get());
 
-    arg7->setBounds (8, 288, 584, 24);
+    arg7->setBounds(8, 288, 584, 24);
 
-    arg8.reset (new ParameterComponent (processor, 7));
-    addAndMakeVisible (arg8.get());
+    arg8.reset(new ParameterComponent(processor, 7));
+    addAndMakeVisible(arg8.get());
 
-    arg8->setBounds (8, 320, 584, 24);
+    arg8->setBounds(8, 320, 584, 24);
 
-    juce__label6.reset (new juce::Label (juce::String(),
-                                         TRANS("# Code")));
-    addAndMakeVisible (juce__label6.get());
-    juce__label6->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label6->setJustificationType (juce::Justification::centredLeft);
-    juce__label6->setEditable (false, false, false);
-    juce__label6->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label6->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label6.reset(new juce::Label(juce::String(),
+                                       TRANS("# Code")));
+    addAndMakeVisible(juce__label6.get());
+    juce__label6->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label6->setJustificationType(juce::Justification::centredLeft);
+    juce__label6->setEditable(false, false, false);
+    juce__label6->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label6->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label6->setBounds (8, 352, 150, 24);
+    juce__label6->setBounds(8, 352, 150, 24);
 
-    btn_send_on_load.reset (new juce::ToggleButton (juce::String()));
-    addAndMakeVisible (btn_send_on_load.get());
-    btn_send_on_load->setButtonText (TRANS("Send on Load"));
+    btn_send_on_load.reset(new juce::ToggleButton(juce::String()));
+    addAndMakeVisible(btn_send_on_load.get());
+    btn_send_on_load->setButtonText(TRANS("Send on Load"));
 
-    btn_send_on_load->setBounds (312, 584, 112, 24);
+    btn_send_on_load->setBounds(312, 584, 112, 24);
 
-    btn_send.reset (new juce::TextButton (juce::String()));
-    addAndMakeVisible (btn_send.get());
-    btn_send->setButtonText (TRANS("Send"));
+    btn_send.reset(new juce::TextButton(juce::String()));
+    addAndMakeVisible(btn_send.get());
+    btn_send->setButtonText(TRANS("Send"));
 
-    btn_send->setBounds (440, 584, 152, 24);
+    btn_send->setBounds(440, 584, 152, 24);
 
-    juce__label4.reset (new juce::Label (juce::String(),
-                                         TRANS("Pitchbend Range:")));
-    addAndMakeVisible (juce__label4.get());
-    juce__label4->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
-    juce__label4->setJustificationType (juce::Justification::centredLeft);
-    juce__label4->setEditable (false, false, false);
-    juce__label4->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    juce__label4->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    juce__label4.reset(new juce::Label(juce::String(),
+                                       TRANS("Pitchbend Range:")));
+    addAndMakeVisible(juce__label4.get());
+    juce__label4->setFont(juce::Font(15.00f, juce::Font::plain).withTypefaceStyle("Regular"));
+    juce__label4->setJustificationType(juce::Justification::centredLeft);
+    juce__label4->setEditable(false, false, false);
+    juce__label4->setColour(juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label4->setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x00000000));
 
-    juce__label4->setBounds (440, 40, 120, 24);
+    juce__label4->setBounds(440, 40, 120, 24);
 
-    text_pitchbend_range.reset (new juce::TextEditor (juce::String()));
-    addAndMakeVisible (text_pitchbend_range.get());
-    text_pitchbend_range->setMultiLine (false);
-    text_pitchbend_range->setReturnKeyStartsNewLine (false);
-    text_pitchbend_range->setReadOnly (false);
-    text_pitchbend_range->setScrollbarsShown (false);
-    text_pitchbend_range->setCaretVisible (true);
-    text_pitchbend_range->setPopupMenuEnabled (true);
-    text_pitchbend_range->setText (TRANS("48"));
+    text_pitchbend_range.reset(new juce::TextEditor(juce::String()));
+    addAndMakeVisible(text_pitchbend_range.get());
+    text_pitchbend_range->setMultiLine(false);
+    text_pitchbend_range->setReturnKeyStartsNewLine(false);
+    text_pitchbend_range->setReadOnly(false);
+    text_pitchbend_range->setScrollbarsShown(false);
+    text_pitchbend_range->setCaretVisible(true);
+    text_pitchbend_range->setPopupMenuEnabled(true);
+    text_pitchbend_range->setText(TRANS("48"));
 
-    text_pitchbend_range->setBounds (560, 40, 32, 24);
+    text_pitchbend_range->setBounds(560, 40, 32, 24);
 
-    text_code.reset (new CodeEditor());
-    addAndMakeVisible (text_code.get());
+    text_code.reset(new CodeEditor());
+    addAndMakeVisible(text_code.get());
 
-    text_code->setBounds (8, 376, 584, 200);
+    text_code->setBounds(8, 376, 584, 200);
 
-    combo_presets.reset (new juce::ComboBox());
-    addAndMakeVisible (combo_presets.get());
+    combo_presets.reset(new juce::ComboBox());
+    addAndMakeVisible(combo_presets.get());
 
-    combo_presets->setBounds (8, 584, 150, 24);
+    combo_presets->setBounds(8, 584, 150, 24);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 616);
+    setSize(600, 616);
 
 
     //[Constructor] You can add your own custom stuff here..
 
     // Synthdef name
-    text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
-    text_synthdef_name->onTextChange = [this] {
-        appData.synthdef_name = text_synthdef_name->getText().toStdString();
-    };
-    text_synthdef_name->setText(appData.synthdef_name);
+    {
+        text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
+        text_synthdef_name->onTextChange = [this]
+        {
+            appData.synthdef_name = text_synthdef_name->getText().toStdString();
+        };
+        text_synthdef_name->setText(appData.synthdef_name);
+    }
 
     // Ports
-    text_scsynth_port->setInputRestrictions(5, "01234567890");
-    text_scsynth_port->onReturnKey = [this] {
-        int port = text_scsynth_port->getText().getIntValue();
-        if (port > 0 && port < 65536) {
-            appData.scsynth_port = port;
+    {
+        text_scsynth_port->setInputRestrictions(5, "01234567890");
+        text_scsynth_port->onReturnKey = [this]
+        {
+            int port = text_scsynth_port->getText().getIntValue();
+            if (port > 0 && port < 65536)
+            {
+                appData.scsynth_port = port;
 
-            if (appData.onPortChanged)
-                appData.onPortChanged();
-        }
-    };
-    text_scsynth_port->onFocusLost = text_scsynth_port->onReturnKey;
-    text_scsynth_port->setText(juce::String(appData.scsynth_port));
+                if (appData.onPortChanged)
+                    appData.onPortChanged();
+            }
+        };
+        text_scsynth_port->onFocusLost = text_scsynth_port->onReturnKey;
+        text_scsynth_port->setText(juce::String(appData.scsynth_port));
 
-    text_sclang_port->setInputRestrictions(5, "01234567890");
-    text_sclang_port->onReturnKey = [this] {
-        int port = text_sclang_port->getText().getIntValue();
-        if (port > 0 && port < 65536) {
-            appData.sclang_port = port;
+        text_sclang_port->setInputRestrictions(5, "01234567890");
+        text_sclang_port->onReturnKey = [this]
+        {
+            int port = text_sclang_port->getText().getIntValue();
+            if (port > 0 && port < 65536)
+            {
+                appData.sclang_port = port;
 
-            if (appData.onPortChanged)
-                appData.onPortChanged();
-        }
-    };
-    text_sclang_port->onFocusLost = text_sclang_port->onReturnKey;
-    text_sclang_port->setText(juce::String(appData.sclang_port));
+                if (appData.onPortChanged)
+                    appData.onPortChanged();
+            }
+        };
+        text_sclang_port->onFocusLost = text_sclang_port->onReturnKey;
+        text_sclang_port->setText(juce::String(appData.sclang_port));
+    }
 
     // Pitchbend range
-    text_pitchbend_range->setInputRestrictions(2, "01234567890");
-    text_pitchbend_range->onReturnKey = [this] {
-        int v = text_pitchbend_range->getText().getIntValue();
-        if (v > 0 && v < 96)
+    {
+        text_pitchbend_range->setInputRestrictions(2, "01234567890");
+        text_pitchbend_range->onReturnKey = [this]
         {
-            appData.pitchbend_range = v;
+            int v = text_pitchbend_range->getText().getIntValue();
+            if (v > 0 && v < 96)
+            {
+                appData.pitchbend_range = v;
 
-            if (appData.onPitchbendRangeChanged)
-                appData.onPitchbendRangeChanged(v);
-        }
-    };
-    text_pitchbend_range->setText(juce::String(appData.pitchbend_range));
+                if (appData.onPitchbendRangeChanged)
+                    appData.onPitchbendRangeChanged(v);
+            }
+        };
+        text_pitchbend_range->setText(juce::String(appData.pitchbend_range));
+    }
 
     // Autorelease
-    btn_autorelease->onClick = [this] {
-        appData.autorelease = btn_autorelease->getToggleState();
-    };
-    btn_autorelease->setToggleState(appData.autorelease, juce::dontSendNotification);
+    {
+        btn_autorelease->onClick = [this]
+        {
+            appData.autorelease = btn_autorelease->getToggleState();
+        };
+        btn_autorelease->setToggleState(appData.autorelease, juce::dontSendNotification);
+    }
 
     // Live args
-    btn_liveargs->onClick = [this] {
-        appData.liveargs = btn_liveargs->getToggleState();
-    };
-    btn_liveargs->setToggleState(appData.liveargs, juce::dontSendNotification);
+    {
+        btn_liveargs->onClick = [this]
+        {
+            appData.liveargs = btn_liveargs->getToggleState();
+        };
+        btn_liveargs->setToggleState(appData.liveargs, juce::dontSendNotification);
+    }
 
     // Code editor
-    text_code->onDocumentChanged = [this] {
-        appData.code = text_code->getText();
-    };
-
-    text_code->setText(appData.code);
-    text_code->onCtrlEnter = [this]
     {
-        if (appData.onSendCode)
-            appData.onSendCode();
-    };
+        text_code->onDocumentChanged = [this]
+        {
+            appData.code = text_code->getText();
+        };
+
+        text_code->setText(appData.code);
+        text_code->onCtrlEnter = [this]
+        {
+            if (appData.onSendCode)
+                appData.onSendCode();
+        };
+    }
 
     // Send button
-    btn_send->onClick = [this] {
-        if (appData.onSendCode)
-            appData.onSendCode();
-    };
+    {
+        btn_send->onClick = [this]
+        {
+            if (appData.onSendCode)
+                appData.onSendCode();
+        };
+    }
 
     // Send on load
-    btn_send_on_load->onClick = [this] {
-        appData.send_on_load = btn_send_on_load->getToggleState();
-    };
-    btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
-
-    if (appData.send_on_load)
     {
-        if (appData.onSendCode)
-            appData.onSendCode();
+        btn_send_on_load->onClick = [this]
+        {
+            appData.send_on_load = btn_send_on_load->getToggleState();
+        };
+        btn_send_on_load->setToggleState(appData.send_on_load, juce::dontSendNotification);
+
+        if (appData.send_on_load)
+        {
+            if (appData.onSendCode)
+                appData.onSendCode();
+        }
     }
 
     // Test tone
-    btn_testtone->onStateChange = [this] {
-        bool s = btn_testtone->getState() == 2;
-        static bool ss = s;
-
-        if (ss != s)
+    {
+        btn_testtone->onStateChange = [this]
         {
-            ss = s;
+            bool s = btn_testtone->getState() == 2;
+            static bool ss = s;
 
-            if (appData.onTestTone)
+            if (ss != s)
             {
-                if (ss)
+                ss = s;
+
+                if (appData.onTestTone)
                 {
-                    appData.onTestTone(true);
-                }
-                else
-                {
-                    appData.onTestTone(false);
+                    if (ss)
+                        appData.onTestTone(true);
+                    else
+                        appData.onTestTone(false);
                 }
             }
-        }
-    };
+        };
+    }
 
     // Client ID
-    appData.onClientIDUpdated = [this]()
     {
+        appData.onClientIDUpdated = [this]()
+        {
+            label_client_id->setText(
+                "ClientID: " + juce::String(appData.client_id),
+                juce::dontSendNotification);
+        };
+
         label_client_id->setText(
             "ClientID: " + juce::String(appData.client_id),
             juce::dontSendNotification);
-    };
-
-    label_client_id->setText(
-        "ClientID: " + juce::String(appData.client_id),
-        juce::dontSendNotification);
+    }
+    
+    // Presets
+    {
+        presets.push_back({"Empty", ""});
+        presets.push_back({"Simple", juce::String(BinaryData::_Simple_scd, BinaryData::_Simple_scdSize)});
+        presets.push_back({"MPE", juce::String(BinaryData::_MPE_scd, BinaryData::_MPE_scdSize)});
+    }
 
     // Preset Combo box
-    combo_presets->addItem("Empty", 1);
-    combo_presets->addItem("Simple", 2);
-    combo_presets->addItem("MPE", 3);
-
-    combo_presets->onChange = [this]
     {
-        auto index = combo_presets->getSelectedItemIndex();
-        juce::String code;
-
-        if (index == 0)
+        int itemid = 1;
+        for (auto it : presets)
         {
-            code = "";
-        }
-        else if (index == 1)
-        {
-            code = "SynthDef(\\{SYNTHNAME}, {| freq=440, amp=1, gate=1 |\n"
-"\tvar sig = SinOsc.ar(freq);\n"
-"\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
-"\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
-"}).add;\n";
-
-        }
-        else if (index == 2)
-        {
-            code = "SynthDef(\\{SYNTHNAME}, {| freq=440, amp=1, gate=1, pressure=0.5, timbre=0.5, release_vel=0 |\n"
-"\tvar sig = SinOsc.ar(freq);\n"
-"\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
-"\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
-"}).add;\n";
+            combo_presets->addItem(it.first, itemid);
+            itemid += 1;
         }
 
-        code = code.replace("{SYNTHNAME}", appData.synthdef_name);
+        combo_presets->onChange = [this]
+        {
+            auto index = combo_presets->getSelectedItemIndex();
 
-        appData.code = code.toStdString();
-        text_code->setText(code.toStdString());
-    };
+            try
+            {
+                auto p = presets.at(index);
+                auto code = p.second;
+                code = code.replace("{NAME}", appData.synthdef_name);
+
+                appData.code = code.toStdString();
+                text_code->setText(code.toStdString());
+            }
+            catch (std::range_error&)
+            {
+                return;
+            }
+        };
+    }
 
     //[/Constructor]
 }
@@ -452,12 +480,12 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
-void MainComponent::paint (juce::Graphics& g)
+void MainComponent::paint(juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (juce::Colour (0xff323e44));
+    g.fillAll(juce::Colour(0xff323e44));
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -471,7 +499,6 @@ void MainComponent::resized()
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
-
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -627,4 +654,3 @@ END_JUCER_METADATA
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
-
