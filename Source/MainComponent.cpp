@@ -325,7 +325,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         if (appData.onSendCode)
             appData.onSendCode();
     };
-    
+
     // Send on load
     btn_send_on_load->onClick = [this] {
         appData.send_on_load = btn_send_on_load->getToggleState();
@@ -337,7 +337,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         if (appData.onSendCode)
             appData.onSendCode();
     }
-    
+
     // Test tone
     btn_testtone->onStateChange = [this] {
         bool s = btn_testtone->getState() == 2;
@@ -382,7 +382,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     {
         auto index = combo_presets->getSelectedItemIndex();
         juce::String code;
-        
+
         if (index == 0)
         {
             code = "";
@@ -394,7 +394,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 "\tvar env = EnvGen.kr(Env.adsr(), gate, doneAction: Done.freeSelf);\n"
 "\tOut.ar(0, Pan2.ar(sig * env, 0.5, amp));\n"
 "}).add;\n";
-            
+
         }
         else if (index == 2)
         {
@@ -406,11 +406,11 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         }
 
         code = code.replace("{SYNTHNAME}", appData.synthdef_name);
-        
+
         appData.code = code.toStdString();
         text_code->setText(code.toStdString());
     };
-    
+
     //[/Constructor]
 }
 

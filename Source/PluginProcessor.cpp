@@ -161,9 +161,9 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
     if (!synthClient)
         synthClient = std::make_unique<SynthClient>(appData);
 
-    auto editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
-    if (editor)
-        editor->loadFromAppData();
+//    auto editor = (ScsynthclientAudioProcessorEditor*)createEditorIfNeeded();
+//    if (editor)
+//        editor->loadFromAppData();
 }
 
 //==============================================================================
