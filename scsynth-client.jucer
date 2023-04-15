@@ -8,6 +8,8 @@
               cppLanguageStandard="17">
   <MAINGROUP id="H9kj1m" name="scsynth-client">
     <GROUP id="{95611450-B53D-2629-5DA4-663A6AC4DAE6}" name="Source">
+      <FILE id="xUc8kE" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
+      <FILE id="N8zKDT" name="LookAndFeel.h" compile="0" resource="0" file="Source/LookAndFeel.h"/>
       <FILE id="EqX6Ew" name="CodeEditor.cpp" compile="1" resource="0" file="Source/CodeEditor.cpp"/>
       <FILE id="HNoUCi" name="CodeEditor.h" compile="0" resource="0" file="Source/CodeEditor.h"/>
       <FILE id="TjQIOE" name="AppData.h" compile="0" resource="0" file="Source/AppData.h"/>

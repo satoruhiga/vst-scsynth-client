@@ -90,6 +90,10 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
 
     //[Constructor] You can add your own custom stuff here..
+    LookAndFeel::apply(text_param_name.get());
+    LookAndFeel::apply(text_param_min.get());
+    LookAndFeel::apply(text_param_max.get());
+    
     auto& param = appData.params[index];
 
     text_param_name->setInputRestrictions(32, "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");

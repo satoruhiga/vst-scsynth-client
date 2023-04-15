@@ -15,7 +15,7 @@ ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
       , valueTreeState(*this, nullptr, juce::Identifier("scsynth-client"),
                        {
                            std::make_unique<juce::AudioParameterFloat>(
-                               "master_vel", "Master Velocity", 0.0f, 1.0f, 0.0f),
+                               "master_vel", "Master Velocity", 0.0f, 2.0f, 1.0f),
                            std::make_unique<juce::AudioParameterFloat>(
                                "arg1", "Arg1", 0.0f, 1.0f, 0.0f),
                            std::make_unique<juce::AudioParameterFloat>(

@@ -25,6 +25,7 @@
 #include "AppData.h"
 #include "ParameterComponent.h"
 #include "PluginProcessor.h"
+#include "LookAndFeel.h"
 #include "CodeEditor.h"
 //[/Headers]
 

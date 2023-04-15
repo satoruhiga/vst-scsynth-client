@@ -333,6 +333,15 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     addAndMakeVisible(&tooltipWindow);
     tooltipWindow.setMillisecondsBeforeTipAppears(1000);
 
+    LookAndFeel::apply(text_pitchbend_range.get());
+    LookAndFeel::apply(text_synthdef_name.get());
+    LookAndFeel::apply(text_scsynth_port.get());
+    LookAndFeel::apply(text_sclang_port.get());
+    LookAndFeel::apply(text_pitchbend_range.get());
+    LookAndFeel::apply(btn_testtone.get());
+    LookAndFeel::apply(btn_send.get());
+    LookAndFeel::apply(combo_presets.get());
+
     // Synthdef name
     {
         text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
