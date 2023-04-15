@@ -106,8 +106,8 @@ void ScsynthclientAudioProcessor::changeProgramName(int index, const juce::Strin
 void ScsynthclientAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
-    editor->loadFromAppData();
-
+    if (editor)
+        editor->loadFromAppData();
 }
 
 void ScsynthclientAudioProcessor::releaseResources()

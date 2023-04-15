@@ -47,7 +47,6 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void updateClientID(int newid);
     void loadFromAppData();
     //[/UserMethods]
 
@@ -67,6 +66,7 @@ private:
     //==============================================================================
     std::unique_ptr<juce::GroupComponent> juce__groupComponent3;
     std::unique_ptr<juce::Label> juce__label5;
+    std::unique_ptr<juce::Slider> slider_master_velocity;
     std::unique_ptr<juce::GroupComponent> juce__groupComponent;
     std::unique_ptr<juce::TextButton> btn_testtone;
     std::unique_ptr<juce::TextEditor> text_synthdef_name;
@@ -96,7 +96,7 @@ private:
     std::unique_ptr<juce::Label> juce__label9;
     std::unique_ptr<juce::Label> juce__label10;
     std::unique_ptr<juce::GroupComponent> juce__groupComponent2;
-    std::unique_ptr<juce::Slider> slider_master_velocity;
+    std::unique_ptr<juce::Label> juce__label6;
 
 
     //==============================================================================

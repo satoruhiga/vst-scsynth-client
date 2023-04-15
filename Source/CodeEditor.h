@@ -13,7 +13,8 @@ class CodeEditor
 
     bool keyPressed(const juce::KeyPress& key, Component* originatingComponent) override
     {
-        if (key.getKeyCode() == 13 && key.getModifiers() == juce::ModifierKeys::ctrlModifier)
+        if (key.getKeyCode() == 13
+            && key.getModifiers() == juce::ModifierKeys::commandModifier)
         {
             if (onCtrlEnter)
                 onCtrlEnter();
