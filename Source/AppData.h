@@ -20,9 +20,10 @@ struct AppData
     int sclang_port = 57120;
     int client_id = -1;
 
-    bool autorelease;
-    bool liveargs;
-    bool send_on_load;
+    // bool autorelease;
+    float master_velocity = 1;
+    bool liveargs = false;
+    bool send_on_load = true;
 
     int pitchbend_range = 48;
 

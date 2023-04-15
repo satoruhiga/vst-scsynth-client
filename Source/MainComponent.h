@@ -61,10 +61,13 @@ private:
     ScsynthclientAudioProcessor& processor;
     AppData& appData;
     std::vector<std::pair<std::string, juce::String>> presets;
+    std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment_master_vel;
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::ToggleButton> btn_autorelease;
+    std::unique_ptr<juce::GroupComponent> juce__groupComponent3;
+    std::unique_ptr<juce::Label> juce__label5;
+    std::unique_ptr<juce::GroupComponent> juce__groupComponent;
     std::unique_ptr<juce::TextButton> btn_testtone;
     std::unique_ptr<juce::TextEditor> text_synthdef_name;
     std::unique_ptr<juce::Label> juce__label;
@@ -74,7 +77,6 @@ private:
     std::unique_ptr<juce::TextEditor> text_sclang_port;
     std::unique_ptr<juce::ToggleButton> btn_liveargs;
     std::unique_ptr<juce::Label> label_client_id;
-    std::unique_ptr<juce::Label> juce__label5;
     std::unique_ptr<ParameterComponent> arg1;
     std::unique_ptr<ParameterComponent> arg2;
     std::unique_ptr<ParameterComponent> arg3;
@@ -83,13 +85,18 @@ private:
     std::unique_ptr<ParameterComponent> arg6;
     std::unique_ptr<ParameterComponent> arg7;
     std::unique_ptr<ParameterComponent> arg8;
-    std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::ToggleButton> btn_send_on_load;
     std::unique_ptr<juce::TextButton> btn_send;
     std::unique_ptr<juce::Label> juce__label4;
     std::unique_ptr<juce::TextEditor> text_pitchbend_range;
     std::unique_ptr<CodeEditor> text_code;
     std::unique_ptr<juce::ComboBox> combo_presets;
+    std::unique_ptr<juce::Label> juce__label7;
+    std::unique_ptr<juce::Label> juce__label8;
+    std::unique_ptr<juce::Label> juce__label9;
+    std::unique_ptr<juce::Label> juce__label10;
+    std::unique_ptr<juce::GroupComponent> juce__groupComponent2;
+    std::unique_ptr<juce::Slider> slider_master_velocity;
 
 
     //==============================================================================

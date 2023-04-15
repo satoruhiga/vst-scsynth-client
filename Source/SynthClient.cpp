@@ -69,7 +69,7 @@ int SynthClient::sendSynthNew(SynthNote& note)
 void SynthClient::sendSynthFree(SynthNote& note)
 {
     if (!oscClient) return;
-    if (!appData.autorelease) return;
+    // if (!appData.autorelease) return;
 
     float gate = -note.release_time;
     juce::OSCMessage message(
@@ -149,7 +149,7 @@ void SynthClient::noteAdded(juce::MPENote note)
 {
     SynthNote s;
     s.freq = note.getFrequencyInHertz();
-    s.velocity = note.noteOnVelocity.asUnsignedFloat();
+    s.velocity = note.noteOnVelocity.asUnsignedFloat() * appData.master_velocity;
     s.pressure = note.pressure.asUnsignedFloat();
     s.timbre = note.timbre.asUnsignedFloat();
 
@@ -223,7 +223,7 @@ void SynthClient::noteReleased(juce::MPENote note)
         return;
 
     SynthNote& s = it->second;
-    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat();
+    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat() * appData.master_velocity;
 
     sendSynthFree(s);
 

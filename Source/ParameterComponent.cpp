@@ -94,21 +94,18 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     {
         param.name = text_param_name->getText().toStdString();
     };
-    text_param_name->setText(param.name);
 
     text_param_min->setInputRestrictions(10, "01234567890.-");
     text_param_min->onTextChange = [this, &param]()
     {
         param.value_min = text_param_min->getText().getFloatValue();
     };
-    text_param_min->setText(juce::String(param.value_min));
 
     text_param_max->setInputRestrictions(10, "01234567890.-");
     text_param_max->onTextChange = [this, &param]()
     {
         param.value_max = text_param_max->getText().getFloatValue();
     };
-    text_param_max->setText(juce::String(param.value_max));
 
     slider_param_value->onValueChange = [this, &param, index]()
     {
@@ -117,7 +114,6 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
         if (appData.onArgumentChanged)
             appData.onArgumentChanged(index);
     };
-    slider_param_value->setValue(param.value);
 
     auto par_name = "arg" + juce::String(index + 1);
     attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.valueTreeState, par_name, *slider_param_value);

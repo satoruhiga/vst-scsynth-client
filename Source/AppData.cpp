@@ -5,7 +5,8 @@ void AppData::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     xml->setAttribute("synthdef_name", synthdef_name);
     xml->setAttribute("scsynth_port", scsynth_port);
     xml->setAttribute("sclang_port", sclang_port);
-    xml->setAttribute("autorelease", autorelease);
+    // xml->setAttribute("autorelease", autorelease);
+    xml->setAttribute("master_velocity", master_velocity);
     xml->setAttribute("liveargs", liveargs);
     xml->setAttribute("send_on_load", send_on_load);
     xml->setAttribute("code", code);
@@ -28,7 +29,8 @@ void AppData::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
     scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
     sclang_port = xml->getIntAttribute("sclang_port", 57120);
-    autorelease = xml->getBoolAttribute("autorelease", true);
+    // autorelease = xml->getBoolAttribute("autorelease", true);
+    master_velocity = xml->getDoubleAttribute("master_velocity", 1);
     liveargs = xml->getBoolAttribute("liveargs", true);
     send_on_load = xml->getBoolAttribute("send_on_load", true);
     code = xml->getStringAttribute("code", "").toStdString();
