@@ -311,7 +311,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label6->setBounds (208, 16, 62, 24);
 
     juce__label11.reset (new juce::Label ("new label",
-                                          TRANS("v0.1")));
+                                          TRANS("v0.11")));
     addAndMakeVisible (juce__label11.get());
     juce__label11->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     juce__label11->setJustificationType (juce::Justification::centredRight);
@@ -788,7 +788,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <LABEL name="new label" id="e691c379b70a0606" memberName="juce__label11"
          virtualName="" explicitFocusOrder="0" pos="456 712 150 24" textCol="ff808080"
-         edTextCol="ff000000" edBkgCol="0" labelText="v0.1" editableSingleClick="0"
+         edTextCol="ff000000" edBkgCol="0" labelText="v0.11" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
 </JUCER_COMPONENT>
