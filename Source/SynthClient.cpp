@@ -94,8 +94,9 @@ void SynthClient::sendCode()
 {
     if (!oscClient) return;
 
-    juce::String s = appData.code;
-    juce::OSCMessage message("/eval", s.trim());
+    juce::String code = appData.code;
+    code = code.replace(SYNTHNAME_STR, appData.synthdef_name);
+    juce::OSCMessage message("/eval", code.trim());
     oscClient->sendToSCLang(message);
 }
 

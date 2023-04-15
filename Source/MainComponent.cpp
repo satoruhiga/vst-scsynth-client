@@ -35,13 +35,6 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
 
-    juce__groupComponent3.reset (new juce::GroupComponent ("new group",
-                                                           juce::String()));
-    addAndMakeVisible (juce__groupComponent3.get());
-    juce__groupComponent3->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xff525759));
-
-    juce__groupComponent3->setBounds (8, 0, 600, 80);
-
     juce__label5.reset (new juce::Label (juce::String(),
                                          TRANS("Vel")));
     addAndMakeVisible (juce__label5.get());
@@ -51,7 +44,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label5->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     juce__label5->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label5->setBounds (536, 33, 32, 24);
+    juce__label5->setBounds (544, 36, 32, 24);
 
     slider_master_velocity.reset (new juce::Slider (juce::String()));
     addAndMakeVisible (slider_master_velocity.get());
@@ -60,7 +53,14 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     slider_master_velocity->setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     slider_master_velocity->setTextBoxStyle (juce::Slider::NoTextBox, false, 32, 20);
 
-    slider_master_velocity->setBounds (512, 8, 80, 72);
+    slider_master_velocity->setBounds (512, 8, 96, 80);
+
+    juce__groupComponent2.reset (new juce::GroupComponent (juce::String(),
+                                                           TRANS("Code")));
+    addAndMakeVisible (juce__groupComponent2.get());
+    juce__groupComponent2->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xff525759));
+
+    juce__groupComponent2->setBounds (8, 400, 600, 320);
 
     juce__groupComponent.reset (new juce::GroupComponent (juce::String(),
                                                           TRANS("Arguments")));
@@ -68,7 +68,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__groupComponent->setTextLabelPosition (juce::Justification::centredLeft);
     juce__groupComponent->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xff525759));
 
-    juce__groupComponent->setBounds (8, 96, 600, 296);
+    juce__groupComponent->setBounds (8, 88, 600, 296);
 
     btn_testtone.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_testtone.get());
@@ -79,6 +79,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     text_synthdef_name.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_synthdef_name.get());
+    text_synthdef_name->setTooltip (TRANS("SynthDef name. Automatically replaces `{{SYNTH_NAME}}` in the code."));
     text_synthdef_name->setMultiLine (false);
     text_synthdef_name->setReturnKeyStartsNewLine (false);
     text_synthdef_name->setReadOnly (false);
@@ -113,6 +114,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     text_scsynth_port.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_scsynth_port.get());
+    text_scsynth_port->setTooltip (TRANS("scsynth OSC Port"));
     text_scsynth_port->setMultiLine (false);
     text_scsynth_port->setReturnKeyStartsNewLine (false);
     text_scsynth_port->setReadOnly (false);
@@ -136,6 +138,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     text_sclang_port.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_sclang_port.get());
+    text_sclang_port->setTooltip (TRANS("sclang OSC Port"));
     text_sclang_port->setMultiLine (false);
     text_sclang_port->setReturnKeyStartsNewLine (false);
     text_sclang_port->setReadOnly (false);
@@ -148,9 +151,10 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     btn_liveargs.reset (new juce::ToggleButton ("btn_liveargs"));
     addAndMakeVisible (btn_liveargs.get());
+    btn_liveargs->setTooltip (TRANS("Send argument on value update"));
     btn_liveargs->setButtonText (TRANS("Live Args"));
 
-    btn_liveargs->setBounds (504, 112, 88, 24);
+    btn_liveargs->setBounds (504, 104, 88, 24);
 
     label_client_id.reset (new juce::Label (juce::String(),
                                             TRANS("Disconnected")));
@@ -167,59 +171,59 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     arg1.reset (new ParameterComponent (processor, 0));
     addAndMakeVisible (arg1.get());
 
-    arg1->setBounds (16, 136, 584, 24);
+    arg1->setBounds (16, 128, 584, 24);
 
     arg2.reset (new ParameterComponent (processor, 1));
     addAndMakeVisible (arg2.get());
 
-    arg2->setBounds (16, 168, 584, 24);
+    arg2->setBounds (16, 160, 584, 24);
 
     arg3.reset (new ParameterComponent (processor, 2));
     addAndMakeVisible (arg3.get());
 
-    arg3->setBounds (16, 200, 584, 24);
+    arg3->setBounds (16, 192, 584, 24);
 
     arg4.reset (new ParameterComponent (processor, 3));
     addAndMakeVisible (arg4.get());
 
-    arg4->setBounds (16, 232, 584, 24);
+    arg4->setBounds (16, 224, 584, 24);
 
     arg5.reset (new ParameterComponent (processor, 4));
     addAndMakeVisible (arg5.get());
 
-    arg5->setBounds (16, 264, 584, 24);
+    arg5->setBounds (16, 256, 584, 24);
 
     arg6.reset (new ParameterComponent (processor, 5));
     addAndMakeVisible (arg6.get());
 
-    arg6->setBounds (16, 296, 584, 24);
+    arg6->setBounds (16, 288, 584, 24);
 
     arg7.reset (new ParameterComponent (processor, 6));
     addAndMakeVisible (arg7.get());
 
-    arg7->setBounds (16, 328, 584, 24);
+    arg7->setBounds (16, 320, 584, 24);
 
     arg8.reset (new ParameterComponent (processor, 7));
     addAndMakeVisible (arg8.get());
 
-    arg8->setBounds (16, 360, 584, 24);
+    arg8->setBounds (16, 352, 584, 24);
 
     btn_send_on_load.reset (new juce::ToggleButton (juce::String()));
     addAndMakeVisible (btn_send_on_load.get());
+    btn_send_on_load->setTooltip (TRANS("Automatically send a code when plugin is loaded"));
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
 
-    btn_send_on_load->setBounds (320, 632, 112, 24);
+    btn_send_on_load->setBounds (320, 688, 112, 24);
 
     btn_send.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
 
-    btn_send->setBounds (448, 632, 152, 24);
+    btn_send->setBounds (448, 688, 152, 24);
 
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("PB Range:")));
     addAndMakeVisible (juce__label4.get());
-    juce__label4->setTooltip (TRANS("MPE Petchbend Range"));
     juce__label4->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     juce__label4->setJustificationType (juce::Justification::centredRight);
     juce__label4->setEditable (false, false, false);
@@ -230,6 +234,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     text_pitchbend_range.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_pitchbend_range.get());
+    text_pitchbend_range->setTooltip (TRANS("MPE Petchbend Range"));
     text_pitchbend_range->setMultiLine (false);
     text_pitchbend_range->setReturnKeyStartsNewLine (false);
     text_pitchbend_range->setReadOnly (false);
@@ -243,12 +248,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     text_code.reset (new CodeEditor());
     addAndMakeVisible (text_code.get());
 
-    text_code->setBounds (16, 424, 584, 200);
+    text_code->setBounds (16, 416, 584, 264);
 
     combo_presets.reset (new juce::ComboBox());
     addAndMakeVisible (combo_presets.get());
 
-    combo_presets->setBounds (16, 632, 150, 24);
+    combo_presets->setBounds (16, 688, 150, 24);
 
     juce__label7.reset (new juce::Label (juce::String(),
                                          TRANS("Name")));
@@ -259,7 +264,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label7->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     juce__label7->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label7->setBounds (16, 112, 72, 24);
+    juce__label7->setBounds (16, 104, 72, 24);
 
     juce__label8.reset (new juce::Label (juce::String(),
                                          TRANS("Min")));
@@ -270,7 +275,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label8->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     juce__label8->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label8->setBounds (152, 112, 72, 24);
+    juce__label8->setBounds (152, 104, 72, 24);
 
     juce__label9.reset (new juce::Label (juce::String(),
                                          TRANS("Max")));
@@ -281,7 +286,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label9->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     juce__label9->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label9->setBounds (240, 112, 72, 24);
+    juce__label9->setBounds (240, 104, 72, 24);
 
     juce__label10.reset (new juce::Label (juce::String(),
                                           TRANS("Value")));
@@ -292,14 +297,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label10->setColour (juce::TextEditor::textColourId, juce::Colours::black);
     juce__label10->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    juce__label10->setBounds (328, 112, 72, 24);
-
-    juce__groupComponent2.reset (new juce::GroupComponent (juce::String(),
-                                                           TRANS("Code")));
-    addAndMakeVisible (juce__groupComponent2.get());
-    juce__groupComponent2->setColour (juce::GroupComponent::outlineColourId, juce::Colour (0xff525759));
-
-    juce__groupComponent2->setBounds (8, 408, 600, 256);
+    juce__label10->setBounds (328, 104, 72, 24);
 
     juce__label6.reset (new juce::Label (juce::String(),
                                          TRANS("Status:")));
@@ -312,14 +310,28 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     juce__label6->setBounds (208, 16, 62, 24);
 
+    juce__label11.reset (new juce::Label ("new label",
+                                          TRANS("v0.1")));
+    addAndMakeVisible (juce__label11.get());
+    juce__label11->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
+    juce__label11->setJustificationType (juce::Justification::centredRight);
+    juce__label11->setEditable (false, false, false);
+    juce__label11->setColour (juce::Label::textColourId, juce::Colours::grey);
+    juce__label11->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    juce__label11->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+
+    juce__label11->setBounds (456, 712, 150, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (612, 668);
+    setSize (612, 732);
 
 
     //[Constructor] You can add your own custom stuff here..
+    addAndMakeVisible(&tooltipWindow);
+    tooltipWindow.setMillisecondsBeforeTipAppears(1000);
 
     // Synthdef name
     {
@@ -498,8 +510,6 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 auto p = presets.at(index);
                 auto code = p.second;
-                code = code.replace("{NAME}", appData.synthdef_name);
-
                 appData.code = code.toStdString();
                 text_code->setText(code.toStdString());
             }
@@ -532,9 +542,9 @@ MainComponent::~MainComponent()
     attachment_master_vel.reset();
     //[/Destructor_pre]
 
-    juce__groupComponent3 = nullptr;
     juce__label5 = nullptr;
     slider_master_velocity = nullptr;
+    juce__groupComponent2 = nullptr;
     juce__groupComponent = nullptr;
     btn_testtone = nullptr;
     text_synthdef_name = nullptr;
@@ -563,8 +573,8 @@ MainComponent::~MainComponent()
     juce__label8 = nullptr;
     juce__label9 = nullptr;
     juce__label10 = nullptr;
-    juce__groupComponent2 = nullptr;
     juce__label6 = nullptr;
+    juce__label11 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -636,33 +646,33 @@ BEGIN_JUCER_METADATA
                  parentClasses="public juce::Component" constructorParams="ScsynthclientAudioProcessor&amp; processor"
                  variableInitialisers="processor(processor)&#10;appData(processor.appData)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="612" initialHeight="668">
+                 fixedSize="0" initialWidth="612" initialHeight="732">
   <BACKGROUND backgroundColour="ff323e44">
-    <RECT pos="4 4 612 668" fill="solid: 808080" hasStroke="0"/>
+    <RECT pos="4 4 612 732" fill="solid: 808080" hasStroke="0"/>
   </BACKGROUND>
-  <GROUPCOMPONENT name="new group" id="1cee116018ec2ad1" memberName="juce__groupComponent3"
-                  virtualName="" explicitFocusOrder="0" pos="8 0 600 80" outlinecol="ff525759"
-                  title=""/>
   <LABEL name="" id="5518d6d94fb45dcb" memberName="juce__label5" virtualName=""
-         explicitFocusOrder="0" pos="536 33 32 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="544 36 32 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Vel" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="36"/>
   <SLIDER name="" id="bbd99749b8846ffb" memberName="slider_master_velocity"
-          virtualName="" explicitFocusOrder="0" pos="512 8 80 72" tooltip="Master Velocity"
+          virtualName="" explicitFocusOrder="0" pos="512 8 96 80" tooltip="Master Velocity"
           min="0.0" max="2.0" int="0.01" style="RotaryHorizontalVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="32"
           textBoxHeight="20" skewFactor="1.0" needsCallback="0"/>
+  <GROUPCOMPONENT name="" id="5e31d7cf9b5c1658" memberName="juce__groupComponent2"
+                  virtualName="" explicitFocusOrder="0" pos="8 400 600 320" outlinecol="ff525759"
+                  title="Code"/>
   <GROUPCOMPONENT name="" id="8542c8695e9a17e3" memberName="juce__groupComponent"
-                  virtualName="" explicitFocusOrder="0" pos="8 96 600 296" outlinecol="ff525759"
+                  virtualName="" explicitFocusOrder="0" pos="8 88 600 296" outlinecol="ff525759"
                   title="Arguments" textpos="33"/>
   <TEXTBUTTON name="" id="985d3b3152aa2800" memberName="btn_testtone" virtualName=""
               explicitFocusOrder="0" pos="16 48 96 24" bgColOff="ff42a2c8"
               buttonText="Test Tone" connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <TEXTEDITOR name="" id="4f37a4b3cc260d15" memberName="text_synthdef_name"
-              virtualName="" explicitFocusOrder="0" pos="88 16 120 24" initialText="Synth1"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
-              caret="1" popupmenu="1"/>
+              virtualName="" explicitFocusOrder="0" pos="88 16 120 24" tooltip="SynthDef name. Automatically replaces &#96;{{SYNTH_NAME}}&#96; in the code."
+              initialText="Synth1" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="1" caret="1" popupmenu="1"/>
   <LABEL name="" id="87e96af479401f16" memberName="juce__label" virtualName=""
          explicitFocusOrder="0" pos="16 16 72 24" edTextCol="ff000000"
          edBkgCol="0" labelText="SynthDef:" editableSingleClick="0" editableDoubleClick="0"
@@ -674,21 +684,22 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTEDITOR name="" id="c39ef4a68bff3ab1" memberName="text_scsynth_port"
-              virtualName="" explicitFocusOrder="0" pos="184 48 48 24" initialText="57110"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
-              caret="1" popupmenu="1"/>
+              virtualName="" explicitFocusOrder="0" pos="184 48 48 24" tooltip="scsynth OSC Port"
+              initialText="57110" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="0" caret="1" popupmenu="1"/>
   <LABEL name="" id="ab30b1eed95c682" memberName="juce__label3" virtualName=""
          explicitFocusOrder="0" pos="240 48 56 24" edTextCol="ff000000"
          edBkgCol="0" labelText="sclang:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTEDITOR name="" id="4644a9ac46618f5e" memberName="text_sclang_port" virtualName=""
-              explicitFocusOrder="0" pos="296 48 48 24" initialText="57120"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
-              caret="1" popupmenu="1"/>
+              explicitFocusOrder="0" pos="296 48 48 24" tooltip="sclang OSC Port"
+              initialText="57120" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="0" caret="1" popupmenu="1"/>
   <TOGGLEBUTTON name="btn_liveargs" id="cac3c8de46c4287c" memberName="btn_liveargs"
-                virtualName="" explicitFocusOrder="0" pos="504 112 88 24" buttonText="Live Args"
-                connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
+                virtualName="" explicitFocusOrder="0" pos="504 104 88 24" tooltip="Send argument on value update"
+                buttonText="Live Args" connectedEdges="0" needsCallback="0" radioGroupId="0"
+                state="0"/>
   <LABEL name="" id="e228f0569f8dd0b3" memberName="label_client_id" virtualName=""
          explicitFocusOrder="0" pos="264 16 248 24" textCol="ffff0000"
          edTextCol="ff000000" edBkgCol="0" labelText="Disconnected" editableSingleClick="0"
@@ -696,78 +707,81 @@ BEGIN_JUCER_METADATA
          fontsize="15.0" kerning="0.0" bold="1" italic="0" justification="33"
          typefaceStyle="Bold"/>
   <GENERICCOMPONENT name="" id="59f2633427c1cc23" memberName="arg1" virtualName=""
-                    explicitFocusOrder="0" pos="16 136 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 128 584 24" class="ParameterComponent"
                     params="processor, 0"/>
   <GENERICCOMPONENT name="" id="469df798ec63f356" memberName="arg2" virtualName=""
-                    explicitFocusOrder="0" pos="16 168 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 160 584 24" class="ParameterComponent"
                     params="processor, 1"/>
   <GENERICCOMPONENT name="" id="c9562bcceb5da19f" memberName="arg3" virtualName=""
-                    explicitFocusOrder="0" pos="16 200 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 192 584 24" class="ParameterComponent"
                     params="processor, 2"/>
   <GENERICCOMPONENT name="" id="93f1a7fb66c16fe8" memberName="arg4" virtualName=""
-                    explicitFocusOrder="0" pos="16 232 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 224 584 24" class="ParameterComponent"
                     params="processor, 3"/>
   <GENERICCOMPONENT name="" id="59433b16b0769023" memberName="arg5" virtualName=""
-                    explicitFocusOrder="0" pos="16 264 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 256 584 24" class="ParameterComponent"
                     params="processor, 4"/>
   <GENERICCOMPONENT name="" id="64933755da142ae4" memberName="arg6" virtualName=""
-                    explicitFocusOrder="0" pos="16 296 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 288 584 24" class="ParameterComponent"
                     params="processor, 5"/>
   <GENERICCOMPONENT name="" id="4ada125e95dc25e5" memberName="arg7" virtualName=""
-                    explicitFocusOrder="0" pos="16 328 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 320 584 24" class="ParameterComponent"
                     params="processor, 6"/>
   <GENERICCOMPONENT name="" id="d64d023030bec916" memberName="arg8" virtualName=""
-                    explicitFocusOrder="0" pos="16 360 584 24" class="ParameterComponent"
+                    explicitFocusOrder="0" pos="16 352 584 24" class="ParameterComponent"
                     params="processor, 7"/>
   <TOGGLEBUTTON name="" id="63638d04d75c5245" memberName="btn_send_on_load" virtualName=""
-                explicitFocusOrder="0" pos="320 632 112 24" buttonText="Send on Load"
-                connectedEdges="0" needsCallback="0" radioGroupId="0" state="0"/>
+                explicitFocusOrder="0" pos="320 688 112 24" tooltip="Automatically send a code when plugin is loaded"
+                buttonText="Send on Load" connectedEdges="0" needsCallback="0"
+                radioGroupId="0" state="0"/>
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
-              explicitFocusOrder="0" pos="448 632 152 24" buttonText="Send"
+              explicitFocusOrder="0" pos="448 688 152 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
-         explicitFocusOrder="0" pos="344 48 80 24" tooltip="MPE Petchbend Range"
-         edTextCol="ff000000" edBkgCol="0" labelText="PB Range:" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15.0" kerning="0.0" bold="0" italic="0" justification="34"/>
+         explicitFocusOrder="0" pos="344 48 80 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="PB Range:" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
+         kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTEDITOR name="" id="d908d4bb2849129f" memberName="text_pitchbend_range"
-              virtualName="" explicitFocusOrder="0" pos="424 48 32 24" initialText="48"
-              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
-              caret="1" popupmenu="1"/>
+              virtualName="" explicitFocusOrder="0" pos="424 48 32 24" tooltip="MPE Petchbend Range"
+              initialText="48" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="0" caret="1" popupmenu="1"/>
   <GENERICCOMPONENT name="" id="78d3c9f532f57857" memberName="text_code" virtualName=""
-                    explicitFocusOrder="0" pos="16 424 584 200" class="CodeEditor"
+                    explicitFocusOrder="0" pos="16 416 584 264" class="CodeEditor"
                     params=""/>
   <GENERICCOMPONENT name="" id="661e682533365b59" memberName="combo_presets" virtualName=""
-                    explicitFocusOrder="0" pos="16 632 150 24" class="juce::ComboBox"
+                    explicitFocusOrder="0" pos="16 688 150 24" class="juce::ComboBox"
                     params=""/>
   <LABEL name="" id="ec9075f576256a91" memberName="juce__label7" virtualName=""
-         explicitFocusOrder="0" pos="16 112 72 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="16 104 72 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Name" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="8c53561b1ba522f5" memberName="juce__label8" virtualName=""
-         explicitFocusOrder="0" pos="152 112 72 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="152 104 72 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Min" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="a439eae3ce29ecbe" memberName="juce__label9" virtualName=""
-         explicitFocusOrder="0" pos="240 112 72 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="240 104 72 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Max" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="370864365f18c485" memberName="juce__label10" virtualName=""
-         explicitFocusOrder="0" pos="328 112 72 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="328 104 72 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Value" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
-  <GROUPCOMPONENT name="" id="5e31d7cf9b5c1658" memberName="juce__groupComponent2"
-                  virtualName="" explicitFocusOrder="0" pos="8 408 600 256" outlinecol="ff525759"
-                  title="Code"/>
   <LABEL name="" id="22b0f44b26d011d3" memberName="juce__label6" virtualName=""
          explicitFocusOrder="0" pos="208 16 62 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Status:" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15.0"
          kerning="0.0" bold="0" italic="0" justification="34"/>
+  <LABEL name="new label" id="e691c379b70a0606" memberName="juce__label11"
+         virtualName="" explicitFocusOrder="0" pos="456 712 150 24" textCol="ff808080"
+         edTextCol="ff000000" edBkgCol="0" labelText="v0.1" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

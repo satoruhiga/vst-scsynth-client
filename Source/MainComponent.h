@@ -57,6 +57,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    juce::TooltipWindow tooltipWindow;
+
     ScsynthclientAudioProcessor& processor;
     AppData& appData;
     std::vector<std::pair<std::string, juce::String>> presets;
@@ -64,9 +66,9 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::GroupComponent> juce__groupComponent3;
     std::unique_ptr<juce::Label> juce__label5;
     std::unique_ptr<juce::Slider> slider_master_velocity;
+    std::unique_ptr<juce::GroupComponent> juce__groupComponent2;
     std::unique_ptr<juce::GroupComponent> juce__groupComponent;
     std::unique_ptr<juce::TextButton> btn_testtone;
     std::unique_ptr<juce::TextEditor> text_synthdef_name;
@@ -95,8 +97,8 @@ private:
     std::unique_ptr<juce::Label> juce__label8;
     std::unique_ptr<juce::Label> juce__label9;
     std::unique_ptr<juce::Label> juce__label10;
-    std::unique_ptr<juce::GroupComponent> juce__groupComponent2;
     std::unique_ptr<juce::Label> juce__label6;
+    std::unique_ptr<juce::Label> juce__label11;
 
 
     //==============================================================================

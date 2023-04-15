@@ -36,6 +36,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_name.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_name.get());
+    text_param_name->setTooltip (TRANS("Argument name"));
     text_param_name->setMultiLine (false);
     text_param_name->setReturnKeyStartsNewLine (false);
     text_param_name->setReadOnly (false);
@@ -48,6 +49,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_min.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_min.get());
+    text_param_min->setTooltip (TRANS("Min value range"));
     text_param_min->setMultiLine (false);
     text_param_min->setReturnKeyStartsNewLine (false);
     text_param_min->setReadOnly (false);
@@ -60,6 +62,7 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
 
     text_param_max.reset (new juce::TextEditor (juce::String()));
     addAndMakeVisible (text_param_max.get());
+    text_param_max->setTooltip (TRANS("Max value range"));
     text_param_max->setMultiLine (false);
     text_param_max->setReturnKeyStartsNewLine (false);
     text_param_max->setReadOnly (false);
@@ -189,14 +192,17 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 584 24" fill="solid: 8b2aa5" hasStroke="0"/>
   </BACKGROUND>
   <TEXTEDITOR name="" id="20aaa871892307fd" memberName="text_param_name" virtualName=""
-              explicitFocusOrder="0" pos="0 0 128 24" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+              explicitFocusOrder="0" pos="0 0 128 24" tooltip="Argument name"
+              initialText="" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="1" caret="1" popupmenu="1"/>
   <TEXTEDITOR name="" id="126fa62bc3ff7f3a" memberName="text_param_min" virtualName=""
-              explicitFocusOrder="0" pos="136 0 80 24" initialText="0.0" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+              explicitFocusOrder="0" pos="136 0 80 24" tooltip="Min value range"
+              initialText="0.0" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="1" caret="1" popupmenu="1"/>
   <TEXTEDITOR name="" id="2e6b0906ac09253b" memberName="text_param_max" virtualName=""
-              explicitFocusOrder="0" pos="224 0 80 24" initialText="1.0" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
+              explicitFocusOrder="0" pos="224 0 80 24" tooltip="Max value range"
+              initialText="1.0" multiline="0" retKeyStartsLine="0" readonly="0"
+              scrollbars="1" caret="1" popupmenu="1"/>
   <SLIDER name="" id="b4aeb0742a045c75" memberName="slider_param_value"
           virtualName="" explicitFocusOrder="0" pos="304 0 280 24" min="0.0"
           max="10.0" int="0.0" style="LinearHorizontal" textBoxPos="NoTextBox"

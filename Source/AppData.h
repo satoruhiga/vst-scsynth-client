@@ -6,6 +6,8 @@
 
 #include <JuceHeader.h>
 
+#define SYNTHNAME_STR "{{SYNTH_NAME}}"
+
 struct AppData
 {
     struct Parameter
