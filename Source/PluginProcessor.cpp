@@ -105,9 +105,6 @@ void ScsynthclientAudioProcessor::changeProgramName(int index, const juce::Strin
 //==============================================================================
 void ScsynthclientAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-    auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
-    if (editor)
-        editor->loadFromAppData();
 }
 
 void ScsynthclientAudioProcessor::releaseResources()
@@ -121,8 +118,27 @@ bool ScsynthclientAudioProcessor::isBusesLayoutSupported(const BusesLayout& layo
 }
 #endif
 
+bool ScsynthclientAudioProcessor::initPlugin()
+{
+    auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
+    if (!editor)
+        return false;
+    
+    editor->loadFromAppData();
+    synthClient = std::make_unique<SynthClient>(appData);
+    
+    return true;
+}
+
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    if (!inited)
+    {
+        auto ret = initPlugin();
+        if (ret)
+            inited = true;
+    }
+    
     if (synthClient)
         synthClient->processMidiBuffer(midiMessages);
 }
@@ -158,9 +174,6 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
         valueTreeState.replaceState(juce::ValueTree::fromXml(*xml));
 
     appData.setStateInformation(xml);
-
-    if (!synthClient)
-        synthClient = std::make_unique<SynthClient>(appData);
 }
 
 //==============================================================================
