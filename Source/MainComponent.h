@@ -22,6 +22,9 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <JuceHeader.h>
 
+#include <cstdio>
+#include <filesystem>
+
 #include "AppData.h"
 #include "ParameterComponent.h"
 #include "PluginProcessor.h"
@@ -101,6 +104,7 @@ private:
     std::unique_ptr<juce::Label> juce__label10;
     std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::Label> juce__label11;
+    std::unique_ptr<juce::TextButton> btn_edit;
 
 
     //==============================================================================

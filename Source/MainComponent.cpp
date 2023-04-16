@@ -23,6 +23,8 @@
 
 #include "MainComponent.h"
 
+#include <fstream>
+
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
@@ -157,7 +159,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     btn_liveargs->setBounds (504, 104, 88, 24);
 
     label_connection_status.reset (new juce::Label (juce::String(),
-                                            TRANS("Disconnected")));
+                                                    TRANS("Disconnected")));
     addAndMakeVisible (label_connection_status.get());
     label_connection_status->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
     label_connection_status->setJustificationType (juce::Justification::centredLeft);
@@ -213,13 +215,13 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     btn_send_on_load->setTooltip (TRANS("Automatically send a code when plugin is loaded"));
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
 
-    btn_send_on_load->setBounds (320, 688, 112, 24);
+    btn_send_on_load->setBounds (176, 688, 112, 24);
 
     btn_send.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
 
-    btn_send->setBounds (448, 688, 152, 24);
+    btn_send->setBounds (480, 688, 120, 24);
 
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("PB Range:")));
@@ -311,7 +313,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label6->setBounds (208, 16, 62, 24);
 
     juce__label11.reset (new juce::Label ("new label",
-                                          TRANS("v0.11")));
+                                          TRANS("v0.12")));
     addAndMakeVisible (juce__label11.get());
     juce__label11->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     juce__label11->setJustificationType (juce::Justification::centredRight);
@@ -321,6 +323,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     juce__label11->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
     juce__label11->setBounds (456, 712, 150, 24);
+
+    btn_edit.reset (new juce::TextButton (juce::String()));
+    addAndMakeVisible (btn_edit.get());
+    btn_edit->setButtonText (TRANS("Edit"));
+
+    btn_edit->setBounds (352, 688, 120, 24);
 
 
     //[UserPreSize]
@@ -438,6 +446,19 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         };
     }
 
+    // Edit button
+    {
+        btn_edit->onClick = [this]
+        {
+            if (!appData.hasTempSCD())
+            {
+                appData.createTempSCD();
+            }
+
+            appData.openTempSCD();
+        };
+    }
+
     // Send on load
     {
         btn_send_on_load->onClick = [this]
@@ -542,6 +563,16 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             processor.valueTreeState, "master_vel", *slider_master_velocity));
     }
 
+    // Tempfile
+    {
+        appData.onTempSCDModified = [this]
+        {
+            text_code->setText(appData.code);
+            if (appData.onSendCode)
+                appData.onSendCode();
+        };
+    }
+    
     loadFromAppData();
 
     //[/Constructor]
@@ -552,6 +583,7 @@ MainComponent::~MainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     attachment_master_vel.reset();
     label_connection_status->removeMouseListener(this);
+    appData.destroyTempSCD();
     //[/Destructor_pre]
 
     juce__label5 = nullptr;
@@ -587,6 +619,7 @@ MainComponent::~MainComponent()
     juce__label10 = nullptr;
     juce__label6 = nullptr;
     juce__label11 = nullptr;
+    btn_edit = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -726,8 +759,8 @@ BEGIN_JUCER_METADATA
                 virtualName="" explicitFocusOrder="0" pos="504 104 88 24" tooltip="Send argument on value update"
                 buttonText="Live Args" connectedEdges="0" needsCallback="0" radioGroupId="0"
                 state="0"/>
-  <LABEL name="" id="e228f0569f8dd0b3" memberName="label_client_id" virtualName=""
-         explicitFocusOrder="0" pos="264 16 248 24" textCol="ffff0000"
+  <LABEL name="" id="e228f0569f8dd0b3" memberName="label_connection_status"
+         virtualName="" explicitFocusOrder="0" pos="264 16 248 24" textCol="ffff0000"
          edTextCol="ff000000" edBkgCol="0" labelText="Disconnected" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15.0" kerning="0.0" bold="1" italic="0" justification="33"
@@ -757,11 +790,11 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="16 352 584 24" class="ParameterComponent"
                     params="processor, 7"/>
   <TOGGLEBUTTON name="" id="63638d04d75c5245" memberName="btn_send_on_load" virtualName=""
-                explicitFocusOrder="0" pos="320 688 112 24" tooltip="Automatically send a code when plugin is loaded"
+                explicitFocusOrder="0" pos="176 688 112 24" tooltip="Automatically send a code when plugin is loaded"
                 buttonText="Send on Load" connectedEdges="0" needsCallback="0"
                 radioGroupId="0" state="0"/>
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
-              explicitFocusOrder="0" pos="448 688 152 24" buttonText="Send"
+              explicitFocusOrder="0" pos="480 688 120 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
          explicitFocusOrder="0" pos="344 48 80 24" edTextCol="ff000000"
@@ -805,9 +838,12 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <LABEL name="new label" id="e691c379b70a0606" memberName="juce__label11"
          virtualName="" explicitFocusOrder="0" pos="456 712 150 24" textCol="ff808080"
-         edTextCol="ff000000" edBkgCol="0" labelText="v0.11" editableSingleClick="0"
+         edTextCol="ff000000" edBkgCol="0" labelText="v0.12" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
+  <TEXTBUTTON name="" id="1f887a07b8d8b9ca" memberName="btn_edit" virtualName=""
+              explicitFocusOrder="0" pos="352 688 120 24" buttonText="Edit"
+              connectedEdges="0" needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

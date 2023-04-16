@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <JuceHeader.h>
+#include "FileWatch.hpp"
 
 #define SYNTHNAME_STR "{{SYNTH_NAME}}"
 
@@ -42,4 +43,15 @@ struct AppData
     std::function<void(bool)> onTestTone;
     std::function<void(int)> onArgumentChanged;
     std::function<void(int)> onPitchbendRangeChanged;
+
+    // External scd file
+    std::string temp_scd_path;
+    std::unique_ptr<filewatch::FileWatch<std::string>> temp_scd_watch;
+    
+    std::function<void()> onTempSCDModified;
+    
+    bool hasTempSCD() const;
+    void createTempSCD();
+    void destroyTempSCD();
+    void openTempSCD();
 };
