@@ -125,9 +125,14 @@ bool ScsynthclientAudioProcessor::initPlugin()
         return false;
     
     editor->loadFromAppData();
-    synthClient = std::make_unique<SynthClient>(appData);
+    connectToServer();
     
     return true;
+}
+
+void ScsynthclientAudioProcessor::connectToServer()
+{
+    synthClient = std::make_unique<SynthClient>(appData);
 }
 
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)

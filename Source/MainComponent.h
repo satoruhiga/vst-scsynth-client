@@ -49,6 +49,7 @@ public:
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void loadFromAppData();
+    void mouseUp(const juce::MouseEvent& event) override;
     //[/UserMethods]
 
     void paint (juce::Graphics& g) override;
@@ -79,7 +80,7 @@ private:
     std::unique_ptr<juce::Label> juce__label3;
     std::unique_ptr<juce::TextEditor> text_sclang_port;
     std::unique_ptr<juce::ToggleButton> btn_liveargs;
-    std::unique_ptr<juce::Label> label_client_id;
+    std::unique_ptr<juce::Label> label_connection_status;
     std::unique_ptr<ParameterComponent> arg1;
     std::unique_ptr<ParameterComponent> arg2;
     std::unique_ptr<ParameterComponent> arg3;

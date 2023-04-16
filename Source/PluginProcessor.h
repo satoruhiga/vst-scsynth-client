@@ -30,6 +30,7 @@ public:
     std::unique_ptr<SynthClient> synthClient;
     
     bool initPlugin();
+    void connectToServer();
     
     //==============================================================================
     ScsynthclientAudioProcessor();

@@ -156,17 +156,17 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     btn_liveargs->setBounds (504, 104, 88, 24);
 
-    label_client_id.reset (new juce::Label (juce::String(),
+    label_connection_status.reset (new juce::Label (juce::String(),
                                             TRANS("Disconnected")));
-    addAndMakeVisible (label_client_id.get());
-    label_client_id->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
-    label_client_id->setJustificationType (juce::Justification::centredLeft);
-    label_client_id->setEditable (false, false, false);
-    label_client_id->setColour (juce::Label::textColourId, juce::Colours::red);
-    label_client_id->setColour (juce::TextEditor::textColourId, juce::Colours::black);
-    label_client_id->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
+    addAndMakeVisible (label_connection_status.get());
+    label_connection_status->setFont (juce::Font (15.00f, juce::Font::plain).withTypefaceStyle ("Bold"));
+    label_connection_status->setJustificationType (juce::Justification::centredLeft);
+    label_connection_status->setEditable (false, false, false);
+    label_connection_status->setColour (juce::Label::textColourId, juce::Colours::red);
+    label_connection_status->setColour (juce::TextEditor::textColourId, juce::Colours::black);
+    label_connection_status->setColour (juce::TextEditor::backgroundColourId, juce::Colour (0x00000000));
 
-    label_client_id->setBounds (264, 16, 248, 24);
+    label_connection_status->setBounds (264, 16, 248, 24);
 
     arg1.reset (new ParameterComponent (processor, 0));
     addAndMakeVisible (arg1.get());
@@ -480,17 +480,19 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         {
             if (appData.client_id == -1)
             {
-                label_client_id->setText(juce::String("Disconnected"), juce::dontSendNotification);
-                label_client_id->setColour(juce::Label::textColourId, juce::Colours::red);
+                label_connection_status->setText(juce::String("Disconnected"), juce::dontSendNotification);
+                label_connection_status->setColour(juce::Label::textColourId, juce::Colours::red);
             }
             else
             {
-                label_client_id->setText(
+                label_connection_status->setText(
                     "Connected (id:" + juce::String(appData.client_id) + ")",
                     juce::dontSendNotification);
-                label_client_id->setColour(juce::Label::textColourId, juce::Colours::green);
+                label_connection_status->setColour(juce::Label::textColourId, juce::Colours::green);
             }
         };
+
+        label_connection_status->addMouseListener(this, true);
     }
 
     // Presets
@@ -549,6 +551,7 @@ MainComponent::~MainComponent()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     attachment_master_vel.reset();
+    label_connection_status->removeMouseListener(this);
     //[/Destructor_pre]
 
     juce__label5 = nullptr;
@@ -563,7 +566,7 @@ MainComponent::~MainComponent()
     juce__label3 = nullptr;
     text_sclang_port = nullptr;
     btn_liveargs = nullptr;
-    label_client_id = nullptr;
+    label_connection_status = nullptr;
     arg1 = nullptr;
     arg2 = nullptr;
     arg3 = nullptr;
@@ -637,6 +640,20 @@ void MainComponent::loadFromAppData()
     arg6->loadFromAppData();
     arg7->loadFromAppData();
     arg8->loadFromAppData();
+}
+
+void MainComponent::mouseUp(const juce::MouseEvent& event)
+{
+    Component::mouseUp(event);
+
+    if (event.eventComponent == label_connection_status.get())
+    {
+        if (appData.client_id == -1)
+        {
+            processor.connectToServer();
+            appData.onClientIDUpdated();
+        }
+    }
 }
 
 //[/MiscUserCode]
