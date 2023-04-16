@@ -32,7 +32,7 @@
 //==============================================================================
 MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     : processor(processor),
-      appData(processor.appData)
+      appData(processor.appController)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]

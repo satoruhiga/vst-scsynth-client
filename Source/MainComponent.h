@@ -25,10 +25,10 @@
 #include <cstdio>
 #include <filesystem>
 
-#include "AppData.h"
 #include "ParameterComponent.h"
 #include "PluginProcessor.h"
 #include "LookAndFeel.h"
+#include "AppController.h"
 #include "CodeEditor.h"
 //[/Headers]
 
@@ -65,7 +65,7 @@ private:
     juce::TooltipWindow tooltipWindow;
 
     ScsynthclientAudioProcessor& processor;
-    AppData& appData;
+    AppController& appData;
     std::vector<std::pair<std::string, juce::String>> presets;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment_master_vel;
     //[/UserVariables]

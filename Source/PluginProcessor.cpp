@@ -132,7 +132,7 @@ bool ScsynthclientAudioProcessor::initPlugin()
 
 void ScsynthclientAudioProcessor::connectToServer()
 {
-    synthClient = std::make_unique<SynthClient>(appData);
+    synthClient = std::make_unique<SynthClient>(appController);
 }
 
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
@@ -165,7 +165,7 @@ void ScsynthclientAudioProcessor::getStateInformation(juce::MemoryBlock& destDat
     auto state = valueTreeState.copyState();
     std::unique_ptr<juce::XmlElement> xml(state.createXml());
 
-    appData.getStateInformation(xml);
+    appController.getStateInformation(xml);
 
     copyXmlToBinary(*xml, destData);
 }
@@ -178,7 +178,7 @@ void ScsynthclientAudioProcessor::setStateInformation(const void* data, int size
     if (xml->hasTagName(valueTreeState.state.getType()))
         valueTreeState.replaceState(juce::ValueTree::fromXml(*xml));
 
-    appData.setStateInformation(xml);
+    appController.setStateInformation(xml);
 }
 
 //==============================================================================

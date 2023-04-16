@@ -9,7 +9,7 @@
 
 #define SYNTHNAME_STR "{{SYNTH_NAME}}"
 
-struct AppData
+struct AppController
 {
     struct Parameter
     {
@@ -37,6 +37,8 @@ struct AppData
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);
 
+    /////////////////////////////////////////////////
+    
     std::function<void()> onClientIDUpdated;
     std::function<void()> onPortChanged;
     std::function<void()> onSendCode;
@@ -44,6 +46,9 @@ struct AppData
     std::function<void(int)> onArgumentChanged;
     std::function<void(int)> onPitchbendRangeChanged;
 
+    /////////////////////////////////////////////////
+    // scd 
+    
     // Load scd string
     void loadSCD(const std::string& scd);
 

@@ -55,7 +55,7 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ScsynthclientAudioProcessor& processor;
-    AppData& appData;
+    AppController& appData;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
     int index;
     //[/UserVariables]

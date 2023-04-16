@@ -11,7 +11,7 @@
 #include <JuceHeader.h>
 
 #include "SynthClient.h"
-#include "AppData.h"
+#include "AppController.h"
 
 //==============================================================================
 /**
@@ -26,7 +26,7 @@ public:
     bool inited = false;
     
     juce::AudioProcessorValueTreeState valueTreeState;
-    AppData appData;
+    AppController appController;
     std::unique_ptr<SynthClient> synthClient;
     
     bool initPlugin();

@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 
-#include "AppData.h"
+#include "AppController.h"
 #include "OSCClient.h"
 
 class SynthClient
@@ -15,7 +15,7 @@ class SynthClient
 
     std::shared_ptr<OSCClient> oscClient;
     juce::MPEInstrument instrument;
-    AppData& appData;
+    AppController& appController;
     
 public:
 
@@ -30,7 +30,7 @@ public:
         float release_time = 0;
     };
 
-    SynthClient(AppData& appData);
+    SynthClient(AppController& appController);
     ~SynthClient() override;
 
     int getNextNodeID()

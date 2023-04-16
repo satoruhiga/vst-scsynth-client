@@ -1,24 +1,24 @@
 #include "SynthClient.h"
 
-SynthClient::SynthClient(AppData& appData)
-    : appData(appData)
+SynthClient::SynthClient(AppController& appController)
+    : appController(appController)
 {
     instrument.addListener(this);
-    instrument.enableLegacyMode(appData.pitchbend_range);
+    instrument.enableLegacyMode(appController.pitchbend_range);
 
-    oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
+    oscClient = std::make_shared<OSCClient>(appController.scsynth_port, appController.sclang_port);
     if (oscClient->getClientID() != -1)
     {
-        appData.client_id = oscClient->getClientID();
-        if (appData.onClientIDUpdated)
-            appData.onClientIDUpdated();
+        appController.client_id = oscClient->getClientID();
+        if (appController.onClientIDUpdated)
+            appController.onClientIDUpdated();
     }
 
-    appData.onSendCode = std::bind(&SynthClient::sendCode, this);
-    appData.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
-    appData.onPortChanged = std::bind(&SynthClient::portChanged, this);
-    appData.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
-    appData.onPitchbendRangeChanged = [this](int v)
+    appController.onSendCode = std::bind(&SynthClient::sendCode, this);
+    appController.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
+    appController.onPortChanged = std::bind(&SynthClient::portChanged, this);
+    appController.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
+    appController.onPitchbendRangeChanged = [this](int v)
     {
         instrument.enableLegacyMode(v);
     };
@@ -43,7 +43,7 @@ int SynthClient::sendSynthNew(SynthNote& note)
 
     juce::OSCMessage message(
         "/s_new",
-        juce::OSCArgument(appData.synthdef_name),
+        juce::OSCArgument(appController.synthdef_name),
         note.note_id, add_action, target_node_id,
         juce::String("freq"), note.freq,
         juce::String("amp"), note.velocity,
@@ -51,7 +51,7 @@ int SynthClient::sendSynthNew(SynthNote& note)
         juce::String("timbre"), note.timbre
     );
 
-    for (auto& p : appData.params)
+    for (auto& p : appController.params)
     {
         if (p.name.empty())
             continue;
@@ -85,17 +85,17 @@ void SynthClient::sendSynthFree(SynthNote& note)
 
 void SynthClient::portChanged()
 {
-    oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
-    if (appData.onClientIDUpdated)
-        appData.onClientIDUpdated();
+    oscClient = std::make_shared<OSCClient>(appController.scsynth_port, appController.sclang_port);
+    if (appController.onClientIDUpdated)
+        appController.onClientIDUpdated();
 }
 
 void SynthClient::sendCode()
 {
     if (!oscClient) return;
 
-    juce::String code = appData.code;
-    code = code.replace(SYNTHNAME_STR, appData.synthdef_name);
+    juce::String code = appController.code;
+    code = code.replace(SYNTHNAME_STR, appController.synthdef_name);
     juce::OSCMessage message("/eval", code.trim());
     oscClient->sendToSCLang(message);
 }
@@ -114,7 +114,7 @@ void SynthClient::sendTestTone(bool state)
 void SynthClient::argumentChanged(int index)
 {
     if (!oscClient) return;
-    if (!appData.liveargs) return;
+    if (!appController.liveargs) return;
 
     for (auto n : synthNotes)
     {
@@ -122,7 +122,7 @@ void SynthClient::argumentChanged(int index)
         if (note.note_id == -1)
             continue;
 
-        auto& p = appData.params[index];
+        auto& p = appController.params[index];
         float v = p.value * (p.value_max - p.value_min) + p.value_min;
 
         juce::OSCMessage message(
@@ -150,7 +150,7 @@ void SynthClient::noteAdded(juce::MPENote note)
 {
     SynthNote s;
     s.freq = note.getFrequencyInHertz();
-    s.velocity = note.noteOnVelocity.asUnsignedFloat() * appData.master_velocity;
+    s.velocity = note.noteOnVelocity.asUnsignedFloat() * appController.master_velocity;
     s.pressure = note.pressure.asUnsignedFloat();
     s.timbre = note.timbre.asUnsignedFloat();
 
@@ -224,7 +224,7 @@ void SynthClient::noteReleased(juce::MPENote note)
         return;
 
     SynthNote& s = it->second;
-    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat() * appData.master_velocity;
+    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat() * appController.master_velocity;
 
     sendSynthFree(s);
 

@@ -1,8 +1,8 @@
-#include "AppData.h"
+#include "AppController.h"
 #include <regex>
 #include "json.hpp"
 
-void AppData::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
     xml->setAttribute("synthdef_name", synthdef_name);
     xml->setAttribute("scsynth_port", scsynth_port);
@@ -26,7 +26,7 @@ void AppData::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     }
 }
 
-void AppData::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
+void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
     synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
     scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
@@ -52,7 +52,7 @@ void AppData::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 //////////////////////////////////////////////////////////////////////////
 
-void AppData::loadSCD(const std::string& scd)
+void AppController::loadSCD(const std::string& scd)
 {
     code = scd;
 
@@ -79,12 +79,12 @@ void AppData::loadSCD(const std::string& scd)
 
 //////////////////////////////////////////////////////////////////////////
 
-bool AppData::hasTempSCD() const
+bool AppController::hasTempSCD() const
 {
     return temp_scd_watch != nullptr;
 }
 
-void AppData::createTempSCD()
+void AppController::createTempSCD()
 {
     std::string name = std::tmpnam(nullptr);
     name += "_" + synthdef_name + ".scd";
@@ -109,7 +109,7 @@ void AppData::createTempSCD()
              {
                  static void* callback(void* userData)
                  {
-                     AppData* appData = static_cast<AppData*>(userData);
+                     AppController* appData = static_cast<AppController*>(userData);
                      if (appData->onTempSCDModified)
                          appData->onTempSCDModified();
 
@@ -123,7 +123,7 @@ void AppData::createTempSCD()
      });
 }
 
-void AppData::destroyTempSCD()
+void AppController::destroyTempSCD()
 {
     if (!hasTempSCD())
         return;
@@ -132,7 +132,7 @@ void AppData::destroyTempSCD()
     std::remove(temp_scd_path.c_str());
 }
 
-void AppData::openTempSCD()
+void AppController::openTempSCD()
 {
     if (!hasTempSCD())
         return;
