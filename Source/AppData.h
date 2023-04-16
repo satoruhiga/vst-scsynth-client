@@ -44,6 +44,9 @@ struct AppData
     std::function<void(int)> onArgumentChanged;
     std::function<void(int)> onPitchbendRangeChanged;
 
+    // Load scd string
+    void loadSCD(const std::string& scd);
+
     // External scd file
     std::string temp_scd_path;
     std::unique_ptr<filewatch::FileWatch<std::string>> temp_scd_watch;

@@ -570,6 +570,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             text_code->setText(appData.code);
             if (appData.onSendCode)
                 appData.onSendCode();
+
+            appData.loadSCD(appData.code);
         };
     }
     

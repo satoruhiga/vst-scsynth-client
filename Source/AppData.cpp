@@ -1,4 +1,6 @@
 #include "AppData.h"
+#include <regex>
+#include "json.hpp"
 
 void AppData::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
@@ -47,6 +49,35 @@ void AppData::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
         p.value = xml->getDoubleAttribute(n + "_value", 0);
     }
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+void AppData::loadSCD(const std::string& scd)
+{
+    code = scd;
+
+    std::string meta_json_str;
+
+    {
+        std::regex re(R"(\/\*(\{[\s\S]*\})\*\/)");
+        std::smatch m;
+        if (std::regex_search(code, m, re))
+        {
+            if (m.size() == 2)
+            {
+                meta_json_str = m[1].str();
+            }
+        }
+    }
+
+    using json = nlohmann::json;
+    json meta_json = json::parse(meta_json_str);
+
+    // Load synthdef name from metadata
+    synthdef_name = meta_json["name"].get<std::string>();
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 bool AppData::hasTempSCD() const
 {
