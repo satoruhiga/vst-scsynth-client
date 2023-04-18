@@ -18,7 +18,7 @@ SynthClient::SynthClient(AppController& appController)
     //         appController.onClientIDUpdated();
     // }
 
-    appController.onSendCode = std::bind(&SynthClient::sendCode, this);
+    appController.onSendCode = std::bind(&SynthClient::sendCode, this, std::placeholders::_1);
     appController.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
     appController.onPortChanged = std::bind(&SynthClient::portChanged, this);
     appController.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
@@ -114,15 +114,12 @@ void SynthClient::portChanged()
         appController.onClientIDUpdated();
 }
 
-void SynthClient::sendCode()
+void SynthClient::sendCode(const std::string& code)
 {
-    auto& appData = appController.appData;
-    
     if (!oscClient) return;
 
-    juce::String code = appData.code;
-    code = code.replace(SYNTHNAME_STR, appData.synthdef_name);
-    juce::OSCMessage message("/eval", code.trim());
+    juce::String code_ = code;
+    juce::OSCMessage message("/eval", code_.trim());
     oscClient->sendToSCLang(message);
 }
 

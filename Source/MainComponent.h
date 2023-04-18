@@ -46,7 +46,7 @@ class MainComponent  : public juce::Component
 {
 public:
     //==============================================================================
-    MainComponent (ScsynthclientAudioProcessor& processor);
+    MainComponent (juce::AudioProcessorValueTreeState& valueTreeState, AppController& appController);
     ~MainComponent() override;
 
     //==============================================================================
@@ -64,7 +64,6 @@ private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     juce::TooltipWindow tooltipWindow;
 
-    ScsynthclientAudioProcessor& processor;
     AppController& appController;
     std::vector<std::pair<std::string, juce::String>> presets;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment_master_vel;

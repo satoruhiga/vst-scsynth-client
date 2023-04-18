@@ -1,13 +1,33 @@
 #include "AppController.h"
 #include <regex>
 #include "json.hpp"
+#include "SynthClient.h"
+#include "PluginEditor.h"
+
+bool AppController::initPlugin(ScsynthclientAudioProcessorEditor* editor)
+{
+    editor->loadFromAppData();
+    connectToServer();
+
+    return true;
+}
+
+void AppController::connectToServer()
+{
+    synthClient = std::make_shared<SynthClient>(*this);
+}
+
+void AppController::processMidiBuffer(const juce::MidiBuffer& midiMessages)
+{
+    if (synthClient)
+        synthClient->processMidiBuffer(midiMessages);
+}
 
 void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
     xml->setAttribute("synthdef_name", appData.synthdef_name);
     xml->setAttribute("scsynth_port", appData.scsynth_port);
     xml->setAttribute("sclang_port", appData.sclang_port);
-    // xml->setAttribute("autorelease", appData.autorelease);
     xml->setAttribute("master_velocity", appData.master_velocity);
     xml->setAttribute("liveargs", appData.liveargs);
     xml->setAttribute("send_on_load", appData.send_on_load);
@@ -31,7 +51,6 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     appData.synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
     appData.scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
     appData.sclang_port = xml->getIntAttribute("sclang_port", 57120);
-    // appData.autorelease = xml->getBoolAttribute("autorelease", true);
     appData.master_velocity = xml->getDoubleAttribute("master_velocity", 1);
     appData.liveargs = xml->getBoolAttribute("liveargs", true);
     appData.send_on_load = xml->getBoolAttribute("send_on_load", true);
@@ -58,6 +77,7 @@ void AppController::loadSCD(const std::string& scd)
 
     std::string meta_json_str;
 
+    // Parse metadata block
     {
         std::regex re(R"(\/\*(\{[\s\S]*\})\*\/)");
         std::smatch m;
@@ -70,11 +90,16 @@ void AppController::loadSCD(const std::string& scd)
         }
     }
 
-    using json = nlohmann::json;
-    json meta_json = json::parse(meta_json_str);
+    // Load metadata json
+    {
+        using json = nlohmann::json;
+        json meta_json = json::parse(meta_json_str);
 
-    // Load synthdef name from metadata
-    appData.synthdef_name = meta_json["name"].get<std::string>();
+        // Load synthdef name
+        appData.synthdef_name = meta_json["name"].get<std::string>();
+
+        // TODO: Load arguments
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

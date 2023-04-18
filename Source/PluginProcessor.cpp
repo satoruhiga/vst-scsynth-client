@@ -118,37 +118,24 @@ bool ScsynthclientAudioProcessor::isBusesLayoutSupported(const BusesLayout& layo
 }
 #endif
 
-bool ScsynthclientAudioProcessor::initPlugin()
-{
-    auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
-    if (!editor)
-        return false;
-    
-    editor->loadFromAppData();
-    connectToServer();
-    
-    return true;
-}
-
-void ScsynthclientAudioProcessor::connectToServer()
-{
-    synthClient = std::make_unique<SynthClient>(appController);
-}
-
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     if (!inited)
     {
-        auto ret = initPlugin();
-        if (ret)
-            inited = true;
+        auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
+        if (editor)
+        {
+            auto ret = appController.initPlugin(editor);
+            if (ret)
+                inited = true;
+        }
     }
     
-    if (synthClient)
-        synthClient->processMidiBuffer(midiMessages);
+    appController.processMidiBuffer(midiMessages);
 }
 
 //==============================================================================
+
 bool ScsynthclientAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
@@ -160,6 +147,7 @@ juce::AudioProcessorEditor* ScsynthclientAudioProcessor::createEditor()
 }
 
 //==============================================================================
+
 void ScsynthclientAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
     auto state = valueTreeState.copyState();

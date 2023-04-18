@@ -23,16 +23,13 @@
 
 #include "MainComponent.h"
 
-#include <fstream>
-
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
 //==============================================================================
-MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
-    : processor(processor),
-      appController(processor.appController)
+MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState, AppController& appController)
+    : appController(appController)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -170,42 +167,42 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     label_connection_status->setBounds (264, 16, 248, 24);
 
-    arg1.reset (new ParameterComponent (processor, 0));
+    arg1.reset (new ParameterComponent (valueTreeState, appController, 0));
     addAndMakeVisible (arg1.get());
 
     arg1->setBounds (16, 128, 584, 24);
 
-    arg2.reset (new ParameterComponent (processor, 1));
+    arg2.reset (new ParameterComponent (valueTreeState, appController, 1));
     addAndMakeVisible (arg2.get());
 
     arg2->setBounds (16, 160, 584, 24);
 
-    arg3.reset (new ParameterComponent (processor, 2));
+    arg3.reset (new ParameterComponent (valueTreeState, appController, 2));
     addAndMakeVisible (arg3.get());
 
     arg3->setBounds (16, 192, 584, 24);
 
-    arg4.reset (new ParameterComponent (processor, 3));
+    arg4.reset (new ParameterComponent (valueTreeState, appController, 3));
     addAndMakeVisible (arg4.get());
 
     arg4->setBounds (16, 224, 584, 24);
 
-    arg5.reset (new ParameterComponent (processor, 4));
+    arg5.reset (new ParameterComponent (valueTreeState, appController, 4));
     addAndMakeVisible (arg5.get());
 
     arg5->setBounds (16, 256, 584, 24);
 
-    arg6.reset (new ParameterComponent (processor, 5));
+    arg6.reset (new ParameterComponent (valueTreeState, appController, 5));
     addAndMakeVisible (arg6.get());
 
     arg6->setBounds (16, 288, 584, 24);
 
-    arg7.reset (new ParameterComponent (processor, 6));
+    arg7.reset (new ParameterComponent (valueTreeState, appController, 6));
     addAndMakeVisible (arg7.get());
 
     arg7->setBounds (16, 320, 584, 24);
 
-    arg8.reset (new ParameterComponent (processor, 7));
+    arg8.reset (new ParameterComponent (valueTreeState, appController, 7));
     addAndMakeVisible (arg8.get());
 
     arg8->setBounds (16, 352, 584, 24);
@@ -350,8 +347,10 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     LookAndFeel::apply(btn_send.get());
     LookAndFeel::apply(combo_presets.get());
 
+    // TODO: scdから読み込む変数は消す
+
     auto& appData = appController.appData;
-    
+
     // Synthdef name
     {
         text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
@@ -371,8 +370,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 appData.scsynth_port = port;
 
-                if (appController.onPortChanged)
-                    appController.onPortChanged();
+                if (this->appController.onPortChanged)
+                    this->appController.onPortChanged();
             }
         };
         text_scsynth_port->onFocusLost = text_scsynth_port->onReturnKey;
@@ -385,8 +384,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 appData.sclang_port = port;
 
-                if (appController.onPortChanged)
-                    appController.onPortChanged();
+                if (this->appController.onPortChanged)
+                    this->appController.onPortChanged();
             }
         };
         text_sclang_port->onFocusLost = text_sclang_port->onReturnKey;
@@ -402,8 +401,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 appData.pitchbend_range = v;
 
-                if (appController.onPitchbendRangeChanged)
-                    appController.onPitchbendRangeChanged(v);
+                if (this->appController.onPitchbendRangeChanged)
+                    this->appController.onPitchbendRangeChanged(v);
             }
         };
     }
@@ -432,19 +431,19 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             appData.code = text_code->getText();
         };
 
-        text_code->onCtrlEnter = [this]
+        text_code->onCtrlEnter = [this, &appData]
         {
-            if (appController.onSendCode)
-                appController.onSendCode();
+            if (this->appController.onSendCode)
+                this->appController.onSendCode(appData.code);
         };
     }
 
     // Send button
     {
-        btn_send->onClick = [this]
+        btn_send->onClick = [this, &appData]
         {
-            if (appController.onSendCode)
-                appController.onSendCode();
+            if (this->appController.onSendCode)
+                this->appController.onSendCode(appData.code);
         };
     }
 
@@ -452,12 +451,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     {
         btn_edit->onClick = [this]
         {
-            if (!appController.hasTempSCD())
+            if (!this->appController.hasTempSCD())
             {
-                appController.createTempSCD();
+                this->appController.createTempSCD();
             }
 
-            appController.openTempSCD();
+            this->appController.openTempSCD();
         };
     }
 
@@ -470,8 +469,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
         if (appData.send_on_load)
         {
-            if (appController.onSendCode)
-                appController.onSendCode();
+            if (this->appController.onSendCode)
+                this->appController.onSendCode(appData.code);
         }
     }
 
@@ -486,12 +485,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 ss = s;
 
-                if (appController.onTestTone)
+                if (this->appController.onTestTone)
                 {
                     if (ss)
-                        appController.onTestTone(true);
+                        this->appController.onTestTone(true);
                     else
-                        appController.onTestTone(false);
+                        this->appController.onTestTone(false);
                 }
             }
         };
@@ -562,7 +561,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             appData.master_velocity = slider_master_velocity->getValue();
         };
         attachment_master_vel.reset(new juce::AudioProcessorValueTreeState::SliderAttachment(
-            processor.valueTreeState, "master_vel", *slider_master_velocity));
+            valueTreeState, "master_vel", *slider_master_velocity));
     }
 
     // Tempfile
@@ -570,13 +569,13 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
         appController.onTempSCDModified = [this, &appData]
         {
             text_code->setText(appData.code);
-            if (appController.onSendCode)
-                appController.onSendCode();
+            if (this->appController.onSendCode)
+                this->appController.onSendCode(appData.code);
 
-            appController.loadSCD(appData.code);
+            this->appController.loadSCD(appData.code);
         };
     }
-    
+
     loadFromAppData();
 
     //[/Constructor]
@@ -657,9 +656,11 @@ void MainComponent::resized()
 void MainComponent::loadFromAppData()
 {
     auto& appData = appController.appData;
-    
+
     if (appController.onClientIDUpdated)
         appController.onClientIDUpdated();
+
+    // TODO: scdから読み込む変数は消す
 
     text_synthdef_name->setText(appData.synthdef_name);
     text_scsynth_port->setText(juce::String(appData.scsynth_port));
@@ -684,14 +685,14 @@ void MainComponent::loadFromAppData()
 void MainComponent::mouseUp(const juce::MouseEvent& event)
 {
     Component::mouseUp(event);
-    
+
     auto& appData = appController.appData;
 
     if (event.eventComponent == label_connection_status.get())
     {
         if (appData.client_id == -1)
         {
-            processor.connectToServer();
+            appController.connectToServer();
             appController.onClientIDUpdated();
         }
     }
@@ -710,10 +711,10 @@ void MainComponent::mouseUp(const juce::MouseEvent& event)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainComponent" componentName=""
-                 parentClasses="public juce::Component" constructorParams="ScsynthclientAudioProcessor&amp; processor"
-                 variableInitialisers="processor(processor)&#10;appData(processor.appData)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="612" initialHeight="732">
+                 parentClasses="public juce::Component" constructorParams="juce::AudioProcessorValueTreeState&amp; valueTreeState, AppController&amp; appController"
+                 variableInitialisers="appController(appController)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="0"
+                 initialWidth="612" initialHeight="732">
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="4 4 612 732" fill="solid: 808080" hasStroke="0"/>
   </BACKGROUND>
@@ -775,28 +776,28 @@ BEGIN_JUCER_METADATA
          typefaceStyle="Bold"/>
   <GENERICCOMPONENT name="" id="59f2633427c1cc23" memberName="arg1" virtualName=""
                     explicitFocusOrder="0" pos="16 128 584 24" class="ParameterComponent"
-                    params="processor, 0"/>
+                    params="valueTreeState, appController, 0"/>
   <GENERICCOMPONENT name="" id="469df798ec63f356" memberName="arg2" virtualName=""
                     explicitFocusOrder="0" pos="16 160 584 24" class="ParameterComponent"
-                    params="processor, 1"/>
+                    params="valueTreeState, appController, 1"/>
   <GENERICCOMPONENT name="" id="c9562bcceb5da19f" memberName="arg3" virtualName=""
                     explicitFocusOrder="0" pos="16 192 584 24" class="ParameterComponent"
-                    params="processor, 2"/>
+                    params="valueTreeState, appController, 2"/>
   <GENERICCOMPONENT name="" id="93f1a7fb66c16fe8" memberName="arg4" virtualName=""
                     explicitFocusOrder="0" pos="16 224 584 24" class="ParameterComponent"
-                    params="processor, 3"/>
+                    params="valueTreeState, appController, 3"/>
   <GENERICCOMPONENT name="" id="59433b16b0769023" memberName="arg5" virtualName=""
                     explicitFocusOrder="0" pos="16 256 584 24" class="ParameterComponent"
-                    params="processor, 4"/>
+                    params="valueTreeState, appController, 4"/>
   <GENERICCOMPONENT name="" id="64933755da142ae4" memberName="arg6" virtualName=""
                     explicitFocusOrder="0" pos="16 288 584 24" class="ParameterComponent"
-                    params="processor, 5"/>
+                    params="valueTreeState, appController, 5"/>
   <GENERICCOMPONENT name="" id="4ada125e95dc25e5" memberName="arg7" virtualName=""
                     explicitFocusOrder="0" pos="16 320 584 24" class="ParameterComponent"
-                    params="processor, 6"/>
+                    params="valueTreeState, appController, 6"/>
   <GENERICCOMPONENT name="" id="d64d023030bec916" memberName="arg8" virtualName=""
                     explicitFocusOrder="0" pos="16 352 584 24" class="ParameterComponent"
-                    params="processor, 7"/>
+                    params="valueTreeState, appController, 7"/>
   <TOGGLEBUTTON name="" id="63638d04d75c5245" memberName="btn_send_on_load" virtualName=""
                 explicitFocusOrder="0" pos="176 688 112 24" tooltip="Automatically send a code when plugin is loaded"
                 buttonText="Send on Load" connectedEdges="0" needsCallback="0"

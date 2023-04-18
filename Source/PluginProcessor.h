@@ -10,7 +10,6 @@
 
 #include <JuceHeader.h>
 
-#include "SynthClient.h"
 #include "AppController.h"
 
 //==============================================================================
@@ -22,15 +21,12 @@ class ScsynthclientAudioProcessor
     , public juce::AudioProcessorARAExtension
 #endif
 {
-public:
     bool inited = false;
+    
+public:
     
     juce::AudioProcessorValueTreeState valueTreeState;
     AppController appController;
-    std::unique_ptr<SynthClient> synthClient;
-    
-    bool initPlugin();
-    void connectToServer();
     
     //==============================================================================
     ScsynthclientAudioProcessor();

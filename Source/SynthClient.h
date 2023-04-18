@@ -43,7 +43,7 @@ public:
 
     /////////////////////////////////////////////////
 
-    void sendCode();
+    void sendCode(const std::string& code);
     void sendTestTone(bool state);
     void portChanged();
     void argumentChanged(int index);

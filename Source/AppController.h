@@ -9,8 +9,21 @@
 
 #define SYNTHNAME_STR "{{SYNTH_NAME}}"
 
+class SynthClient;
+class ScsynthclientAudioProcessorEditor;
+
 struct AppController
 {
+    bool initPlugin(ScsynthclientAudioProcessorEditor* editor);
+    
+    /////////////////////////////////////////////////
+    
+    std::shared_ptr<SynthClient> synthClient;
+    void connectToServer();
+    void processMidiBuffer(const juce::MidiBuffer& midiMessages);
+
+    /////////////////////////////////////////////////
+    
     struct Parameter
     {
         std::string name;
@@ -25,7 +38,6 @@ struct AppController
         int sclang_port = 57120;
         int client_id = -1;
 
-        // bool autorelease;
         float master_velocity = 1;
         bool liveargs = false;
         bool send_on_load = true;
@@ -44,7 +56,7 @@ struct AppController
     
     std::function<void()> onClientIDUpdated;
     std::function<void()> onPortChanged;
-    std::function<void()> onSendCode;
+    std::function<void(const std::string&)> onSendCode;
     std::function<void(bool)> onTestTone;
     std::function<void(int)> onArgumentChanged;
     std::function<void(int)> onPitchbendRangeChanged;

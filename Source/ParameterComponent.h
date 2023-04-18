@@ -39,7 +39,7 @@ class ParameterComponent  : public juce::Component
 {
 public:
     //==============================================================================
-    ParameterComponent (ScsynthclientAudioProcessor& processor, int index);
+    ParameterComponent (juce::AudioProcessorValueTreeState& valueTreeState, AppController& appController, int index);
     ~ParameterComponent() override;
 
     //==============================================================================
@@ -54,7 +54,6 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    ScsynthclientAudioProcessor& processor;
     AppController& appController;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment;
     int index;

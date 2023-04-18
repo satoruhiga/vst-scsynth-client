@@ -27,9 +27,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, int index)
-    : processor(processor),
-      appController(processor.appController)
+ParameterComponent::ParameterComponent (juce::AudioProcessorValueTreeState& valueTreeState, AppController& appController, int index)
+    : appController(appController)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -119,12 +118,12 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     {
         param.value = slider_param_value->getValue();
 
-        if (appController.onArgumentChanged)
-            appController.onArgumentChanged(index);
+        if (this->appController.onArgumentChanged)
+            this->appController.onArgumentChanged(index);
     };
 
     auto par_name = "arg" + juce::String(index + 1);
-    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.valueTreeState, par_name, *slider_param_value);
+    attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(valueTreeState, par_name, *slider_param_value);
     //[/Constructor]
 }
 
@@ -190,10 +189,10 @@ void ParameterComponent::loadFromAppData()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ParameterComponent" componentName=""
-                 parentClasses="public juce::Component" constructorParams="ScsynthclientAudioProcessor&amp; processor, int index"
-                 variableInitialisers="processor(processor)&#10;appData(processor.appData)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
+                 parentClasses="public juce::Component" constructorParams="juce::AudioProcessorValueTreeState&amp; valueTreeState, AppController&amp; appController, int index"
+                 variableInitialisers="appController(appController)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="0"
+                 initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ff323e44">
     <RECT pos="0 0 584 24" fill="solid: 8b2aa5" hasStroke="0"/>
   </BACKGROUND>
