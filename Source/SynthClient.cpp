@@ -3,16 +3,20 @@
 SynthClient::SynthClient(AppController& appController)
     : appController(appController)
 {
+    auto& appData = appController.appData;
+    
     instrument.addListener(this);
-    instrument.enableLegacyMode(appController.pitchbend_range);
+    instrument.enableLegacyMode(appData.pitchbend_range);
 
-    oscClient = std::make_shared<OSCClient>(appController.scsynth_port, appController.sclang_port);
-    if (oscClient->getClientID() != -1)
-    {
-        appController.client_id = oscClient->getClientID();
-        if (appController.onClientIDUpdated)
-            appController.onClientIDUpdated();
-    }
+    // oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
+    //
+    // // Get client id
+    // if (oscClient->getClientID() != -1)
+    // {
+    //     appData.client_id = oscClient->getClientID();
+    //     if (appController.onClientIDUpdated)
+    //         appController.onClientIDUpdated();
+    // }
 
     appController.onSendCode = std::bind(&SynthClient::sendCode, this);
     appController.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
@@ -30,6 +34,24 @@ SynthClient::~SynthClient()
     oscClient.reset();
 }
 
+void SynthClient::connectToServer(int scsynth_port, int osc_port)
+{
+    auto& appData = appController.appData;
+    oscClient = std::make_shared<OSCClient>(scsynth_port, osc_port);
+    appData.client_id = oscClient->getClientID();
+    if (appController.onClientIDUpdated)
+        appController.onClientIDUpdated();
+}
+
+int SynthClient::getNextNodeID()
+{
+    int nid = currentNoteID;
+    currentNoteID += 1;
+    currentNoteID %= NODES_PAR_CLIENT;
+
+    return NODE_START_INDEX + nid + oscClient->getClientID() * NODES_PAR_CLIENT;
+}
+
 /////////////////////////////////////////////////
 
 int SynthClient::sendSynthNew(SynthNote& note)
@@ -38,12 +60,13 @@ int SynthClient::sendSynthNew(SynthNote& note)
 
     note.note_id = getNextNodeID();
 
+    auto& appData = appController.appData;
     int add_action = 0;
     int target_node_id = 1;
 
     juce::OSCMessage message(
         "/s_new",
-        juce::OSCArgument(appController.synthdef_name),
+        juce::OSCArgument(appData.synthdef_name),
         note.note_id, add_action, target_node_id,
         juce::String("freq"), note.freq,
         juce::String("amp"), note.velocity,
@@ -51,7 +74,7 @@ int SynthClient::sendSynthNew(SynthNote& note)
         juce::String("timbre"), note.timbre
     );
 
-    for (auto& p : appController.params)
+    for (auto& p : appData.params)
     {
         if (p.name.empty())
             continue;
@@ -85,17 +108,20 @@ void SynthClient::sendSynthFree(SynthNote& note)
 
 void SynthClient::portChanged()
 {
-    oscClient = std::make_shared<OSCClient>(appController.scsynth_port, appController.sclang_port);
+    auto& appData = appController.appData;
+    oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
     if (appController.onClientIDUpdated)
         appController.onClientIDUpdated();
 }
 
 void SynthClient::sendCode()
 {
+    auto& appData = appController.appData;
+    
     if (!oscClient) return;
 
-    juce::String code = appController.code;
-    code = code.replace(SYNTHNAME_STR, appController.synthdef_name);
+    juce::String code = appData.code;
+    code = code.replace(SYNTHNAME_STR, appData.synthdef_name);
     juce::OSCMessage message("/eval", code.trim());
     oscClient->sendToSCLang(message);
 }
@@ -113,8 +139,10 @@ void SynthClient::sendTestTone(bool state)
 
 void SynthClient::argumentChanged(int index)
 {
+    auto& appData = appController.appData;
+    
     if (!oscClient) return;
-    if (!appController.liveargs) return;
+    if (!appData.liveargs) return;
 
     for (auto n : synthNotes)
     {
@@ -122,7 +150,7 @@ void SynthClient::argumentChanged(int index)
         if (note.note_id == -1)
             continue;
 
-        auto& p = appController.params[index];
+        auto& p = appData.params[index];
         float v = p.value * (p.value_max - p.value_min) + p.value_min;
 
         juce::OSCMessage message(
@@ -148,9 +176,11 @@ void SynthClient::processMidiBuffer(const juce::MidiBuffer& midiMessages)
 
 void SynthClient::noteAdded(juce::MPENote note)
 {
+    auto& appData = appController.appData;
+    
     SynthNote s;
     s.freq = note.getFrequencyInHertz();
-    s.velocity = note.noteOnVelocity.asUnsignedFloat() * appController.master_velocity;
+    s.velocity = note.noteOnVelocity.asUnsignedFloat() * appData.master_velocity;
     s.pressure = note.pressure.asUnsignedFloat();
     s.timbre = note.timbre.asUnsignedFloat();
 
@@ -219,12 +249,14 @@ void SynthClient::noteKeyStateChanged(juce::MPENote note)
 
 void SynthClient::noteReleased(juce::MPENote note)
 {
+    auto& appData = appController.appData;
+    
     auto it = synthNotes.find(note.noteID);
     if (it == synthNotes.end())
         return;
 
     SynthNote& s = it->second;
-    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat() * appController.master_velocity;
+    s.note_off_velocity = note.noteOffVelocity.asUnsignedFloat() * appData.master_velocity;
 
     sendSynthFree(s);
 

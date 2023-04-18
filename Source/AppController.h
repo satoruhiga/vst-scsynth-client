@@ -17,22 +17,25 @@ struct AppController
         float value_min = 0, value_max = 1;
         float value = 0;
     };
-    
-    std::string synthdef_name = "Synth1";
-    int scsynth_port = 57110;
-    int sclang_port = 57120;
-    int client_id = -1;
 
-    // bool autorelease;
-    float master_velocity = 1;
-    bool liveargs = false;
-    bool send_on_load = true;
+    struct AppData
+    {
+        std::string synthdef_name = "Synth1";
+        int scsynth_port = 57110;
+        int sclang_port = 57120;
+        int client_id = -1;
 
-    int pitchbend_range = 48;
+        // bool autorelease;
+        float master_velocity = 1;
+        bool liveargs = false;
+        bool send_on_load = true;
 
-    std::string code;
+        int pitchbend_range = 48;
 
-    std::array<Parameter, 8> params;
+        std::string code;
+
+        std::array<Parameter, 8> params;
+    } appData;
 
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);
     void setStateInformation(std::unique_ptr<juce::XmlElement>& xml);

@@ -65,7 +65,7 @@ private:
     juce::TooltipWindow tooltipWindow;
 
     ScsynthclientAudioProcessor& processor;
-    AppController& appData;
+    AppController& appController;
     std::vector<std::pair<std::string, juce::String>> presets;
     std::shared_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachment_master_vel;
     //[/UserVariables]

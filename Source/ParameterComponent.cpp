@@ -29,7 +29,7 @@
 //==============================================================================
 ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, int index)
     : processor(processor),
-      appData(processor.appController)
+      appController(processor.appController)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -93,7 +93,8 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     LookAndFeel::apply(text_param_name.get());
     LookAndFeel::apply(text_param_min.get());
     LookAndFeel::apply(text_param_max.get());
-    
+
+    auto& appData = appController.appData;
     auto& param = appData.params[index];
 
     text_param_name->setInputRestrictions(32, "01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -118,8 +119,8 @@ ParameterComponent::ParameterComponent (ScsynthclientAudioProcessor& processor, 
     {
         param.value = slider_param_value->getValue();
 
-        if (appData.onArgumentChanged)
-            appData.onArgumentChanged(index);
+        if (appController.onArgumentChanged)
+            appController.onArgumentChanged(index);
     };
 
     auto par_name = "arg" + juce::String(index + 1);
@@ -169,6 +170,7 @@ void ParameterComponent::resized()
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void ParameterComponent::loadFromAppData()
 {
+    auto& appData = appController.appData;
     auto& param = appData.params[index];
     text_param_name->setText(param.name);
     text_param_min->setText(juce::String(param.value_min));

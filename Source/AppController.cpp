@@ -4,19 +4,19 @@
 
 void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
-    xml->setAttribute("synthdef_name", synthdef_name);
-    xml->setAttribute("scsynth_port", scsynth_port);
-    xml->setAttribute("sclang_port", sclang_port);
-    // xml->setAttribute("autorelease", autorelease);
-    xml->setAttribute("master_velocity", master_velocity);
-    xml->setAttribute("liveargs", liveargs);
-    xml->setAttribute("send_on_load", send_on_load);
-    xml->setAttribute("code", code);
-    xml->setAttribute("pitchbend_range", pitchbend_range);
+    xml->setAttribute("synthdef_name", appData.synthdef_name);
+    xml->setAttribute("scsynth_port", appData.scsynth_port);
+    xml->setAttribute("sclang_port", appData.sclang_port);
+    // xml->setAttribute("autorelease", appData.autorelease);
+    xml->setAttribute("master_velocity", appData.master_velocity);
+    xml->setAttribute("liveargs", appData.liveargs);
+    xml->setAttribute("send_on_load", appData.send_on_load);
+    xml->setAttribute("code", appData.code);
+    xml->setAttribute("pitchbend_range", appData.pitchbend_range);
 
     for (int i = 0; i < 8; i++)
     {
-        auto& p = params[i];
+        auto& p = appData.params[i];
         const auto n = juce::String("arg") + std::to_string(i + 1);
 
         xml->setAttribute(n + "_name", p.name);
@@ -28,19 +28,19 @@ void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
-    synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
-    scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
-    sclang_port = xml->getIntAttribute("sclang_port", 57120);
-    // autorelease = xml->getBoolAttribute("autorelease", true);
-    master_velocity = xml->getDoubleAttribute("master_velocity", 1);
-    liveargs = xml->getBoolAttribute("liveargs", true);
-    send_on_load = xml->getBoolAttribute("send_on_load", true);
-    code = xml->getStringAttribute("code", "").toStdString();
-    pitchbend_range = xml->getIntAttribute("pitchbend_range", 48);
+    appData.synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
+    appData.scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
+    appData.sclang_port = xml->getIntAttribute("sclang_port", 57120);
+    // appData.autorelease = xml->getBoolAttribute("autorelease", true);
+    appData.master_velocity = xml->getDoubleAttribute("master_velocity", 1);
+    appData.liveargs = xml->getBoolAttribute("liveargs", true);
+    appData.send_on_load = xml->getBoolAttribute("send_on_load", true);
+    appData.code = xml->getStringAttribute("code", "").toStdString();
+    appData.pitchbend_range = xml->getIntAttribute("pitchbend_range", 48);
 
     for (int i = 0; i < 8; i++)
     {
-        auto& p = params[i];
+        auto& p = appData.params[i];
         const auto n = std::string("arg") + std::to_string(i + 1);
 
         p.name = xml->getStringAttribute(n + "_name", "").toStdString();
@@ -54,14 +54,14 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 void AppController::loadSCD(const std::string& scd)
 {
-    code = scd;
+    appData.code = scd;
 
     std::string meta_json_str;
 
     {
         std::regex re(R"(\/\*(\{[\s\S]*\})\*\/)");
         std::smatch m;
-        if (std::regex_search(code, m, re))
+        if (std::regex_search(appData.code, m, re))
         {
             if (m.size() == 2)
             {
@@ -74,7 +74,7 @@ void AppController::loadSCD(const std::string& scd)
     json meta_json = json::parse(meta_json_str);
 
     // Load synthdef name from metadata
-    synthdef_name = meta_json["name"].get<std::string>();
+    appData.synthdef_name = meta_json["name"].get<std::string>();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,12 @@ bool AppController::hasTempSCD() const
 void AppController::createTempSCD()
 {
     std::string name = std::tmpnam(nullptr);
-    name += "_" + synthdef_name + ".scd";
+    name += "_" + appData.synthdef_name + ".scd";
     temp_scd_path = name;
 
     {
         std::ofstream ofs(name.c_str());
-        ofs << code;
+        ofs << appData.code;
     }
 
     temp_scd_watch = std::make_unique<filewatch::FileWatch<std::string>>
@@ -103,7 +103,7 @@ void AppController::createTempSCD()
          {
              std::ifstream ifs(temp_scd_path.c_str());
              std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-             code = str;
+             appData.code = str;
 
              struct Callback
              {

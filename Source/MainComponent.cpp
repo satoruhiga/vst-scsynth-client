@@ -32,7 +32,7 @@
 //==============================================================================
 MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     : processor(processor),
-      appData(processor.appController)
+      appController(processor.appController)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -350,10 +350,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     LookAndFeel::apply(btn_send.get());
     LookAndFeel::apply(combo_presets.get());
 
+    auto& appData = appController.appData;
+    
     // Synthdef name
     {
         text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
-        text_synthdef_name->onTextChange = [this]
+        text_synthdef_name->onTextChange = [this, &appData]
         {
             appData.synthdef_name = text_synthdef_name->getText().toStdString();
         };
@@ -362,29 +364,29 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     // Ports
     {
         text_scsynth_port->setInputRestrictions(5, "01234567890");
-        text_scsynth_port->onReturnKey = [this]
+        text_scsynth_port->onReturnKey = [this, &appData]
         {
             int port = text_scsynth_port->getText().getIntValue();
             if (port > 0 && port < 65536)
             {
                 appData.scsynth_port = port;
 
-                if (appData.onPortChanged)
-                    appData.onPortChanged();
+                if (appController.onPortChanged)
+                    appController.onPortChanged();
             }
         };
         text_scsynth_port->onFocusLost = text_scsynth_port->onReturnKey;
 
         text_sclang_port->setInputRestrictions(5, "01234567890");
-        text_sclang_port->onReturnKey = [this]
+        text_sclang_port->onReturnKey = [this, &appData]
         {
             int port = text_sclang_port->getText().getIntValue();
             if (port > 0 && port < 65536)
             {
                 appData.sclang_port = port;
 
-                if (appData.onPortChanged)
-                    appData.onPortChanged();
+                if (appController.onPortChanged)
+                    appController.onPortChanged();
             }
         };
         text_sclang_port->onFocusLost = text_sclang_port->onReturnKey;
@@ -393,15 +395,15 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     // Pitchbend range
     {
         text_pitchbend_range->setInputRestrictions(2, "01234567890");
-        text_pitchbend_range->onReturnKey = [this]
+        text_pitchbend_range->onReturnKey = [this, &appData]
         {
             int v = text_pitchbend_range->getText().getIntValue();
             if (v > 0 && v < 96)
             {
                 appData.pitchbend_range = v;
 
-                if (appData.onPitchbendRangeChanged)
-                    appData.onPitchbendRangeChanged(v);
+                if (appController.onPitchbendRangeChanged)
+                    appController.onPitchbendRangeChanged(v);
             }
         };
     }
@@ -417,7 +419,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     // Live args
     {
-        btn_liveargs->onClick = [this]
+        btn_liveargs->onClick = [this, &appData]
         {
             appData.liveargs = btn_liveargs->getToggleState();
         };
@@ -425,15 +427,15 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     // Code editor
     {
-        text_code->onDocumentChanged = [this]
+        text_code->onDocumentChanged = [this, &appData]
         {
             appData.code = text_code->getText();
         };
 
         text_code->onCtrlEnter = [this]
         {
-            if (appData.onSendCode)
-                appData.onSendCode();
+            if (appController.onSendCode)
+                appController.onSendCode();
         };
     }
 
@@ -441,8 +443,8 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     {
         btn_send->onClick = [this]
         {
-            if (appData.onSendCode)
-                appData.onSendCode();
+            if (appController.onSendCode)
+                appController.onSendCode();
         };
     }
 
@@ -450,26 +452,26 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
     {
         btn_edit->onClick = [this]
         {
-            if (!appData.hasTempSCD())
+            if (!appController.hasTempSCD())
             {
-                appData.createTempSCD();
+                appController.createTempSCD();
             }
 
-            appData.openTempSCD();
+            appController.openTempSCD();
         };
     }
 
     // Send on load
     {
-        btn_send_on_load->onClick = [this]
+        btn_send_on_load->onClick = [this, &appData]
         {
             appData.send_on_load = btn_send_on_load->getToggleState();
         };
 
         if (appData.send_on_load)
         {
-            if (appData.onSendCode)
-                appData.onSendCode();
+            if (appController.onSendCode)
+                appController.onSendCode();
         }
     }
 
@@ -484,12 +486,12 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             {
                 ss = s;
 
-                if (appData.onTestTone)
+                if (appController.onTestTone)
                 {
                     if (ss)
-                        appData.onTestTone(true);
+                        appController.onTestTone(true);
                     else
-                        appData.onTestTone(false);
+                        appController.onTestTone(false);
                 }
             }
         };
@@ -497,7 +499,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     // Client ID
     {
-        appData.onClientIDUpdated = [this]()
+        appController.onClientIDUpdated = [this, &appData]()
         {
             if (appData.client_id == -1)
             {
@@ -532,7 +534,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
             itemid += 1;
         }
 
-        combo_presets->onChange = [this]
+        combo_presets->onChange = [this, &appData]
         {
             auto index = combo_presets->getSelectedItemIndex();
             if (index == -1)
@@ -555,7 +557,7 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     // Master volume
     {
-        slider_master_velocity->onValueChange = [this]
+        slider_master_velocity->onValueChange = [this, &appData]
         {
             appData.master_velocity = slider_master_velocity->getValue();
         };
@@ -565,13 +567,13 @@ MainComponent::MainComponent (ScsynthclientAudioProcessor& processor)
 
     // Tempfile
     {
-        appData.onTempSCDModified = [this]
+        appController.onTempSCDModified = [this, &appData]
         {
             text_code->setText(appData.code);
-            if (appData.onSendCode)
-                appData.onSendCode();
+            if (appController.onSendCode)
+                appController.onSendCode();
 
-            appData.loadSCD(appData.code);
+            appController.loadSCD(appData.code);
         };
     }
     
@@ -585,7 +587,7 @@ MainComponent::~MainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     attachment_master_vel.reset();
     label_connection_status->removeMouseListener(this);
-    appData.destroyTempSCD();
+    appController.destroyTempSCD();
     //[/Destructor_pre]
 
     juce__label5 = nullptr;
@@ -654,8 +656,10 @@ void MainComponent::resized()
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void MainComponent::loadFromAppData()
 {
-    if (appData.onClientIDUpdated)
-        appData.onClientIDUpdated();
+    auto& appData = appController.appData;
+    
+    if (appController.onClientIDUpdated)
+        appController.onClientIDUpdated();
 
     text_synthdef_name->setText(appData.synthdef_name);
     text_scsynth_port->setText(juce::String(appData.scsynth_port));
@@ -680,13 +684,15 @@ void MainComponent::loadFromAppData()
 void MainComponent::mouseUp(const juce::MouseEvent& event)
 {
     Component::mouseUp(event);
+    
+    auto& appData = appController.appData;
 
     if (event.eventComponent == label_connection_status.get())
     {
         if (appData.client_id == -1)
         {
             processor.connectToServer();
-            appData.onClientIDUpdated();
+            appController.onClientIDUpdated();
         }
     }
 }

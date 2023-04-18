@@ -33,14 +33,8 @@ public:
     SynthClient(AppController& appController);
     ~SynthClient() override;
 
-    int getNextNodeID()
-    {
-        int nid = currentNoteID;
-        currentNoteID += 1;
-        currentNoteID %= NODES_PAR_CLIENT;
-
-        return NODE_START_INDEX + nid + oscClient->getClientID() * NODES_PAR_CLIENT;
-    }
+    void connectToServer(int scsynth_port, int osc_port);
+    int getNextNodeID();
 
     /////////////////////////////////////////////////
 
