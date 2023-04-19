@@ -351,14 +351,14 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
     auto& appData = appController.appData;
 
-    // Synthdef name
-    {
-        text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
-        text_synthdef_name->onTextChange = [this, &appData]
-        {
-            appData.synthdef_name = text_synthdef_name->getText().toStdString();
-        };
-    }
+    // // Synthdef name
+    // {
+    //     text_synthdef_name->setInputRestrictions(0, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_");
+    //     text_synthdef_name->onTextChange = [this, &appData]
+    //     {
+    //         appData.synthdef_name = text_synthdef_name->getText().toStdString();
+    //     };
+    // }
 
     // Ports
     {
@@ -433,8 +433,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
         text_code->onCtrlEnter = [this, &appData]
         {
-            if (this->appController.onSendCode)
-                this->appController.onSendCode(appData.code);
+            this->appController.sendCode(appData.code);
         };
     }
 
@@ -442,8 +441,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     {
         btn_send->onClick = [this, &appData]
         {
-            if (this->appController.onSendCode)
-                this->appController.onSendCode(appData.code);
+            this->appController.sendCode(appData.code);
         };
     }
 
@@ -466,12 +464,6 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
         {
             appData.send_on_load = btn_send_on_load->getToggleState();
         };
-
-        if (appData.send_on_load)
-        {
-            if (this->appController.onSendCode)
-                this->appController.onSendCode(appData.code);
-        }
     }
 
     // Test tone
@@ -519,7 +511,6 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
     // Presets
     {
-        presets.push_back({"Empty", ""});
         presets.push_back({"Simple", juce::String(BinaryData::_Simple_scd, BinaryData::_Simple_scdSize)});
         presets.push_back({"MPE", juce::String(BinaryData::_MPE_scd, BinaryData::_MPE_scdSize)});
     }
@@ -545,6 +536,8 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
                 auto code = p.second;
                 appData.code = code.toStdString();
                 text_code->setText(code.toStdString());
+
+                this->appController.sendCode(appData.code);
             }
             catch (std::range_error&)
             {
@@ -566,13 +559,11 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
     // Tempfile
     {
-        appController.onTempSCDModified = [this, &appData]
+        appController.onTempSCDModified = [this, &appData](std::string code)
         {
-            text_code->setText(appData.code);
-            if (this->appController.onSendCode)
-                this->appController.onSendCode(appData.code);
-
-            this->appController.loadSCD(appData.code);
+            appData.code = code;
+            text_code->setText(code);
+            this->appController.sendCode(code);
         };
     }
 
@@ -656,9 +647,6 @@ void MainComponent::resized()
 void MainComponent::loadFromAppData()
 {
     auto& appData = appController.appData;
-
-    if (appController.onClientIDUpdated)
-        appController.onClientIDUpdated();
 
     // TODO: scdから読み込む変数は消す
 

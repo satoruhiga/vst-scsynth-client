@@ -1,5 +1,5 @@
 /*{
-	"name": "Simple",
+	"name": "Simple"
 }*/
 
 (

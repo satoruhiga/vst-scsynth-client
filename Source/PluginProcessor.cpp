@@ -9,9 +9,26 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+void ScsynthclientAudioProcessor::initPlugin()
+{
+    if (!inited)
+    {
+        auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
+        if (editor)
+        {
+            auto ret = appController.initPlugin(editor);
+            if (ret)
+                inited = true;
+        }
+    }
+}
+
 //==============================================================================
 ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
-    : AudioProcessor(BusesProperties())
+    : AudioProcessor(BusesProperties()
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+        )
       , valueTreeState(*this, nullptr, juce::Identifier("scsynth-client"),
                        {
                            std::make_unique<juce::AudioParameterFloat>(
@@ -120,17 +137,7 @@ bool ScsynthclientAudioProcessor::isBusesLayoutSupported(const BusesLayout& layo
 
 void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
-    if (!inited)
-    {
-        auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
-        if (editor)
-        {
-            auto ret = appController.initPlugin(editor);
-            if (ret)
-                inited = true;
-        }
-    }
-    
+    initPlugin();    
     appController.processMidiBuffer(midiMessages);
 }
 

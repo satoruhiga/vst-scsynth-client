@@ -27,7 +27,9 @@ public:
     
     juce::AudioProcessorValueTreeState valueTreeState;
     AppController appController;
-    
+
+    void initPlugin();
+
     //==============================================================================
     ScsynthclientAudioProcessor();
     ~ScsynthclientAudioProcessor() override;

@@ -7,18 +7,7 @@ SynthClient::SynthClient(AppController& appController)
     
     instrument.addListener(this);
     instrument.enableLegacyMode(appData.pitchbend_range);
-
-    // oscClient = std::make_shared<OSCClient>(appData.scsynth_port, appData.sclang_port);
-    //
-    // // Get client id
-    // if (oscClient->getClientID() != -1)
-    // {
-    //     appData.client_id = oscClient->getClientID();
-    //     if (appController.onClientIDUpdated)
-    //         appController.onClientIDUpdated();
-    // }
-
-    appController.onSendCode = std::bind(&SynthClient::sendCode, this, std::placeholders::_1);
+    
     appController.onTestTone = std::bind(&SynthClient::sendTestTone, this, std::placeholders::_1);
     appController.onPortChanged = std::bind(&SynthClient::portChanged, this);
     appController.onArgumentChanged = std::bind(&SynthClient::argumentChanged, this, std::placeholders::_1);
@@ -39,8 +28,24 @@ void SynthClient::connectToServer(int scsynth_port, int osc_port)
     auto& appData = appController.appData;
     oscClient = std::make_shared<OSCClient>(scsynth_port, osc_port);
     appData.client_id = oscClient->getClientID();
+    
     if (appController.onClientIDUpdated)
-        appController.onClientIDUpdated();
+    {
+        struct Callback
+        {
+            static void* callback(void* userData)
+            {
+                AppController* appController = static_cast<AppController*>(userData);
+                if (appController->onClientIDUpdated)
+                    appController->onClientIDUpdated();
+
+                return nullptr;
+            }
+        };
+        
+        juce::MessageManager* mm = juce::MessageManager::getInstance();
+        mm->callFunctionOnMessageThread(Callback::callback, &appController);
+    }
 }
 
 int SynthClient::getNextNodeID()

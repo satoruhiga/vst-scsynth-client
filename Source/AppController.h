@@ -14,7 +14,9 @@ class ScsynthclientAudioProcessorEditor;
 
 struct AppController
 {
+    ScsynthclientAudioProcessorEditor* editor;
     bool initPlugin(ScsynthclientAudioProcessorEditor* editor);
+    void updateEditor();
     
     /////////////////////////////////////////////////
     
@@ -22,6 +24,8 @@ struct AppController
     void connectToServer();
     void processMidiBuffer(const juce::MidiBuffer& midiMessages);
 
+    void sendCode(std::string code);
+    
     /////////////////////////////////////////////////
     
     struct Parameter
@@ -56,7 +60,6 @@ struct AppController
     
     std::function<void()> onClientIDUpdated;
     std::function<void()> onPortChanged;
-    std::function<void(const std::string&)> onSendCode;
     std::function<void(bool)> onTestTone;
     std::function<void(int)> onArgumentChanged;
     std::function<void(int)> onPitchbendRangeChanged;
@@ -65,13 +68,13 @@ struct AppController
     // scd 
     
     // Load scd string
-    void loadSCD(const std::string& scd);
+    bool loadSCD(const std::string& code);
 
     // External scd file
     std::string temp_scd_path;
     std::unique_ptr<filewatch::FileWatch<std::string>> temp_scd_watch;
     
-    std::function<void()> onTempSCDModified;
+    std::function<void(std::string)> onTempSCDModified;
     
     bool hasTempSCD() const;
     void createTempSCD();

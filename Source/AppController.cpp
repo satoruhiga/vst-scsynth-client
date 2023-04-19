@@ -6,21 +6,54 @@
 
 bool AppController::initPlugin(ScsynthclientAudioProcessorEditor* editor)
 {
-    editor->loadFromAppData();
+    this->editor = editor;
+    
+    synthClient = std::make_shared<SynthClient>(*this);
+
+    updateEditor();
     connectToServer();
+
+    if (appData.send_on_load)
+    {
+        sendCode(appData.code);
+    }
+    else
+    {
+        loadSCD(appData.code);
+    }
 
     return true;
 }
 
+void AppController::updateEditor()
+{
+    if (editor)
+        editor->loadFromAppData();
+}
+
 void AppController::connectToServer()
 {
-    synthClient = std::make_shared<SynthClient>(*this);
+    if (!synthClient)
+        return;
+
+    synthClient->connectToServer(appData.scsynth_port, appData.sclang_port);
+
+    if (onClientIDUpdated)
+        onClientIDUpdated();
 }
 
 void AppController::processMidiBuffer(const juce::MidiBuffer& midiMessages)
 {
     if (synthClient)
         synthClient->processMidiBuffer(midiMessages);
+}
+
+void AppController::sendCode(std::string code)
+{
+    if (synthClient)
+        synthClient->sendCode(code);
+
+    loadSCD(code);
 }
 
 void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
@@ -71,17 +104,15 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 //////////////////////////////////////////////////////////////////////////
 
-void AppController::loadSCD(const std::string& scd)
+bool AppController::loadSCD(const std::string& code)
 {
-    appData.code = scd;
-
     std::string meta_json_str;
 
     // Parse metadata block
     {
         std::regex re(R"(\/\*(\{[\s\S]*\})\*\/)");
         std::smatch m;
-        if (std::regex_search(appData.code, m, re))
+        if (std::regex_search(code, m, re))
         {
             if (m.size() == 2)
             {
@@ -93,13 +124,29 @@ void AppController::loadSCD(const std::string& scd)
     // Load metadata json
     {
         using json = nlohmann::json;
-        json meta_json = json::parse(meta_json_str);
 
-        // Load synthdef name
-        appData.synthdef_name = meta_json["name"].get<std::string>();
+        try
+        {
+            json meta_json = json::parse(meta_json_str);
 
-        // TODO: Load arguments
+            // Load synthdef name
+            appData.synthdef_name = meta_json["name"].get<std::string>();
+
+            appData.code = code;
+            
+            // TODO: Load arguments
+
+            updateEditor();
+            
+        }
+        catch (nlohmann::json::exception& e)
+        {
+            DBG(e.what());
+            return false;
+        }
     }
+
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,18 +179,28 @@ void AppController::createTempSCD()
 
              struct Callback
              {
+                 struct Argument
+                 {
+                     AppController* appController;
+                     std::string code;
+                 };
+
                  static void* callback(void* userData)
                  {
-                     AppController* appData = static_cast<AppController*>(userData);
-                     if (appData->onTempSCDModified)
-                         appData->onTempSCDModified();
-
+                     auto arg = static_cast<Argument*>(userData);
+                     auto appController = arg->appController;
+                     
+                     if (appController->onTempSCDModified)
+                         appController->onTempSCDModified(arg->code);
+                     
+                     delete arg;
+                     
                      return nullptr;
                  }
              };
-             
+
              juce::MessageManager* mm = juce::MessageManager::getInstance();
-             mm->callFunctionOnMessageThread(Callback::callback, this);
+             mm->callFunctionOnMessageThread(Callback::callback, new Callback::Argument{this, str});
          }
      });
 }
@@ -171,6 +228,6 @@ void AppController::openTempSCD()
 #else
     #error
 # endif
-    
+
     system(cmd.c_str());
 }
