@@ -134,7 +134,22 @@ bool AppController::loadSCD(const std::string& code)
 
             appData.code = code;
             
-            // TODO: Load arguments
+            // Load arguments
+            for (auto& a : appData.params)
+            {
+                a.name = "";
+                a.value_min = 0;
+                a.value_max = 1;
+            }
+
+            auto args = meta_json["args"].get<json::array_t>();
+            for (int i = 0; i < args.size(); i++)
+            {
+                auto& a = appData.params[i];
+                a.name = args[i]["name"].get<std::string>();
+                a.value_min = args[i]["min"].get<double>();
+                a.value_max = args[i]["max"].get<double>();
+            }
 
             updateEditor();
             

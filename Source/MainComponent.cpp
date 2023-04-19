@@ -513,6 +513,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     {
         presets.push_back({"Simple", juce::String(BinaryData::_Simple_scd, BinaryData::_Simple_scdSize)});
         presets.push_back({"MPE", juce::String(BinaryData::_MPE_scd, BinaryData::_MPE_scdSize)});
+        presets.push_back({"Argument", juce::String(BinaryData::_Argument_scd, BinaryData::_Argument_scdSize)});
     }
 
     // Preset Combo box
