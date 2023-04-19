@@ -4,6 +4,12 @@
 #include "SynthClient.h"
 #include "PluginEditor.h"
 
+AppController::~AppController()
+{
+    if (hasTempSCD())
+        destroyTempSCD();
+}
+
 bool AppController::initPlugin(ScsynthclientAudioProcessorEditor* editor)
 {
     this->editor = editor;
@@ -15,7 +21,7 @@ bool AppController::initPlugin(ScsynthclientAudioProcessorEditor* editor)
 
     if (appData.send_on_load)
     {
-        sendCode(appData.code);
+        sendCodeAndLoadSCD(appData.code);
     }
     else
     {
@@ -48,12 +54,12 @@ void AppController::processMidiBuffer(const juce::MidiBuffer& midiMessages)
         synthClient->processMidiBuffer(midiMessages);
 }
 
-void AppController::sendCode(std::string code)
+void AppController::sendCodeAndLoadSCD(std::string code)
 {
-    if (synthClient)
-        synthClient->sendCode(code);
-
     loadSCD(code);
+    
+    if (synthClient)
+        synthClient->sendCode(appData.code);
 }
 
 void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
@@ -96,10 +102,15 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 //////////////////////////////////////////////////////////////////////////
 
-bool AppController::loadSCD(const std::string& code)
+bool AppController::loadSCD(std::string code)
 {
     std::string meta_json_str;
 
+    while (code.find("\r\n") != std::string::npos)
+    {
+        code.erase(code.find("\r\n"), 1);
+    }
+    
     // Parse metadata block
     {
         std::regex re(R"(\/\*(\{[\s\S]*\})\*\/)");
@@ -188,6 +199,10 @@ void AppController::createTempSCD()
          {
              std::ifstream ifs(temp_scd_path.c_str());
              std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+
+             if (str.empty())
+                 return;
+             
              appData.code = str;
 
              struct Callback

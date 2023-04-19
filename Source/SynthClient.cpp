@@ -97,7 +97,6 @@ int SynthClient::sendSynthNew(SynthNote& note)
 void SynthClient::sendSynthFree(SynthNote& note)
 {
     if (!oscClient) return;
-    // if (!appData.autorelease) return;
 
     float gate = -note.release_time;
     juce::OSCMessage message(

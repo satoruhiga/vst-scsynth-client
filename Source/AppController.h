@@ -14,6 +14,8 @@ class ScsynthclientAudioProcessorEditor;
 
 struct AppController
 {
+    ~AppController();
+    
     ScsynthclientAudioProcessorEditor* editor;
     bool initPlugin(ScsynthclientAudioProcessorEditor* editor);
     void updateEditor();
@@ -24,7 +26,7 @@ struct AppController
     void connectToServer();
     void processMidiBuffer(const juce::MidiBuffer& midiMessages);
 
-    void sendCode(std::string code);
+    void sendCodeAndLoadSCD(std::string code);
     
     /////////////////////////////////////////////////
     
@@ -68,7 +70,7 @@ struct AppController
     // scd 
     
     // Load scd string
-    bool loadSCD(const std::string& code);
+    bool loadSCD(std::string code);
 
     // External scd file
     std::string temp_scd_path;
