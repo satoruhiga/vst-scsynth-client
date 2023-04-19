@@ -73,7 +73,6 @@ private:
     std::unique_ptr<juce::Label> juce__label5;
     std::unique_ptr<juce::Slider> slider_master_velocity;
     std::unique_ptr<juce::GroupComponent> juce__groupComponent2;
-    std::unique_ptr<juce::GroupComponent> juce__groupComponent;
     std::unique_ptr<juce::TextButton> btn_testtone;
     std::unique_ptr<juce::TextEditor> text_synthdef_name;
     std::unique_ptr<juce::Label> juce__label;
@@ -89,21 +88,19 @@ private:
     std::unique_ptr<ParameterComponent> arg4;
     std::unique_ptr<ParameterComponent> arg5;
     std::unique_ptr<ParameterComponent> arg6;
-    std::unique_ptr<ParameterComponent> arg7;
-    std::unique_ptr<ParameterComponent> arg8;
     std::unique_ptr<juce::ToggleButton> btn_send_on_load;
     std::unique_ptr<juce::TextButton> btn_send;
     std::unique_ptr<juce::Label> juce__label4;
     std::unique_ptr<juce::TextEditor> text_pitchbend_range;
     std::unique_ptr<CodeEditor> text_code;
     std::unique_ptr<juce::ComboBox> combo_presets;
-    std::unique_ptr<juce::Label> juce__label7;
-    std::unique_ptr<juce::Label> juce__label8;
-    std::unique_ptr<juce::Label> juce__label9;
-    std::unique_ptr<juce::Label> juce__label10;
     std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::Label> juce__label11;
     std::unique_ptr<juce::TextButton> btn_edit;
+    std::unique_ptr<ParameterComponent> arg7;
+    std::unique_ptr<ParameterComponent> arg8;
+    std::unique_ptr<ParameterComponent> arg9;
+    std::unique_ptr<juce::GroupComponent> juce__groupComponent;
 
 
     //==============================================================================

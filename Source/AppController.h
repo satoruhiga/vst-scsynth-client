@@ -50,7 +50,7 @@ struct AppController
 
         std::string code;
 
-        std::array<Parameter, 8> params;
+        std::array<Parameter, 9> params {};
     } appData;
 
     void getStateInformation(std::unique_ptr<juce::XmlElement>& xml);

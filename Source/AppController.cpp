@@ -58,7 +58,6 @@ void AppController::sendCode(std::string code)
 
 void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
-    xml->setAttribute("synthdef_name", appData.synthdef_name);
     xml->setAttribute("scsynth_port", appData.scsynth_port);
     xml->setAttribute("sclang_port", appData.sclang_port);
     xml->setAttribute("master_velocity", appData.master_velocity);
@@ -72,16 +71,12 @@ void AppController::getStateInformation(std::unique_ptr<juce::XmlElement>& xml)
         auto& p = appData.params[i];
         const auto n = juce::String("arg") + std::to_string(i + 1);
 
-        xml->setAttribute(n + "_name", p.name);
-        xml->setAttribute(n + "_value_min", p.value_min);
-        xml->setAttribute(n + "_value_max", p.value_max);
         xml->setAttribute(n + "_value", p.value);
     }
 }
 
 void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 {
-    appData.synthdef_name = xml->getStringAttribute("synthdef_name", "Synth1").toStdString();
     appData.scsynth_port = xml->getIntAttribute("scsynth_port", 57110);
     appData.sclang_port = xml->getIntAttribute("sclang_port", 57120);
     appData.master_velocity = xml->getDoubleAttribute("master_velocity", 1);
@@ -90,14 +85,11 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
     appData.code = xml->getStringAttribute("code", "").toStdString();
     appData.pitchbend_range = xml->getIntAttribute("pitchbend_range", 48);
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < appData.params.size(); i++)
     {
         auto& p = appData.params[i];
         const auto n = std::string("arg") + std::to_string(i + 1);
 
-        p.name = xml->getStringAttribute(n + "_name", "").toStdString();
-        p.value_min = xml->getDoubleAttribute(n + "_value_min", 0);
-        p.value_max = xml->getDoubleAttribute(n + "_value_max", 1);
         p.value = xml->getDoubleAttribute(n + "_value", 0);
     }
 }
@@ -142,13 +134,16 @@ bool AppController::loadSCD(const std::string& code)
                 a.value_max = 1;
             }
 
-            auto args = meta_json["args"].get<json::array_t>();
-            for (int i = 0; i < args.size(); i++)
+            if (meta_json.find("args") != meta_json.end())
             {
-                auto& a = appData.params[i];
-                a.name = args[i]["name"].get<std::string>();
-                a.value_min = args[i]["min"].get<double>();
-                a.value_max = args[i]["max"].get<double>();
+                auto args = meta_json["args"].get<json::array_t>();
+                for (int i = 0; i < args.size(); i++)
+                {
+                    auto& a = appData.params[i];
+                    a.name = args[i]["name"].get<std::string>();
+                    a.value_min = args[i]["min"].get<double>();
+                    a.value_max = args[i]["max"].get<double>();
+                }
             }
 
             updateEditor();
@@ -156,6 +151,9 @@ bool AppController::loadSCD(const std::string& code)
         }
         catch (nlohmann::json::exception& e)
         {
+            juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::NoIcon,
+                                                   "JSON Parse Error",
+                                                   e.what());
             DBG(e.what());
             return false;
         }

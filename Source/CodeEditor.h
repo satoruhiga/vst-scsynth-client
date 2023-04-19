@@ -4,30 +4,12 @@
 
 class CodeEditor
     : public juce::Component
-      , public juce::KeyListener
-    , public juce::CodeDocument::Listener
 {
     juce::CodeDocument codeDocument;
     juce::CPlusPlusCodeTokeniser cppTokeniser;
     std::unique_ptr<juce::CodeEditorComponent> codeEditor;
 
-    bool keyPressed(const juce::KeyPress& key, Component* originatingComponent) override
-    {
-        if (key.getKeyCode() == 13
-            && key.getModifiers() == juce::ModifierKeys::commandModifier)
-        {
-            if (onCtrlEnter)
-                onCtrlEnter();
-            return true;
-        }
-
-        return false;
-    }
-
 public:
-    
-    std::function<void(void)> onDocumentChanged;
-    std::function<void(void)> onCtrlEnter;
 
     CodeEditor()
         : juce::Component()
@@ -40,15 +22,13 @@ public:
         codeEditor->setSize(getWidth(), getHeight());
         addAndMakeVisible(codeEditor.get());
 
-        codeEditor->setLineNumbersShown(false);
+        codeEditor->setLineNumbersShown(true);
         codeEditor->setColourScheme(getDarkCodeEditorColourScheme());
         codeEditor->setFont(juce::Font(
             juce::Font::getDefaultMonospacedFontName(),
-            16,
+            13,
             juce::Font::plain));
-        codeEditor->addKeyListener(this);
-
-        codeDocument.addListener(this);
+        codeEditor->setReadOnly(true);
     }
 
     void resized() override
@@ -95,17 +75,5 @@ public:
             cs.set(t.name, juce::Colour(t.colour));
 
         return cs;
-    }
-
-    void codeDocumentTextInserted (const juce::String& newText, int insertIndex) override
-    {
-        if (onDocumentChanged)
-            onDocumentChanged();
-    }
-    
-    void codeDocumentTextDeleted (int startIndex, int endIndex) override
-    {
-        if (onDocumentChanged)
-            onDocumentChanged();
     }
 };

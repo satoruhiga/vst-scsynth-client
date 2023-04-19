@@ -14,7 +14,7 @@ ScsynthclientAudioProcessorEditor::ScsynthclientAudioProcessorEditor (Scsynthcli
     : AudioProcessorEditor (p)
     , mainComponent(p.valueTreeState, p.appController)
 {
-    setSize (mainComponent.getWidth(), mainComponent.getHeight());
+    setSize (mainComponent.getWidth() + 4, mainComponent.getHeight() + 4);
     addAndMakeVisible(mainComponent);
 }
 

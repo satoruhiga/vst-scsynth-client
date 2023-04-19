@@ -60,10 +60,8 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    std::unique_ptr<juce::TextEditor> text_param_name;
-    std::unique_ptr<juce::TextEditor> text_param_min;
-    std::unique_ptr<juce::TextEditor> text_param_max;
     std::unique_ptr<juce::Slider> slider_param_value;
+    std::unique_ptr<juce::Label> label_name;
 
 
     //==============================================================================

@@ -13,13 +13,26 @@ void ScsynthclientAudioProcessor::initPlugin()
 {
     if (!inited)
     {
-        auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(getActiveEditor());
-        if (editor)
+        struct Callback
         {
-            auto ret = appController.initPlugin(editor);
-            if (ret)
-                inited = true;
-        }
+            static void* callback(void* userData)
+            {
+                auto self = static_cast<ScsynthclientAudioProcessor*>(userData);
+
+                auto editor = dynamic_cast<ScsynthclientAudioProcessorEditor*>(self->getActiveEditor());
+                if (editor)
+                {
+                    auto ret = self->appController.initPlugin(editor);
+                    if (ret)
+                        self->inited = true;
+                }
+
+                return nullptr;
+            }
+        };
+
+        juce::MessageManager* mm = juce::MessageManager::getInstance();
+        mm->callFunctionOnMessageThread(Callback::callback, this);
     }
 }
 
@@ -49,6 +62,8 @@ ScsynthclientAudioProcessor::ScsynthclientAudioProcessor()
                                "arg7", "Arg7", 0.0f, 1.0f, 0.0f),
                            std::make_unique<juce::AudioParameterFloat>(
                                "arg8", "Arg8", 0.0f, 1.0f, 0.0f),
+                           std::make_unique<juce::AudioParameterFloat>(
+                               "arg9", "Arg9", 0.0f, 1.0f, 0.0f),
                        })
 {
 }
