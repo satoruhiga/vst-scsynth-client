@@ -25,6 +25,7 @@ ScsynthclientAudioProcessorEditor::~ScsynthclientAudioProcessorEditor()
 //==============================================================================
 void ScsynthclientAudioProcessorEditor::paint (juce::Graphics& g)
 {
+    g.fillAll (juce::Colour (0xff323e44));
 }
 
 void ScsynthclientAudioProcessorEditor::resized()

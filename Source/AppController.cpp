@@ -6,8 +6,8 @@
 
 AppController::~AppController()
 {
-    if (hasTempSCD())
-        destroyTempSCD();
+    if (hasEditingSCD())
+        destroyEditingSCD();
 }
 
 bool AppController::initPlugin(ScsynthclientAudioProcessorEditor* editor)
@@ -175,35 +175,43 @@ bool AppController::loadSCD(std::string code)
 
 //////////////////////////////////////////////////////////////////////////
 
-bool AppController::hasTempSCD() const
+std::string AppController::getTempSCDPath()
 {
-    return temp_scd_watch != nullptr;
-}
-
-void AppController::createTempSCD()
-{
-    std::string name = std::tmpnam(nullptr);
-    name += "_" + appData.synthdef_name + ".scd";
-    temp_scd_path = name;
+    std::string path = std::tmpnam(nullptr);
+    path += "_" + appData.synthdef_name + ".scd";
 
     {
-        std::ofstream ofs(name.c_str());
+        std::ofstream ofs(path.c_str());
         ofs << appData.code;
     }
 
-    temp_scd_watch = std::make_unique<filewatch::FileWatch<std::string>>
-    (name,
+    return path;
+}
+
+bool AppController::hasEditingSCD() const
+{
+    return editing_scd_watch != nullptr;
+}
+
+void AppController::createSCDWatch(std::string& path)
+{
+    // if (path != editing_scd_path)
+    //     destroyEditingSCD();
+    
+    destroyEditingSCD();
+    
+    editing_scd_path = path;
+    editing_scd_watch = std::make_unique<filewatch::FileWatch<std::string>>
+    (path,
      [this](const std::string& _, filewatch::Event change_type)
      {
          if (change_type == filewatch::Event::modified)
          {
-             std::ifstream ifs(temp_scd_path.c_str());
+             std::ifstream ifs(editing_scd_path.c_str());
              std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
              if (str.empty())
                  return;
-             
-             appData.code = str;
 
              struct Callback
              {
@@ -218,8 +226,8 @@ void AppController::createTempSCD()
                      auto arg = static_cast<Argument*>(userData);
                      auto appController = arg->appController;
                      
-                     if (appController->onTempSCDModified)
-                         appController->onTempSCDModified(arg->code);
+                     if (appController->onEditingSCDModified)
+                         appController->onEditingSCDModified(arg->code);
                      
                      delete arg;
                      
@@ -233,24 +241,27 @@ void AppController::createTempSCD()
      });
 }
 
-void AppController::destroyTempSCD()
+void AppController::destroyEditingSCD()
 {
-    if (!hasTempSCD())
+    if (!hasEditingSCD())
         return;
 
-    temp_scd_watch.reset();
-    std::remove(temp_scd_path.c_str());
+    editing_scd_watch.reset();
+
+    // TODO: remove if temp file
+    // std::filesystem::temp_directory_path();
+    // std::remove(editing_scd_path.c_str());
 }
 
-void AppController::openTempSCD()
+void AppController::openWithSuperCollider()
 {
-    if (!hasTempSCD())
+    if (!hasEditingSCD())
         return;
 
     std::string cmd;
 
 #if WIN32
-    cmd = "start " + temp_scd_path;
+    cmd = "start " + editing_scd_path;
 #elif __APPLE__
     cmd = "open " + temp_scd_path;
 #else

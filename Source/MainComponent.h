@@ -96,6 +96,8 @@ private:
     std::unique_ptr<juce::Label> juce__label6;
     std::unique_ptr<juce::Label> juce__label11;
     std::unique_ptr<juce::TextButton> btn_edit;
+    std::unique_ptr<juce::TextButton> btn_save;
+    std::unique_ptr<juce::TextButton> btn_load;
 
 
     //==============================================================================

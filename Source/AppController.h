@@ -73,13 +73,16 @@ struct AppController
     bool loadSCD(std::string code);
 
     // External scd file
-    std::string temp_scd_path;
-    std::unique_ptr<filewatch::FileWatch<std::string>> temp_scd_watch;
+    std::string editing_scd_path;
+    std::unique_ptr<filewatch::FileWatch<std::string>> editing_scd_watch;
     
-    std::function<void(std::string)> onTempSCDModified;
+    std::function<void(std::string)> onEditingSCDModified;
+
+    std::string getTempSCDPath();
     
-    bool hasTempSCD() const;
-    void createTempSCD();
-    void destroyTempSCD();
-    void openTempSCD();
+    bool hasEditingSCD() const;
+    
+    void createSCDWatch(std::string& path);
+    void destroyEditingSCD();
+    void openWithSuperCollider();
 };

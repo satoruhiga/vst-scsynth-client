@@ -203,13 +203,13 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     btn_send_on_load->setTooltip (TRANS("Automatically send a code when plugin is loaded"));
     btn_send_on_load->setButtonText (TRANS("Send on Load"));
 
-    btn_send_on_load->setBounds (176, 456, 112, 24);
+    btn_send_on_load->setBounds (296, 456, 112, 24);
 
     btn_send.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
 
-    btn_send->setBounds (344, 456, 120, 24);
+    btn_send->setBounds (464, 456, 60, 24);
 
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("PB Range:")));
@@ -272,7 +272,19 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     addAndMakeVisible (btn_edit.get());
     btn_edit->setButtonText (TRANS("Edit"));
 
-    btn_edit->setBounds (472, 456, 120, 24);
+    btn_edit->setBounds (528, 456, 60, 24);
+
+    btn_save.reset (new juce::TextButton (juce::String()));
+    addAndMakeVisible (btn_save.get());
+    btn_save->setButtonText (TRANS("Save"));
+
+    btn_save->setBounds (232, 456, 60, 24);
+
+    btn_load.reset (new juce::TextButton (juce::String()));
+    addAndMakeVisible (btn_load.get());
+    btn_load->setButtonText (TRANS("Load"));
+
+    btn_load->setBounds (168, 456, 60, 24);
 
 
     //[UserPreSize]
@@ -294,8 +306,6 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     LookAndFeel::apply(btn_send.get());
     LookAndFeel::apply(btn_edit.get());
     LookAndFeel::apply(combo_presets.get());
-
-    // TODO: scdから読み込む変数は消す
 
     auto& appData = appController.appData;
 
@@ -366,12 +376,49 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     {
         btn_edit->onClick = [this]
         {
-            if (!this->appController.hasTempSCD())
+            if (!this->appController.hasEditingSCD())
             {
-                this->appController.createTempSCD();
+                auto temp_scd_path = this->appController.getTempSCDPath();
+                this->appController.createSCDWatch(temp_scd_path);
             }
 
-            this->appController.openTempSCD();
+            this->appController.openWithSuperCollider();
+        };
+    }
+
+    {
+        btn_save->onClick = [this]
+        {
+            juce::FileChooser chooser("Select a file to save...",
+                            juce::File::getSpecialLocation(juce::File::userDesktopDirectory),
+                            "*.scd");
+
+            if (chooser.browseForFileToSave(true))
+            {
+                auto result = chooser.getResult();
+                result.replaceWithText(this->appController.appData.code);
+                
+                this->appController.createSCDWatch(result.getFullPathName().toStdString());
+                this->appController.openWithSuperCollider();
+            }
+        };
+    }
+
+    {
+        btn_load->onClick = [this]
+        {
+            juce::FileChooser chooser("Select a file to load...",
+                            juce::File::getSpecialLocation(juce::File::userDesktopDirectory),
+                            "*.scd");
+
+            if (chooser.browseForFileToOpen())
+            {
+                auto result = chooser.getResult();
+                this->appController.appData.code = result.loadFileAsString().toStdString();
+                
+                this->appController.createSCDWatch(result.getFullPathName().toStdString());
+                this->appController.openWithSuperCollider();
+            }
         };
     }
 
@@ -453,9 +500,9 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
                 auto p = presets.at(index);
                 auto code = p.second.toStdString();
 
-                if (this->appController.hasTempSCD())
-                    this->appController.destroyTempSCD();
-                
+                if (this->appController.hasEditingSCD())
+                    this->appController.destroyEditingSCD();
+
                 this->appController.sendCodeAndLoadSCD(code);
             }
             catch (std::range_error&)
@@ -478,7 +525,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
     // Tempfile
     {
-        appController.onTempSCDModified = [this, &appData](std::string code)
+        appController.onEditingSCDModified = [this, &appData](std::string code)
         {
             appData.code = code;
             text_code->setText(code);
@@ -496,7 +543,7 @@ MainComponent::~MainComponent()
     //[Destructor_pre]. You can add your own custom destruction code here..
     attachment_master_vel.reset();
     label_connection_status->removeMouseListener(this);
-    appController.destroyTempSCD();
+    appController.destroyEditingSCD();
     //[/Destructor_pre]
 
     juce__label5 = nullptr;
@@ -528,6 +575,8 @@ MainComponent::~MainComponent()
     juce__label6 = nullptr;
     juce__label11 = nullptr;
     btn_edit = nullptr;
+    btn_save = nullptr;
+    btn_load = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -561,8 +610,6 @@ void MainComponent::resized()
 void MainComponent::loadFromAppData()
 {
     auto& appData = appController.appData;
-
-    // TODO: scdから読み込む変数は消す
 
     text_synthdef_name->setText(appData.synthdef_name);
     text_scsynth_port->setText(juce::String(appData.scsynth_port));
@@ -699,11 +746,11 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="528 88 64 80" class="ParameterComponent"
                     params="valueTreeState, appController, 8"/>
   <TOGGLEBUTTON name="" id="63638d04d75c5245" memberName="btn_send_on_load" virtualName=""
-                explicitFocusOrder="0" pos="176 456 112 24" tooltip="Automatically send a code when plugin is loaded"
+                explicitFocusOrder="0" pos="296 456 112 24" tooltip="Automatically send a code when plugin is loaded"
                 buttonText="Send on Load" connectedEdges="0" needsCallback="0"
                 radioGroupId="0" state="0"/>
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
-              explicitFocusOrder="0" pos="344 456 120 24" buttonText="Send"
+              explicitFocusOrder="0" pos="464 456 60 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
          explicitFocusOrder="0" pos="240 48 80 24" edTextCol="ff000000"
@@ -731,7 +778,13 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="" id="1f887a07b8d8b9ca" memberName="btn_edit" virtualName=""
-              explicitFocusOrder="0" pos="472 456 120 24" buttonText="Edit"
+              explicitFocusOrder="0" pos="528 456 60 24" buttonText="Edit"
+              connectedEdges="0" needsCallback="0" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="2f3870428c779138" memberName="btn_save" virtualName=""
+              explicitFocusOrder="0" pos="232 456 60 24" buttonText="Save"
+              connectedEdges="0" needsCallback="0" radioGroupId="0"/>
+  <TEXTBUTTON name="" id="6a107f12aefc226f" memberName="btn_load" virtualName=""
+              explicitFocusOrder="0" pos="168 456 60 24" buttonText="Load"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 

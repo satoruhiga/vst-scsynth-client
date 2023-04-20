@@ -5,7 +5,7 @@
               companyName="BACKSPACE Productions Inc" companyWebsite="backspace.tokyo"
               pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
               pluginVST3Category="Instrument,Network" includeBinaryInJuceHeader="0"
-              cppLanguageStandard="17">
+              cppLanguageStandard="17" defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="H9kj1m" name="scsynth-client">
     <GROUP id="{95611450-B53D-2629-5DA4-663A6AC4DAE6}" name="Source">
       <FILE id="aa0qBo" name="AppController.cpp" compile="1" resource="0"
