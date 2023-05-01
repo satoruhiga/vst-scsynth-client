@@ -104,6 +104,9 @@ void AppController::setStateInformation(std::unique_ptr<juce::XmlElement>& xml)
 
 bool AppController::loadSCD(std::string code)
 {
+    if (code.empty())
+        return false;
+    
     std::string meta_json_str;
 
     while (code.find("\r\n") != std::string::npos)

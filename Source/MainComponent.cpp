@@ -382,7 +382,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
                 this->appController.createSCDWatch(temp_scd_path);
             }
 
-            auto path = this->appController.getTempSCDPath();
+            auto path = this->appController.editing_scd_path;
             if (!path.empty())
                 this->appController.openWithSuperCollider(path);
         };
