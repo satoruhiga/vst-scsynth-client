@@ -84,5 +84,5 @@ struct AppController
     
     void createSCDWatch(std::string& path);
     void destroyEditingSCD();
-    void openWithSuperCollider();
+    void openWithSuperCollider(std::string path);
 };

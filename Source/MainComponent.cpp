@@ -382,7 +382,9 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
                 this->appController.createSCDWatch(temp_scd_path);
             }
 
-            this->appController.openWithSuperCollider();
+            auto path = this->appController.getTempSCDPath();
+            if (!path.empty())
+                this->appController.openWithSuperCollider(path);
         };
     }
 
@@ -397,9 +399,10 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
             {
                 auto result = chooser.getResult();
                 result.replaceWithText(this->appController.appData.code);
-                
-                this->appController.createSCDWatch(result.getFullPathName().toStdString());
-                this->appController.openWithSuperCollider();
+
+                auto path = result.getFullPathName().toStdString();
+                this->appController.createSCDWatch(path);
+                this->appController.openWithSuperCollider(path);
             }
         };
     }
@@ -415,9 +418,10 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
             {
                 auto result = chooser.getResult();
                 this->appController.appData.code = result.loadFileAsString().toStdString();
-                
-                this->appController.createSCDWatch(result.getFullPathName().toStdString());
-                this->appController.openWithSuperCollider();
+
+                auto path = result.getFullPathName().toStdString();
+                this->appController.createSCDWatch(path);
+                this->appController.openWithSuperCollider(path);
             }
         };
     }

@@ -195,9 +195,6 @@ bool AppController::hasEditingSCD() const
 
 void AppController::createSCDWatch(std::string& path)
 {
-    // if (path != editing_scd_path)
-    //     destroyEditingSCD();
-    
     destroyEditingSCD();
     
     editing_scd_path = path;
@@ -253,7 +250,7 @@ void AppController::destroyEditingSCD()
     // std::remove(editing_scd_path.c_str());
 }
 
-void AppController::openWithSuperCollider()
+void AppController::openWithSuperCollider(std::string path)
 {
     if (!hasEditingSCD())
         return;
@@ -261,9 +258,9 @@ void AppController::openWithSuperCollider()
     std::string cmd;
 
 #if WIN32
-    cmd = "start " + editing_scd_path;
+    cmd = "\"" + path + "\"";
 #elif __APPLE__
-    cmd = "open " + temp_scd_path;
+    cmd = "open \"" + path + "\"";
 #else
     #error
 # endif
