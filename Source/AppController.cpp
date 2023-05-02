@@ -205,8 +205,12 @@ void AppController::createSCDWatch(std::string& path)
     (path,
      [this](const std::string& _, filewatch::Event change_type)
      {
-         if (change_type == filewatch::Event::modified)
-         {
+         if (change_type == filewatch::Event::modified
+#if defined(__APPLE__)
+             || change_type == filewatch::Event::removed
+#endif
+        )
+        {
              std::ifstream ifs(editing_scd_path.c_str());
              std::string str((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 

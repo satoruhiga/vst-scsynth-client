@@ -885,7 +885,7 @@ namespace filewatch {
 
             int openFile(const StringType& file) {
                   int fd = open(fullPathOf(file).c_str(), O_RDONLY);
-                  assert(fd != -1);
+//                  assert(fd != -1);
                   return fd;
             }
 
