@@ -132,7 +132,6 @@ void ParameterComponent::loadFromAppData()
         label_name->setText("-", juce::dontSendNotification);
         label_name->setColour(juce::Label::textColourId, juce::Colours::grey);
         slider_param_value->setEnabled(false);
-        slider_param_value->setValue(0);
     }
 }
 //[/MiscUserCode]
