@@ -28,7 +28,6 @@ public:
             juce::Font::getDefaultMonospacedFontName(),
             13,
             juce::Font::plain));
-        codeEditor->setReadOnly(true);
     }
 
     void resized() override

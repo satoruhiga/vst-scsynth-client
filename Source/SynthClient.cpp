@@ -26,7 +26,13 @@ SynthClient::~SynthClient()
 void SynthClient::connectToServer(int scsynth_port, int osc_port)
 {
     auto& appData = appController.appData;
+
+    // disconnect first
+    oscClient.reset();
+
+    // then connect
     oscClient = std::make_shared<OSCClient>(scsynth_port, osc_port);
+    
     appData.client_id = oscClient->getClientID();
     
     if (appController.onClientIDUpdated)

@@ -209,7 +209,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     addAndMakeVisible (btn_send.get());
     btn_send->setButtonText (TRANS("Send"));
 
-    btn_send->setBounds (464, 456, 60, 24);
+    btn_send->setBounds (416, 456, 60, 24);
 
     juce__label4.reset (new juce::Label (juce::String(),
                                          TRANS("PB Range:")));
@@ -270,9 +270,9 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
 
     btn_edit.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_edit.get());
-    btn_edit->setButtonText (TRANS("Edit"));
+    btn_edit->setButtonText (TRANS("Open in Editor"));
 
-    btn_edit->setBounds (528, 456, 60, 24);
+    btn_edit->setBounds (480, 456, 108, 24);
 
     btn_save.reset (new juce::TextButton (juce::String()));
     addAndMakeVisible (btn_save.get());
@@ -368,6 +368,10 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     {
         btn_send->onClick = [this, &appData]
         {
+            // check the code was changed in build-in editor
+            if (appData.code != text_code->getText())
+                appData.code = text_code->getText();
+
             this->appController.sendCodeAndLoadSCD(appData.code);
         };
     }
@@ -462,7 +466,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
         {
             if (appData.client_id == -1)
             {
-                label_connection_status->setText(juce::String("Disconnected"), juce::dontSendNotification);
+                label_connection_status->setText(juce::String("N/A (Click to Reconnect)"), juce::dontSendNotification);
                 label_connection_status->setColour(juce::Label::textColourId, juce::Colours::red);
             }
             else
@@ -644,11 +648,8 @@ void MainComponent::mouseUp(const juce::MouseEvent& event)
 
     if (event.eventComponent == label_connection_status.get())
     {
-        if (appData.client_id == -1)
-        {
-            appController.connectToServer();
-            appController.onClientIDUpdated();
-        }
+        appController.connectToServer();
+        appController.onClientIDUpdated();
     }
 }
 
@@ -754,7 +755,7 @@ BEGIN_JUCER_METADATA
                 buttonText="Send on Load" connectedEdges="0" needsCallback="0"
                 radioGroupId="0" state="0"/>
   <TEXTBUTTON name="" id="6ebb09209c230c6d" memberName="btn_send" virtualName=""
-              explicitFocusOrder="0" pos="464 456 60 24" buttonText="Send"
+              explicitFocusOrder="0" pos="416 456 60 24" buttonText="Send"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <LABEL name="" id="587bceb5cc5d0a4c" memberName="juce__label4" virtualName=""
          explicitFocusOrder="0" pos="240 48 80 24" edTextCol="ff000000"
@@ -782,7 +783,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="" id="1f887a07b8d8b9ca" memberName="btn_edit" virtualName=""
-              explicitFocusOrder="0" pos="528 456 60 24" buttonText="Edit"
+              explicitFocusOrder="0" pos="480 456 108 24" buttonText="Open in Editor"
               connectedEdges="0" needsCallback="0" radioGroupId="0"/>
   <TEXTBUTTON name="" id="2f3870428c779138" memberName="btn_save" virtualName=""
               explicitFocusOrder="0" pos="232 456 60 24" buttonText="Save"
