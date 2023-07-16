@@ -154,6 +154,17 @@ void ScsynthclientAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 {
     initPlugin();    
     appController.processMidiBuffer(midiMessages);
+
+    const int nout = getTotalNumOutputChannels();
+    for (int i = 0; i < nout; ++i)
+    {
+        float* ptr = buffer.getWritePointer(i);
+
+        for (int x = 0; x < buffer.getNumSamples(); x++)
+        {
+            *ptr++ = 0.0f;
+        }
+    }
 }
 
 //==============================================================================
