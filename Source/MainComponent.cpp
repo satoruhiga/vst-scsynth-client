@@ -257,7 +257,7 @@ MainComponent::MainComponent (juce::AudioProcessorValueTreeState& valueTreeState
     juce__label6->setBounds (288, 16, 62, 24);
 
     juce__label11.reset (new juce::Label ("new label",
-                                          TRANS("v0.12")));
+                                          TRANS("v0.13")));
     addAndMakeVisible (juce__label11.get());
     juce__label11->setFont (juce::Font (12.00f, juce::Font::plain).withTypefaceStyle ("Regular"));
     juce__label11->setJustificationType (juce::Justification::centredRight);
@@ -779,7 +779,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="34"/>
   <LABEL name="new label" id="e691c379b70a0606" memberName="juce__label11"
          virtualName="" explicitFocusOrder="0" pos="448 480 150 24" textCol="ff808080"
-         edTextCol="ff000000" edBkgCol="0" labelText="v0.12" editableSingleClick="0"
+         edTextCol="ff000000" edBkgCol="0" labelText="v0.13" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="" id="1f887a07b8d8b9ca" memberName="btn_edit" virtualName=""
